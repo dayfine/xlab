@@ -1,16 +1,8 @@
-"""We always start with main"""
+"""We always start with lib"""
 from abc import ABC, abstractmethod
 from collections import OrderedDict
 import datetime
-
-
-class DataProvider(ABC):
-    @abstractmethod
-    def get_quote(self, symbol: str, day: datetime.date):
-        pass
-
-    def update_position():
-        pass
+from typing import List
 
 
 class PortfolioManager(ABC):
@@ -18,41 +10,25 @@ class PortfolioManager(ABC):
     def get_pnl(self):
         pass
 
-
-class TradingSystem(ABC):
-    @abstractmethod
-    def maybe_trade(self):
-        pass
-
-    @abstractmethod
-    def maybe_init_position(self, symbol: str):
-        pass
-
-    @abstractmethod
-    def maybe_increase_position(self, symbol: str):
-        pass
-
-    @abstractmethod
-    def maybe_stop_loss(self, symbol: str):
-        pass
-
-    @abstractmethod
-    def maybe_take_profit(self, symbol: str):
+    def update_position():
         pass
 
 
 class TradeExecutor(ABC):
     @abstractmethod
-    def execute(self):
+    def execute(self, orders: List[Order]) -> List[Trade]:
         pass
 
 
-class RealTimeExecutor(TradeExecutor):
-    pass
+class MockExecutor(TradeExecutor):
+    def __init__():
+        pass
 
+    def execute(self, orders: List[Order]) -> List[Trade]:
+        pass
 
-class EndOfDayExecutor(TradeExecutor):
-    pass
+    def _execute_order():
+        pass
 
 
 class SimulationEodExecutor(EndOfDayExecutor):
