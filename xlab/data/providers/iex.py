@@ -9,9 +9,9 @@ class IexDataProvider(DataProvider):
 
     API_URL = 'https://cloud.iexapis.com/stable/'
 
-    def __init__(self):
+    def __init__(self, token=''):
         self.session = requests.requests_retry_session()
-        self.token = os.getenv('IEX_API_SECRET_TOKEN')
+        self.token = token or os.getenv('IEX_API_SECRET_TOKEN')
 
     def get_quotes(self,
                    symbol: str,
