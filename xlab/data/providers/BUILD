@@ -17,4 +17,9 @@ py_library(
 py_test(
     name = "iex_test",
     srcs = ["iex_test.py"],
+    deps = [
+        ":iex",
+        requirement("absl-py"),
+        requirement("requests"),
+    ],
 )

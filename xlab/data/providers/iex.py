@@ -1,8 +1,6 @@
 from datetime import date
 import os
 
-from absl import logging
-
 from xlab.data.provider import DataProvider
 from xlab.net.http import requests
 
@@ -19,6 +17,7 @@ class IexDataProvider(DataProvider):
                    symbol: str,
                    start_date: date = date.today(),
                    end_date: date = date.today()):
+        # TODO: handle dates properly.
         if end_date != date.today():
             pass
         return self.get_batch_quotes(symbol)
@@ -40,9 +39,4 @@ class IexDataProvider(DataProvider):
         params = self.get_params(symbol)
         params['token'] = self.token
 
-        response = self.session.get(url=url, params=params)
-        logging.info(f'REQUEST: {response.request.url}')
-        logging.info(f'RESPONSE: {response.status_code}')
-        # if response.status_code == requests.codes.ok:
-        #     return response
-        return response
+        return self.session.get(url=url, params=params)

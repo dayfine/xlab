@@ -13,8 +13,8 @@ def main(argv):
     del argv  # Unused.
 
     logging.info(f'symbol is {FLAGS.symbol}')
-    iex_data = iex.IexDataProvider()
-    response = iex_data.get_batch_quotes(FLAGS.symbol)
+    iex_client = iex.IexDataProvider()
+    response = iex_client.get_quotes(FLAGS.symbol)
     print(response.json())
 
 
