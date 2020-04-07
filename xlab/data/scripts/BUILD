@@ -9,6 +9,7 @@ py_binary(
     srcs_version = "PY3",
     deps = [
         "//xlab/data/providers:iex",
+        "//xlab/util/status:errors",
         requirement("absl-py"),
     ],
 )

@@ -3,6 +3,7 @@ from absl import flags
 from absl import logging
 
 from xlab.data.providers import iex
+from xlab.util.status import errors
 
 FLAGS = flags.FLAGS
 
@@ -12,9 +13,13 @@ flags.DEFINE_string('symbol', None, 'Symbol of the stock to get data for')
 def main(argv):
     del argv  # Unused.
 
+    symbol = FLAGS.symbol
     logging.info(f'symbol is {FLAGS.symbol}')
+    if not symbol:
+        raise errors.InvalidArgumentError('Symbol cannot be empty')
+
     iex_client = iex.IexDataProvider()
-    response = iex_client.get_quotes(FLAGS.symbol)
+    response = iex_client.get_quotes(symbol)
     print(response.json())
 
 
