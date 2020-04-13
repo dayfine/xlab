@@ -10,6 +10,13 @@ http_archive(
 )
 
 http_archive(
+    name = "com_github_grpc_grpc",
+    sha256 = "b0d3b876d85e4e4375aa211a52a33b7e8ca9f9d6d97a60c3c844070a700f0ea3",
+    strip_prefix = "grpc-1.28.1",
+    urls = ["https://github.com/grpc/grpc/archive/v1.28.1.zip"],
+)
+
+http_archive(
     name = "rules_proto",
     sha256 = "602e7161d9195e50246177e7c55b2f39950a9cf7366f74ed5f22fd45750cd208",
     strip_prefix = "rules_proto-97d8af4dc474595af3900dd85cb3a29ad28cc313",
@@ -31,6 +38,10 @@ http_archive(
 load("@com_google_protobuf//:protobuf_deps.bzl", "protobuf_deps")
 
 protobuf_deps()
+
+load("@com_github_grpc_grpc//bazel:grpc_deps.bzl", "grpc_deps")
+
+grpc_deps()
 
 load(
     "@rules_proto//proto:repositories.bzl",
