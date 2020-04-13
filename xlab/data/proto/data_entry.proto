@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package xlab;
+
+import "google/protobuf/timestamp.proto";
+
+message DataEntry {
+  string symbol = 1;
+
+  string data_type = 2;
+
+  double value = 3;
+
+  // Timestamp which the data value is for.
+  google.protobuf.Timestamp timestamp = 4;
+
+  // Timestamp at which the data value was last updated.
+  google.protobuf.Timestamp updated_at = 5;
+}
