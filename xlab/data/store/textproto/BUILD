@@ -4,25 +4,21 @@ load("@remote_deps//:requirements.bzl", "requirement")
 package(default_visibility = ["//xlab:internal"])
 
 py_library(
-    name = "key",
-    srcs = ["key.py"],
+    name = "textproto",
+    srcs = ["textproto.py"],
     srcs_version = "PY3",
     deps = [
         "//xlab/data/proto:data_entry_py_pb2",
+        "//xlab/data/store",
+        "//xlab/util/status:errors",
     ],
 )
 
 py_test(
-    name = "key_test",
-    srcs = ["key_test.py"],
+    name = "textproto_test",
+    srcs = ["textproto_test.py"],
     deps = [
-        ":key",
+        ":textproto",
         requirement("absl-py"),
     ],
-)
-
-py_library(
-    name = "store",
-    srcs = ["store.py"],
-    srcs_version = "PY3",
 )
