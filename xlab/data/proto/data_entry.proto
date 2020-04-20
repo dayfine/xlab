@@ -4,16 +4,29 @@ package xlab;
 
 import "google/protobuf/timestamp.proto";
 
+message DataEntries {
+  repeated DataEntry entries = 1;
+}
+
 message DataEntry {
+  enum DataSpace {
+    DATA_SPACE_UNSPECIFIED = 0;
+    STOCK_DATA = 1;
+    STOCK_METADATA = 2;
+  }
+
   string symbol = 1;
 
-  string data_type = 2;
+  DataSpace data_space = 2;
 
-  double value = 3;
+  // The type of the data, e.g. Close price vs. Volume.
+  string data_type = 3;
+
+  double value = 4;
 
   // Timestamp which the data value is for.
-  google.protobuf.Timestamp timestamp = 4;
+  google.protobuf.Timestamp timestamp = 5;
 
   // Timestamp at which the data value was last updated.
-  google.protobuf.Timestamp updated_at = 5;
+  google.protobuf.Timestamp updated_at = 6;
 }
