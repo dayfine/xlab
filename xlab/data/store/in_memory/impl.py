@@ -11,24 +11,24 @@ from xlab.util.status import errors
 class InMemoryDataStore(DataStore):
     def __init__(self):
         # In memory data store has empty initial state
-        self.data: Dict[Tuple, List[DataEntry]] = defaultdict(list)
+        self._data: Dict[Tuple, List[DataEntry]] = defaultdict(list)
 
     def add(self, data_entry: DataEntry):
         key = make_key(data_entry)[:3]  # Do not use timestamp in key
-        data_entries = self.data[key]
+        data_entries = self._data[key]
         if data_entry.timestamp.ToDatetime() in {
                 e.timestamp.ToDatetime()
                 for e in data_entries
         }:
             raise errors.AlreadyExistsError(
                 f'The data entry to add already exists: {data_entry}')
-        self.data[key].append(data_entry)
-        self.data[key].sort(key=lambda e: e.timestamp.ToDatetime())
+        self._data[key].append(data_entry)
+        self._data[key].sort(key=lambda e: e.timestamp.ToDatetime())
 
     def read(self, lookup_key: LookupKey) -> DataEntry:
         expected_key = (lookup_key.data_space, lookup_key.symbol,
                         lookup_key.data_type)
-        data_entries = self.data[expected_key]
+        data_entries = self._data[expected_key]
         try:
             return next(e for e in data_entries
                         if e.timestamp.ToDatetime() == lookup_key.timestamp)
@@ -38,7 +38,7 @@ class InMemoryDataStore(DataStore):
 
     def lookup(self, lookup_key: LookupKey) -> List[DataEntry]:
         results = []
-        for key, data_entries in self.data.items():
+        for key, data_entries in self._data.items():
             if not self._key_matches(key, lookup_key): continue
             results.extend(
                 (e for e in data_entries if lookup_key.timestamp is None
@@ -46,7 +46,7 @@ class InMemoryDataStore(DataStore):
         return results
 
     def each(self, fn: Callable[[DataEntry], None]):
-        for key, data_entries in self.data.items():
+        for key, data_entries in self._data.items():
             for data_entry in data_entries:
                 fn(data_entry)
 

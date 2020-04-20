@@ -10,6 +10,7 @@ py_library(
     deps = [
         "//xlab/data/proto:data_entry_py_pb2",
         "//xlab/data/store:interface",
+        "//xlab/data/store/in_memory:impl",
         "//xlab/util/status:errors",
     ],
 )
