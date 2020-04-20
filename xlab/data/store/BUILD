@@ -4,6 +4,12 @@ load("@remote_deps//:requirements.bzl", "requirement")
 package(default_visibility = ["//xlab:internal"])
 
 py_library(
+    name = "interface",
+    srcs = ["interface.py"],
+    srcs_version = "PY3",
+)
+
+py_library(
     name = "key",
     srcs = ["key.py"],
     srcs_version = "PY3",
@@ -19,10 +25,4 @@ py_test(
         ":key",
         requirement("absl-py"),
     ],
-)
-
-py_library(
-    name = "store",
-    srcs = ["store.py"],
-    srcs_version = "PY3",
 )

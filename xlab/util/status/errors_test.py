@@ -9,3 +9,7 @@ class ErrorsTest(absltest.TestCase):
                 errors.GenericError,
                 lambda e: e.code == error_codes_pb2.CANCELLED):
             raise errors.CancelledError('The call is cancelled')
+
+
+if __name__ == '__main__':
+    absltest.main()

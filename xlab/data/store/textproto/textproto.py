@@ -1,15 +1,27 @@
-from xlab.data.store import store
+from typing import Dict, List
+
+from xlab.data.store.interface import DataStore, LookupKey
+from xlab.data.store.key import make_key
 from xlab.util.status import errors
 
-from xlab.data.proto import data_entry_pb2
+from xlab.data.proto.data_entry_pb2 import DataEntry, DataEntries
 
 
-class TextProtoDataStore(store.DataStore):
-    def add(self, data_entry: data_entry_pb2.DataEntry):
+class TextProtoDataStore(DataStore):
+    def __init__(self):
+        self.data: Dict[str, DataEntries] = {}
+
+    def add(self, data_entry: DataEntry):
         pass
 
-    def read(self, key: str) -> data_entry_pb2.DataEntry:
+    def read(self, key: LookupKey) -> DataEntry:
         pass
 
-    def each(self, fn: Callable[[data_entry_pb2.DataEntry], None]):
+    def lookup(self, key: LookupKey) -> List[DataEntry]:
+        pass
+
+    def each(self, fn: Callable[[DataEntry], None]):
+        pass
+
+    def commit(self):
         pass

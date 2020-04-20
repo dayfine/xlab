@@ -4,6 +4,10 @@ package xlab;
 
 import "google/protobuf/timestamp.proto";
 
+message DataEntries {
+  repeated DataEntry entries = 1;
+}
+
 message DataEntry {
   enum DataSpace {
     DATA_SPACE_UNSPECIFIED = 0;
