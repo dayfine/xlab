@@ -22,6 +22,7 @@ py_test(
         ":impl",
         "//xlab/data/proto:data_entry_py_pb2",
         "//xlab/data/store:interface",
+        "//xlab/net/proto:testing",
         requirement("absl-py"),
         requirement("protobuf"),
     ],
