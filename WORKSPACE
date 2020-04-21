@@ -35,6 +35,15 @@ http_archive(
     ],
 )
 
+rules_python_external_version = "0.1.5"
+
+http_archive(
+    name = "rules_python_external",
+    sha256 = "bc655e6d402915944e014c3b2cad23d0a97b83a66cc22f20db09c9f8da2e2789",
+    strip_prefix = "rules_python_external-{version}".format(version = rules_python_external_version),
+    url = "https://github.com/dillon-giacoppo/rules_python_external/archive/v{version}.zip".format(version = rules_python_external_version),
+)
+
 load("@com_google_protobuf//:protobuf_deps.bzl", "protobuf_deps")
 
 protobuf_deps()
@@ -58,15 +67,13 @@ load("@rules_python//python:repositories.bzl", "py_repositories")
 py_repositories()
 
 # Only needed if using the packaging rules.
-load("@rules_python//python:pip.bzl", "pip3_import", "pip_repositories")
+load("@rules_python_external//:repositories.bzl", "rules_python_external_dependencies")
 
-pip_repositories()
+rules_python_external_dependencies()
 
-pip3_import(
-    name = "remote_deps",
+load("@rules_python_external//:defs.bzl", "pip_install")
+
+pip_install(
+    name = "py_deps",
     requirements = "//:requirements.txt",
 )
-
-load("@remote_deps//:requirements.bzl", "pip_install")
-
-pip_install()
