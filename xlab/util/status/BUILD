@@ -1,7 +1,7 @@
 load("@rules_proto//proto:defs.bzl", "proto_library")
 load("@rules_python//python:defs.bzl", "py_library", "py_test")
 load("@com_github_grpc_grpc//bazel:python_rules.bzl", "py_proto_library")
-load("@remote_deps//:requirements.bzl", "requirement")
+load("@py_deps//:requirements.bzl", "requirement")
 
 package(default_visibility = ["//xlab:internal"])
 
