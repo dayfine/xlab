@@ -4,7 +4,7 @@ from unittest.mock import patch
 from absl.testing import absltest
 import requests
 
-from xlab.data.providers import iex
+from xlab.data.provider.iex import api, provider
 
 
 def _make_response(conent: str, status_code: int) -> requests.Response:
@@ -16,7 +16,8 @@ def _make_response(conent: str, status_code: int) -> requests.Response:
 
 class IexDataProviderTest(absltest.TestCase):
     def setUp(self):
-        self.iex_client = iex.IexDataProvider()
+        self.provider = provider.IexDataProvider(
+            api.IexApiHttpClient('fake_token'))
 
     def test_get_quotes_success(self):
         expected_content = """
@@ -33,11 +34,18 @@ class IexDataProviderTest(absltest.TestCase):
         with patch('requests.Session.get',
                    return_value=_make_response(expected_content,
                                                200)) as mock_get:
-            response = self.iex_client.get_quotes('SPY')
+            results = self.provider.get_data('SPY')
 
-            args, kwargs = mock_get.call_args
+            _, kwargs = mock_get.call_args
             self.assertEqual(kwargs['params']['symbols'], 'SPY')
-            self.assertEqual(response.json(), json.loads(expected_content))
+
+            self.assertEqual(len(results['close']), 2)
+            self.assertEqual(results['close'][0], None)
+            self.assertEqual(results['close'][1], None)
+
+            self.assertEqual(len(results['close']), 2)
+            self.assertEqual(results['volume'][0], None)
+            self.assertEqual(results['volume'][1], None)
 
     def test_get_quotes_default_single_day(self):
         pass

@@ -8,7 +8,7 @@ py_binary(
     srcs = ["iex_ema.py"],
     srcs_version = "PY3",
     deps = [
-        "//xlab/data/providers:iex",
+        "//xlab/data/provider/iex:provider",
         "//xlab/util/status:errors",
         requirement("absl-py"),
     ],

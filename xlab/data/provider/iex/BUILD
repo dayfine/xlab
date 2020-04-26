@@ -1,31 +1,32 @@
 load("@rules_python//python:defs.bzl", "py_library", "py_test")
 load("@py_deps//:requirements.bzl", "requirement")
 
-package(default_visibility = ["//xlab:internal"])
-
 py_library(
-    name = "interface",
-    srcs = ["interface.py"],
+    name = "api",
+    srcs = ["api.py"],
     srcs_version = "PY3",
     deps = [
-        "//xlab/data/proto:data_entry_py_pb2",
+        "//xlab/net/http:requests",
     ],
 )
 
 py_library(
-    name = "key",
-    srcs = ["key.py"],
+    name = "provider",
+    srcs = ["provider.py"],
     srcs_version = "PY3",
     deps = [
+        ":api",
         "//xlab/data/proto:data_entry_py_pb2",
+        "//xlab/data/provider:interface",
     ],
 )
 
 py_test(
-    name = "key_test",
-    srcs = ["key_test.py"],
+    name = "provider_test",
+    srcs = ["provider_test.py"],
     deps = [
-        ":key",
+        ":provider",
         requirement("absl-py"),
+        requirement("requests"),
     ],
 )
