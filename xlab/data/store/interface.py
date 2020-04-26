@@ -1,41 +1,41 @@
-from abc import ABC, abstractmethod
-from dataclasses import dataclass
-from datetime import datetime
+import abc
+import dataclasses
+import datetime
 from typing import Callable, List, Optional
 
-from xlab.data.proto.data_entry_pb2 import DataEntry
+from xlab.data.proto import data_entry_pb2
 
 
 # Fields for retrieving data entries.
-@dataclass
+@dataclasses.dataclass
 class LookupKey:
     # An xlab.DataEntry.DataSpace Enum. Incompatible with Optional type.
     data_space: Optional[int] = None
     symbol: Optional[str] = None
     data_type: Optional[str] = None
-    timestamp: Optional[datetime] = None
+    timestamp: Optional[datetime.datetime] = None
 
 
-class DataStore(ABC):
+class DataStore(abc.ABC):
     # Add a single data entry to the store. No exception is thrown if the
     # operation is successful.
-    @abstractmethod
-    def add(self, data_entry: DataEntry):
+    @abc.abstractmethod
+    def add(self, data_entry: data_entry_pb2.DataEntry):
         pass
 
     # Read a single data entry by a key. If the data entry is not found, throw
     # an exception (instead of returns None).
     # All fields of the LookupKey must be specified.
-    @abstractmethod
-    def read(self, lookup_key: LookupKey) -> DataEntry:
+    @abc.abstractmethod
+    def read(self, lookup_key: LookupKey) -> data_entry_pb2.DataEntry:
         pass
 
     # Read zero or more data entries matching the lookup key.
-    @abstractmethod
-    def lookup(self, lookup_key: LookupKey) -> List[DataEntry]:
+    @abc.abstractmethod
+    def lookup(self, lookup_key: LookupKey) -> List[data_entry_pb2.DataEntry]:
         pass
 
     # Go through all data entries, and apply |fn| to each of them.
-    @abstractmethod
-    def each(self, fn: Callable[[DataEntry], None]):
+    @abc.abstractmethod
+    def each(self, fn: Callable[[data_entry_pb2.DataEntry], None]):
         pass
