@@ -9,7 +9,8 @@ from xlab.data.provider.iex import api
 
 class IexDataProvider(interface.DataProvider):
 
-    def __init__(self, iex_client: api.IexApiHttpClient):
+    def __init__(self,
+                 iex_client: api.IexApiHttpClient = api.IexApiHttpClient()):
         self._iex_client = iex_client
 
     # TODO: map to canonical error space.
@@ -24,7 +25,6 @@ class IexDataProvider(interface.DataProvider):
             pass
         api_response = self._iex_client.get_batch_quotes(symbol)
         data = api_response.json()
-        print('DATA: ', data)
         chart_series = data[symbol]['chart']
 
         now = datetime.now()
@@ -50,7 +50,6 @@ class IexDataProvider(interface.DataProvider):
         data_entry = data_entry_pb2.DataEntry()
         data_entry.symbol = symbol
         data_entry.data_space = data_entry_pb2.DataEntry.STOCK_DATA
-        print('dates: ', data_date, now)
         data_entry.timestamp.FromDatetime(data_date)
         data_entry.updated_at.FromDatetime(now)
         return data_entry

@@ -2,7 +2,7 @@ from absl import app
 from absl import flags
 from absl import logging
 
-from xlab.data.providers import iex
+from xlab.data.provider import iex
 from xlab.util.status import errors
 
 FLAGS = flags.FLAGS
@@ -18,9 +18,9 @@ def main(argv):
     if not symbol:
         raise errors.InvalidArgumentError('Symbol cannot be empty')
 
-    iex_client = iex.IexDataProvider()
-    response = iex_client.get_quotes(symbol)
-    print(response.json())
+    iex_provider = iex.IexDataProvider()
+    results = iex_provider.get_data(symbol)
+    logging.info(results)
 
 
 if __name__ == '__main__':

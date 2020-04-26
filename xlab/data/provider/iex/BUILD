@@ -13,6 +13,15 @@ py_library(
 )
 
 py_library(
+    name = "iex",
+    srcs = ["__init__.py"],
+    srcs_version = "PY3",
+    deps = [
+        ":provider",
+    ],
+)
+
+py_library(
     name = "provider",
     srcs = ["provider.py"],
     srcs_version = "PY3",
