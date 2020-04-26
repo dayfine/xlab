@@ -18,7 +18,7 @@ py_library(
     name = "notebook_deps",
     srcs_version = "PY3",
     deps = [
-        "//xlab/data/provider:iex",
+        "//xlab/data/provider/iex:provider",
         "//xlab/util/status:errors",
     ],
 )
