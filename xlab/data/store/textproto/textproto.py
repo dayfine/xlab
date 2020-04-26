@@ -8,6 +8,7 @@ from xlab.util.status import errors
 
 
 class TextProtoDataStore(DataStore):
+
     def __init__(self, data_store_path=""):
         self._mem_store = InMemoryDataStore()
         self._data_store_path = data_store_path
