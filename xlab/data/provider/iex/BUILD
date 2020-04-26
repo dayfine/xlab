@@ -28,6 +28,7 @@ py_test(
     srcs = ["provider_test.py"],
     deps = [
         ":provider",
+        "//xlab/net/proto/testing:compare",
         requirement("absl-py"),
         requirement("requests"),
     ],
