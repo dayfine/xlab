@@ -1,4 +1,4 @@
-from datetime import date, datetime
+import datetime
 
 from typing import Dict, List
 
@@ -17,21 +17,22 @@ class IexDataProvider(interface.DataProvider):
     def get_data(
         self,
         symbol: str,
-        start_date: date = date.today(),
-        end_date: date = date.today()
+        start_date: datetime.date = datetime.date.today(),
+        end_date: datetime.date = datetime.date.today()
     ) -> Dict[str, List[data_entry_pb2.DataEntry]]:
         # TODO: handle dates properly.
-        if end_date != date.today():
+        if end_date != datetime.date.today():
             pass
         api_response = self._iex_client.get_batch_quotes(symbol)
         data = api_response.json()
         chart_series = data[symbol]['chart']
 
-        now = datetime.now()
+        now = datetime.datetime.now()
         close_results = []
         volume_results = []
         for chart_data in chart_series:
-            data_date = datetime.strptime(chart_data['date'], '%Y-%m-%d')
+            data_date = datetime.datetime.strptime(chart_data['date'],
+                                                   '%Y-%m-%d')
 
             close_data = self._make_data_base(symbol, data_date, now)
             close_data.data_type = 'close'
@@ -45,8 +46,8 @@ class IexDataProvider(interface.DataProvider):
 
         return {'close': close_results, 'volume': volume_results}
 
-    def _make_data_base(self, symbol: str, data_date: datetime,
-                        now: datetime) -> data_entry_pb2.DataEntry:
+    def _make_data_base(self, symbol: str, data_date: datetime.datetime,
+                        now: datetime.datetime) -> data_entry_pb2.DataEntry:
         data_entry = data_entry_pb2.DataEntry()
         data_entry.symbol = symbol
         data_entry.data_space = data_entry_pb2.DataEntry.STOCK_DATA

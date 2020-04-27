@@ -4,8 +4,17 @@ load("@py_deps//:requirements.bzl", "requirement")
 package(default_visibility = ["//xlab:internal"])
 
 py_library(
-    name = "impl",
-    srcs = ["impl.py"],
+    name = "in_memory",
+    srcs = ["__init__.py"],
+    srcs_version = "PY3",
+    deps = [
+        ":store",
+    ],
+)
+
+py_library(
+    name = "store",
+    srcs = ["store.py"],
     srcs_version = "PY3",
     deps = [
         "//xlab/data/proto:data_entry_py_pb2",
@@ -16,15 +25,11 @@ py_library(
 )
 
 py_test(
-    name = "impl_test",
-    srcs = ["impl_test.py"],
+    name = "store_test",
+    srcs = ["store_test.py"],
     deps = [
-        ":impl",
-        "//xlab/data/proto:data_entry_py_pb2",
-        "//xlab/data/store:interface",
-        "//xlab/net/proto/testing:compare",
-        "//xlab/net/proto/testing:parse",
+        ":store",
+        "//xlab/data/store:impl_test_factory",
         requirement("absl-py"),
-        requirement("protobuf"),
     ],
 )

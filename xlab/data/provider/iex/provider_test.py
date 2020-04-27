@@ -22,7 +22,7 @@ class IexDataProviderTest(absltest.TestCase):
         self.provider = provider.IexDataProvider(
             api.IexApiHttpClient('fake_token'))
 
-    @patch.object(provider, 'datetime', Mock(wraps=datetime.datetime))
+    @patch.object(provider, 'datetime', Mock(wraps=datetime))
     @patch('requests.Session.get')
     def test_get_quotes_success(self, mock_get):
         api_response_data = """{
@@ -35,7 +35,7 @@ class IexDataProviderTest(absltest.TestCase):
         }"""
 
         mock_get.return_value = _make_response(api_response_data, 200)
-        provider.datetime.now.return_value = datetime.datetime(2020, 12, 31)
+        provider.datetime.datetime.now.return_value = datetime.datetime(2020, 12, 31)
 
         results = self.provider.get_data('SPY')
 

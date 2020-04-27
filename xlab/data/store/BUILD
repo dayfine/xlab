@@ -13,10 +13,25 @@ py_library(
 )
 
 py_library(
+    name = "impl_test_factory",
+    testonly = True,
+    srcs = ["impl_test_factory.py"],
+    deps = [
+        ":interface",
+        "//xlab/data/proto:data_entry_py_pb2",
+        "//xlab/net/proto/testing:compare",
+        "//xlab/net/proto/testing:parse",
+        requirement("absl-py"),
+        requirement("protobuf"),
+    ],
+)
+
+py_library(
     name = "key",
     srcs = ["key.py"],
     srcs_version = "PY3",
     deps = [
+        ":interface",
         "//xlab/data/proto:data_entry_py_pb2",
     ],
 )
