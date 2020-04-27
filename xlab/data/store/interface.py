@@ -32,7 +32,7 @@ class DataStore(abc.ABC):
 
     # Read zero or more data entries matching the lookup key.
     @abc.abstractmethod
-    def lookup(self, lookup_key: LookupKey) -> List[data_entry_pb2.DataEntry]:
+    def lookup(self, lookup_key: LookupKey) -> data_entry_pb2.DataEntries:
         pass
 
     # Go through all data entries, and apply |fn| to each of them.

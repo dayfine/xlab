@@ -3,6 +3,7 @@ from absl import flags
 from absl import logging
 
 from xlab.data.provider import iex
+from xlab.data.store import textproto
 from xlab.util.status import errors
 
 FLAGS = flags.FLAGS
@@ -20,7 +21,14 @@ def main(argv):
 
     iex_provider = iex.IexDataProvider()
     results = iex_provider.get_data(symbol)
-    logging.info(results)
+
+    text_data_store = textproto.TextProtoDataStore(
+        FLAGS.textproto_store_directory)
+    for data_type, data_entry_list in results.items():
+        logging.info('%d items fetched for %s', len(data_entry_list), data_type)
+        for data_entry in data_entry_list:
+            text_data_store.add(data_entry)
+    text_data_store.commit()
 
 
 if __name__ == '__main__':
