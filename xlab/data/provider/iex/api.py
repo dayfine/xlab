@@ -1,32 +1,43 @@
 import os
 
-from typing import Mapping
+from typing import Any, Callable, Mapping
 
 from xlab.net.http import requests
 
 
-class IexApiHttpClient:
+class SimpleIexApiHttpClient:
 
     _API_URL = 'https://cloud.iexapis.com/stable/'
-    _BATCH_ENDPOINT = 'stock/market/batch'
 
-    def __init__(self, token=''):
+    def __init__(self,
+                 token: str = '',
+                 endpoint_url: str = '',
+                 param_builder: Callable[..., Mapping[str, Any]] = None):
         self._session = requests.requests_retry_session()
         self._token = token or os.getenv('IEX_API_SECRET_TOKEN')
+        self._endpoint_url = endpoint_url
+        self._param_builder = param_builder
 
-    def get_batch_quotes(self, symbol: str):
-        params = self._get_params_for_batch_quotes(symbol)
-        return self._do_request(self._BATCH_ENDPOINT, params)
+    def call(self, *args, **kwargs):
+        params = self._param_builder(*args, **kwargs)
+        params['token'] = self._token
+        url = self._API_URL + self._endpoint_url
+        response = self._session.get(url=url, params=params)
+        return response.json()
 
-    def _get_params_for_batch_quotes(self, symbol: str):
-        return {
+
+class IexApiHttpClient:
+
+    def __init__(self, token: str = ''):
+        get_parmas: Callable[str, Mapping[str, Any]] = lambda symbol: {
             'symbols': ','.join([symbol]),
             'types': ','.join(['quote', 'chart']),
             'range': '6m',
             'chartCloseOnly': True,
         }
 
-    def _do_request(self, url: str, params: Mapping[str, str]):
-        url = self._API_URL + url
-        params['token'] = self._token
-        return self._session.get(url=url, params=params)
+        self._client = SimpleIexApiHttpClient(token, 'stock/market/batch',
+                                              get_parmas)
+
+    def get_batch_quotes(self, symbol: str):
+        return self._client.call(symbol)

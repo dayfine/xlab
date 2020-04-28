@@ -23,8 +23,7 @@ class IexDataProvider(interface.DataProvider):
         # TODO: handle dates properly.
         if end_date != datetime.date.today():
             pass
-        api_response = self._iex_client.get_batch_quotes(symbol)
-        data = api_response.json()
+        data = self._iex_client.get_batch_quotes(symbol)
         chart_series = data[symbol]['chart']
 
         now = datetime.datetime.now()
