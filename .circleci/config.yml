@@ -1,0 +1,15 @@
+version: 2.1
+jobs:
+  bazel_build_test:
+    docker:
+      - image: l.gcr.io/google/bazel:latest
+    resource_class: xlarge
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - v1-{{ .Branch }}
+          paths:
+            - ~/.cache
+      - run: bazel build xlab/...
+      - run: bazel test xlab/...
