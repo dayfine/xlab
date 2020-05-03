@@ -15,6 +15,8 @@ flags.DEFINE_string('textproto_store_directory', 'data/store',
                     'Path relative to workspace root that stores data in text')
 
 
+# WARNING: this implementation has serve limitation and caveats. Prefer other
+# implementation when possible.
 class TextProtoDataStore(interface.DataStore):
 
     def __init__(self, data_store_directory=''):

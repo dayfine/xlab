@@ -1,1 +1,1 @@
-from xlab.data.store.mongo.store import InMemoryDataStore
+from xlab.data.store.mongo.store import MongoDataStore

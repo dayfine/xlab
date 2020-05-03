@@ -14,3 +14,16 @@ py_binary(
         requirement("absl-py"),
     ],
 )
+
+py_binary(
+    name = "import_to_mongo",
+    srcs = ["import_to_mongo.py"],
+    srcs_version = "PY3",
+    deps = [
+        "//xlab/data/proto:data_entry_py_pb2",
+        "//xlab/data/store/mongo",
+        "//xlab/util/status:errors",
+        requirement("absl-py"),
+        requirement("protobuf"),
+    ],
+)
