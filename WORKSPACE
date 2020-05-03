@@ -44,6 +44,8 @@ http_archive(
     url = "https://github.com/dillon-giacoppo/rules_python_external/archive/v{version}.zip".format(version = rules_python_external_version),
 )
 
+register_toolchains("//:py_toolchain")
+
 load("@com_google_protobuf//:protobuf_deps.bzl", "protobuf_deps")
 
 protobuf_deps()

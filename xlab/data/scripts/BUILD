@@ -38,4 +38,5 @@ py_binary(
         "//xlab/util/status:errors",
         requirement("absl-py"),
         requirement("protobuf"),
+    ],
 )
