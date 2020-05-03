@@ -4,6 +4,19 @@ load("@py_deps//:requirements.bzl", "requirement")
 package(default_visibility = ["//xlab:internal"])
 
 py_binary(
+    name = "iex_fetch_all",
+    srcs = ["iex_fetch_all.py"],
+    srcs_version = "PY3",
+    deps = [
+        "//xlab/data/provider/iex",
+        "//xlab/data/provider/iex:api",
+        "//xlab/data/store/textproto",
+        "//xlab/util/status:errors",
+        requirement("absl-py"),
+    ],
+)
+
+py_binary(
     name = "iex_fetch_data",
     srcs = ["iex_fetch_data.py"],
     srcs_version = "PY3",
@@ -25,5 +38,4 @@ py_binary(
         "//xlab/util/status:errors",
         requirement("absl-py"),
         requirement("protobuf"),
-    ],
 )

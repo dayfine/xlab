@@ -39,7 +39,7 @@ class TextProtoDataStore(interface.DataStore):
         except FileNotFoundError:
             logging.warning('Trying to open [%s] but failed', data_filepath)
 
-    def commit(self):
+    def commit(self, unload_afterwards=False):
         data_filepath = self._get_data_filepath(self._last_added_key)
         logging.info('Committing to [%s]', data_filepath)
         self._maybe_create_dir(data_filepath)
@@ -49,14 +49,19 @@ class TextProtoDataStore(interface.DataStore):
                 self._mem_store._data[self._last_added_key])
             f.write(text_format.MessageToString(data_entries))
 
-    def add(self, data_entry: data_entry_pb2.DataEntry):
+        if unload_afterwards:
+            self._mem_store.unload(self._last_added_key)
+
+    def add(self, data_entry: data_entry_pb2.DataEntry, maybe_commit=True):
         data_key = key.make_key(data_entry)
         self._load(data_key)
 
         self._mem_store.add(data_entry)
 
-        if self._last_added_key is not None and data_key != self._last_added_key:
-            self.commit()
+        if maybe_commit:
+            # TODO: this might be incorrect.
+            if self._last_added_key is not None and data_key != self._last_added_key:
+                self.commit()
         self._last_added_key = data_key
 
     def read(self, lookup_key: interface.LookupKey) -> data_entry_pb2.DataEntry:
