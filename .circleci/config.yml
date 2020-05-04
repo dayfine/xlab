@@ -91,6 +91,20 @@ jobs:
           source .venv/bin/activate
           bazel build xlab/...
           bazel test xlab/...
+
+      - run: |
+          shopt -s globstar
+          mkdir /tmp/test_results
+          for f in bazel-testlogs/**/test.{log,xml}; do
+              cp -v "$f" /tmp/test_results/"${f//\//_}"
+          done
+
+      - store_test_results:
+          path: /tmp/test_results
+
+      - store_artifacts:
+          path: /tmp/test_results
+
       - save_cache:
           key: *cache_key
           paths:
@@ -99,6 +113,19 @@ jobs:
 workflows:
   version: 2
   default_workflow:
+    jobs:
+      - setup
+      - bazel_build_and_test:
+          requires:
+            - setup
+  nightly:
+    triggers:
+      - schedule:
+          cron: "0 1 * * *"
+          filters:
+            branches:
+              only:
+                - master
     jobs:
       - setup
       - bazel_build_and_test:
