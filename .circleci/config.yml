@@ -1,0 +1,106 @@
+version: 2.1
+
+# We don't want to include the current branch name in the cache key because that would prevent
+# PRs from being able to restore the cache since the branch names are always different for PRs.
+# The cache key should only consist of dynamic values that change whenever something in the
+# cache changes.
+# See https://circleci.com/docs/2.0/caching/#restoring-cache for how prefixes work in CircleCI.
+var_1: &cache_key v0-xlab-py-{{ checksum "requirements.txt" }}-{{ checksum "WORKSPACE" }}
+
+var_2: &workspace_location ~/
+
+# Command Definitions
+# https://circleci.com/docs/2.0/reusing-config/#authoring-reusable-commands
+commands:
+  custom_attach_workspace:
+    description: Attach workspace at a predefined location
+    steps:
+      - attach_workspace:
+          at: *workspace_location
+
+  # Install python as the bazel image is used instead of python image.
+  install_python:
+    description: Install Python
+    steps:
+      - run:
+          name: install Python 3.8
+          command: |
+            python3 --version
+
+            apt-get install software-properties-common
+            add-apt-repository --yes ppa:deadsnakes/ppa
+            apt-get update
+            apt-get install --yes python3.8
+            apt-get install --yes python3.8-venv
+
+            python3.8 -m venv .venv --without-pip
+
+  # Initializes the CI environment by setting up common environment variables.
+  init_environment:
+    description: Initializing environment (setting up variables)
+    steps:
+      - run:
+          name: Set up environment
+          command: ./.circleci/env.sh
+
+# Executor Definitions
+# https://circleci.com/docs/2.0/reusing-config/#authoring-reusable-executors
+executors:
+  default-executor:
+    parameters:
+      resource_class:
+        type: string
+        default: medium
+    docker:
+      - image: l.gcr.io/google/bazel:latest
+    resource_class: << parameters.resource_class >>
+    working_directory: ~/xlab
+
+jobs:
+  setup:
+    executor: default-executor
+    steps:
+      - checkout
+      - init_environment
+      - restore_cache:
+          keys:
+            - *cache_key
+      - run: |
+          if [ ! -d ~/bazel_repository_cache ]; then
+            mkdir ~/bazel_repository_cache
+            touch ~/bazel_repository_cache/MARKER
+          fi
+      # Persist any changes at this point to be reused by further jobs.
+      # **NOTE**: To add new content to the workspace, always persist on the same root.
+      - persist_to_workspace:
+          root: *workspace_location
+          paths:
+            - ./xlab
+            - ./bazel_repository_cache
+
+  bazel_build_and_test:
+    executor:
+      name: default-executor
+      # resource_class: xlarge
+    steps:
+      - custom_attach_workspace
+      - install_python
+      - init_environment
+      - run: |
+          # Virtual env can only take effect if activated here.
+          source .venv/bin/activate
+          bazel build xlab/...
+          bazel test xlab/...
+      - save_cache:
+          key: *cache_key
+          paths:
+            - "~/bazel_repository_cache"
+
+workflows:
+  version: 2
+  default_workflow:
+    jobs:
+      - setup
+      - bazel_build_and_test:
+          requires:
+            - setup
