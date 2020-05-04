@@ -1,2 +1,1 @@
 build --verbose_failures
-test --test_output=errors --action_env="GTEST_COLOR=1"
