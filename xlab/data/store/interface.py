@@ -4,6 +4,7 @@ import datetime
 from typing import Callable, List, Optional
 
 from xlab.data.proto import data_entry_pb2
+from xlab.data.store import units
 
 
 # Fields for retrieving data entries.
@@ -13,7 +14,7 @@ class LookupKey:
     data_space: Optional[int] = None
     symbol: Optional[str] = None
     data_type: Optional[str] = None
-    timestamp: Optional[datetime.datetime] = None
+    timestamp: Optional[units.Seconds] = None
 
 
 class DataStore(abc.ABC):

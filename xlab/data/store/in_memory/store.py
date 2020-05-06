@@ -25,19 +25,19 @@ class InMemoryDataStore(interface.DataStore):
     def add(self, data_entry: data_entry_pb2.DataEntry):
         data_key = key.make_key(data_entry)
         data_entries = self._data[data_key]
-        if data_entry.timestamp.ToDatetime() in {
-                e.timestamp.ToDatetime() for e in data_entries
+        if data_entry.timestamp.ToSeconds() in {
+                e.timestamp.ToSeconds() for e in data_entries
         }:
             raise errors.AlreadyExistsError(
                 f'The data entry to add already exists: {data_entry}')
         self._data[data_key].append(data_entry)
-        self._data[data_key].sort(key=lambda e: e.timestamp.ToDatetime())
+        self._data[data_key].sort(key=lambda e: e.timestamp.ToSeconds())
 
     def read(self, lookup_key: interface.LookupKey) -> data_entry_pb2.DataEntry:
         data_entries = self._data[key.from_lookup_key(lookup_key)]
         try:
             return next(e for e in data_entries
-                        if e.timestamp.ToDatetime() == lookup_key.timestamp)
+                        if e.timestamp.ToSeconds() == lookup_key.timestamp)
         except StopIteration:
             raise errors.NotFoundError(
                 f'Cannot find data matching lookup key: {lookup_key}')
@@ -50,7 +50,7 @@ class InMemoryDataStore(interface.DataStore):
                 continue
             results.extend((e for e in data_entries
                             if lookup_key.timestamp is None or
-                            e.timestamp.ToDatetime() == lookup_key.timestamp))
+                            e.timestamp.ToSeconds() == lookup_key.timestamp))
         # Return a value, as extend makes copies.
         data_entries = data_entry_pb2.DataEntries()
         data_entries.entries.extend(results)

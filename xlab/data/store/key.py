@@ -1,7 +1,7 @@
 from typing import Tuple
 
 from xlab.data.proto import data_entry_pb2
-from xlab.data.store import interface
+from xlab.data.store import interface, units
 
 # DataSpace, symbol, data_type
 DataKey = Tuple[int, str, str]
@@ -26,3 +26,12 @@ def key_matches(data_key: DataKey, lookup_key: interface.LookupKey) -> bool:
 
 def from_lookup_key(lookup_key: interface.LookupKey) -> DataKey:
     return (lookup_key.data_space, lookup_key.symbol, lookup_key.data_type)
+
+
+def make_lookup_key(
+        data_entry: data_entry_pb2.DataEntry) -> interface.LookupKey:
+    return interface.LookupKey(data_space=int(data_entry.data_space),
+                               symbol=data_entry.symbol,
+                               data_type=data_entry.data_type,
+                               timestamp=units.Seconds(
+                                   data_entry.timestamp.ToSeconds()))

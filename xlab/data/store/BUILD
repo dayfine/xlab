@@ -8,6 +8,7 @@ py_library(
     srcs = ["interface.py"],
     srcs_version = "PY3",
     deps = [
+        ":units",
         "//xlab/data/proto:data_entry_py_pb2",
     ],
 )
@@ -18,6 +19,7 @@ py_library(
     srcs = ["impl_test_factory.py"],
     deps = [
         ":interface",
+        ":key",
         "//xlab/data/proto:data_entry_py_pb2",
         "//xlab/net/proto/testing:compare",
         "//xlab/net/proto/testing:parse",
@@ -32,6 +34,7 @@ py_library(
     srcs_version = "PY3",
     deps = [
         ":interface",
+        ":units",
         "//xlab/data/proto:data_entry_py_pb2",
     ],
 )
@@ -43,4 +46,10 @@ py_test(
         ":key",
         requirement("absl-py"),
     ],
+)
+
+py_library(
+    name = "units",
+    srcs = ["units.py"],
+    srcs_version = "PY3",
 )
