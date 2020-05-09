@@ -1,7 +1,9 @@
+from typing import Callable
+
 from absl.testing import absltest, parameterized
 from google.protobuf import timestamp_pb2
 
-from xlab.data.store import interface
+from xlab.data.store import interface, key, units
 from xlab.data.proto import data_entry_pb2
 from xlab.net.proto.testing import compare, parse
 from xlab.util.status import errors
@@ -13,7 +15,6 @@ data_type: "close"
 value: 290.87
 timestamp {
   seconds: 1234567
-  nanos: 89101112
 }
 """
 
@@ -24,7 +25,6 @@ data_type: "close"
 value: 300.01
 timestamp {
   seconds: 567890
-  nanos: 6543210
 }
 """
 
@@ -35,29 +35,23 @@ data_type: "close"
 value: 115.32
 timestamp {
   seconds: 1234567
-  nanos: 89101112
 }
 """
 
 
-def make_data_provider_test_case(impl: interface.DataStore):
+def create(impl_factory: Callable[[], interface.DataStore]):
 
     class DataStoreTestCaseBase(absltest.TestCase):
 
         def setUp(self):
-            self._store = impl
+            self._store = impl_factory()
             self._data_entry1 = parse.parse_test_proto(_DATA_ENTRY1,
                                                        data_entry_pb2.DataEntry)
 
         def test_add_then_read(self):
             self._store.add(self._data_entry1)
 
-            lookup_key = interface.LookupKey(
-                data_space=int(data_entry_pb2.DataEntry.STOCK_DATA),
-                symbol="SPY",
-                data_type="close",
-                timestamp=timestamp_pb2.Timestamp(seconds=1234567,
-                                                  nanos=89101112).ToDatetime())
+            lookup_key = key.make_lookup_key(self._data_entry1)
             compare.assertProtoEqual(self, self._store.read(lookup_key),
                                      _DATA_ENTRY1)
 
@@ -74,8 +68,8 @@ def make_data_provider_test_case(impl: interface.DataStore):
                     data_space=int(data_entry_pb2.DataEntry.STOCK_DATA),
                     symbol="SPY",
                     data_type="close",
-                    timestamp=timestamp_pb2.Timestamp(
-                        seconds=1234567, nanos=1234567).ToDatetime())
+                    timestamp=units.Seconds(
+                        timestamp_pb2.Timestamp(seconds=654321).ToSeconds()))
                 self._store.read(lookup_key)
 
         class LookupTest(parameterized.TestCase):

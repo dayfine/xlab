@@ -5,9 +5,12 @@ import mongomock
 from xlab.data.store import impl_test_factory
 from xlab.data.store.mongo import store
 
-mongo_store = store.MongoDataStore(mongomock.MongoClient().db)
-# Test that the implementation fulfills the interface.
-impl_test_factory.make_data_provider_test_case(mongo_store)
+
+class MongoDataStoreTest(
+        impl_test_factory.create(
+            lambda: store.MongoDataStore(mongomock.MongoClient()))):
+    pass
+
 
 if __name__ == '__main__':
     absltest.main()
