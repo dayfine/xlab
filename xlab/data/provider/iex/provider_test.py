@@ -4,15 +4,19 @@ from unittest.mock import patch, Mock
 
 from absl.testing import absltest
 import requests
+from requests import exceptions as request_exceptions
 
 from xlab.data.provider.iex import api, provider
 from xlab.net.proto.testing import compare
 
 
-def _make_response(conent: str, status_code: int) -> requests.Response:
+def _make_response(conent: str,
+                   status_code: int,
+                   reason: str = None) -> requests.Response:
     response = requests.Response()
     response._content = conent.encode()
     response.status_code = status_code
+    response.reason = reason
     return response
 
 
@@ -35,7 +39,8 @@ class IexDataProviderTest(absltest.TestCase):
         }"""
 
         mock_get.return_value = _make_response(api_response_data, 200)
-        provider.datetime.datetime.now.return_value = datetime.datetime(2020, 12, 31)
+        provider.datetime.datetime.now.return_value = datetime.datetime(
+            2020, 12, 31)
 
         results = self.provider.get_data('SPY')
 
@@ -84,8 +89,16 @@ class IexDataProviderTest(absltest.TestCase):
     def test_get_quotes_default_end_date(self):
         pass
 
-    def test_get_quotes_backend_failure(self):
-        pass
+    @patch.object(provider, 'datetime', Mock(wraps=datetime))
+    @patch('requests.Session.get')
+    def test_get_quotes_backend_failure(self, mock_get):
+        mock_get.return_value = _make_response('', 400, 'Invalid argument!')
+        provider.datetime.datetime.now.return_value = datetime.datetime(
+            2020, 12, 31)
+
+        with self.assertRaisesRegex(request_exceptions.HTTPError,
+                                    '400 Client Error: Invalid argument'):
+            self.provider.get_data('SPY')
 
     def test_get_quotes_invalid_dates(self):
         pass

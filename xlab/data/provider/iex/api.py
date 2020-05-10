@@ -23,6 +23,8 @@ class SimpleIexApiHttpClient:
         params['token'] = self._token
         url = self._API_URL + self._endpoint_url
         response = self._session.get(url=url, params=params)
+        # Raise if code is not 200.
+        response.raise_for_status()
         return response.json()
 
 
