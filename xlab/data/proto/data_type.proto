@@ -3,7 +3,7 @@ syntax = "proto3";
 package xlab;
 
 message DataType {
-  // Next ID: 4. Keep alphabetically sorted.
+  // Next ID: 5. Keep alphabetically sorted.
   enum Enum {
     UNSPECIFIED_CALC_TYPE = 0;
     CLOSE_PRICE = 1;
