@@ -28,6 +28,7 @@ py_library(
     deps = [
         ":api",
         "//xlab/data/proto:data_entry_py_pb2",
+        "//xlab/data/proto:data_type_py_pb2",
         "//xlab/data/provider:interface",
     ],
 )
@@ -37,6 +38,7 @@ py_test(
     srcs = ["provider_test.py"],
     deps = [
         ":provider",
+        "//xlab/data/proto:data_type_py_pb2",
         "//xlab/net/proto/testing:compare",
         requirement("absl-py"),
         requirement("requests"),

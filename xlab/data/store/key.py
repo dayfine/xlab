@@ -1,10 +1,12 @@
 from typing import Tuple
 
-from xlab.data.proto import data_entry_pb2
+from xlab.data.proto import data_entry_pb2, data_type_pb2
 from xlab.data.store import interface, units
 
-# DataSpace, symbol, data_type
-DataKey = Tuple[int, str, str]
+DataKey = Tuple[int,  # Prot Enum data_entry_pb2.DataEntry.DataSpace
+                str,  # symbol
+                int,  # Proto Enum data_type_pb2.DataType.Enum
+               ]
 
 
 def make_key(data_entry: data_entry_pb2.DataEntry) -> DataKey:
@@ -16,12 +18,10 @@ def make_key(data_entry: data_entry_pb2.DataEntry) -> DataKey:
 
 
 def key_matches(data_key: DataKey, lookup_key: interface.LookupKey) -> bool:
-    return not ((lookup_key.data_space is not None and
-                 lookup_key.data_space != data_key.data_space) or
-                (lookup_key.symbol is not None and
-                 lookup_key.symbol != data_key.symbol) or
-                (lookup_key.data_type is not None and
-                 lookup_key.data_type != data_key.data_type))
+    data_space, symbol, data_type = data_key
+    return ((not lookup_key.data_space or lookup_key.data_space == data_space)
+            and (not lookup_key.symbol or lookup_key.symbol == symbol) and
+            (not lookup_key.data_type or lookup_key.data_type == data_type))
 
 
 def from_lookup_key(lookup_key: interface.LookupKey) -> DataKey:
@@ -30,7 +30,7 @@ def from_lookup_key(lookup_key: interface.LookupKey) -> DataKey:
 
 def make_lookup_key(
         data_entry: data_entry_pb2.DataEntry) -> interface.LookupKey:
-    return interface.LookupKey(data_space=int(data_entry.data_space),
+    return interface.LookupKey(data_space=data_entry.data_space,
                                symbol=data_entry.symbol,
                                data_type=data_entry.data_type,
                                timestamp=units.Seconds(

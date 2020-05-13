@@ -3,17 +3,16 @@ import dataclasses
 import datetime
 from typing import Callable, List, Optional
 
-from xlab.data.proto import data_entry_pb2
+from xlab.data.proto import data_entry_pb2, data_type_pb2
 from xlab.data.store import units
 
 
 # Fields for retrieving data entries.
-@dataclasses.dataclass
+@dataclasses.dataclass(frozen=True)
 class LookupKey:
-    # An xlab.DataEntry.DataSpace Enum. Incompatible with Optional type.
-    data_space: Optional[int] = None
+    data_space: int = 0  # Prot Enum data_entry_pb2.DataEntry.DataSpace
     symbol: Optional[str] = None
-    data_type: Optional[str] = None
+    data_type: int = 0 # Proto Enum data_type_pb2.DataType.Enum
     timestamp: Optional[units.Seconds] = None
 
 

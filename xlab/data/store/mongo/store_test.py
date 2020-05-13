@@ -5,10 +5,15 @@ import mongomock
 from xlab.data.store import impl_test_factory
 from xlab.data.store.mongo import store
 
+store_factory = lambda: store.MongoDataStore(mongomock.MongoClient())
 
-class MongoDataStoreTest(
-        impl_test_factory.create(
-            lambda: store.MongoDataStore(mongomock.MongoClient()))):
+
+class MongoDataStoreTest(impl_test_factory.create(store_factory)):
+    pass
+
+
+class MongoDataStoreParameterizedTest(
+        impl_test_factory.create_parameterized_test(store_factory)):
     pass
 
 

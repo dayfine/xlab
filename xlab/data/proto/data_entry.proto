@@ -3,6 +3,7 @@ syntax = "proto3";
 package xlab;
 
 import "google/protobuf/timestamp.proto";
+import "xlab/data/proto/data_type.proto";
 
 message DataEntries {
   repeated DataEntry entries = 1;
@@ -20,7 +21,7 @@ message DataEntry {
   DataSpace data_space = 2;
 
   // The type of the data, e.g. Close price vs. Volume.
-  string data_type = 3;
+  DataType.Enum data_type = 3;
 
   double value = 4;
 

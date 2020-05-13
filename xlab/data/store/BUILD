@@ -21,6 +21,7 @@ py_library(
         ":interface",
         ":key",
         "//xlab/data/proto:data_entry_py_pb2",
+        "//xlab/data/proto:data_type_py_pb2",
         "//xlab/net/proto/testing:compare",
         "//xlab/net/proto/testing:parse",
         requirement("absl-py"),
@@ -36,6 +37,7 @@ py_library(
         ":interface",
         ":units",
         "//xlab/data/proto:data_entry_py_pb2",
+        "//xlab/data/proto:data_type_py_pb2",
     ],
 )
 
@@ -44,6 +46,8 @@ py_test(
     srcs = ["key_test.py"],
     deps = [
         ":key",
+        "//xlab/data/proto:data_entry_py_pb2",
+        "//xlab/data/proto:data_type_py_pb2",
         requirement("absl-py"),
     ],
 )

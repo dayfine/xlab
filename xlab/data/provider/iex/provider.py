@@ -2,7 +2,7 @@ import datetime
 
 from typing import Dict, List
 
-from xlab.data.proto import data_entry_pb2
+from xlab.data.proto import data_entry_pb2, data_type_pb2
 from xlab.data.provider import interface
 from xlab.data.provider.iex import api
 
@@ -34,16 +34,19 @@ class IexDataProvider(interface.DataProvider):
                                                    '%Y-%m-%d')
 
             close_data = self._make_data_base(symbol, data_date, now)
-            close_data.data_type = 'close'
+            close_data.data_type = data_type_pb2.DataType.CLOSE_PRICE
             close_data.value = chart_data['close']
             close_results.append(close_data)
 
             volume_data = self._make_data_base(symbol, data_date, now)
-            volume_data.data_type = 'volume'
+            volume_data.data_type = data_type_pb2.DataType.VOLUME
             volume_data.value = chart_data['volume']
             volume_results.append(volume_data)
 
-        return {'close': close_results, 'volume': volume_results}
+        return {
+            data_type_pb2.DataType.CLOSE_PRICE: close_results,
+            data_type_pb2.DataType.VOLUME: volume_results
+        }
 
     def _make_data_base(self, symbol: str, data_date: datetime.datetime,
                         now: datetime.datetime) -> data_entry_pb2.DataEntry:

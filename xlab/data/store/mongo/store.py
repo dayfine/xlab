@@ -48,7 +48,10 @@ class MongoDataStore(interface.DataStore):
     def lookup(self,
                lookup_key: interface.LookupKey) -> data_entry_pb2.DataEntries:
         cursor = self._coll.find(self._get_filter(lookup_key))
-        return [self._parse(record) for record in cursor]
+        entries = [self._parse(record) for record in cursor]
+        result = data_entry_pb2.DataEntries()
+        result.entries.extend(entries)
+        return result
 
     def each(self, fn: Callable[[data_entry_pb2.DataEntry], None]):
         all_cursor = self._coll.find()
@@ -64,13 +67,13 @@ class MongoDataStore(interface.DataStore):
 
     def _get_filter(self, lookup_key: interface.LookupKey) -> Dict:
         res = {}
-        if lookup_key.data_space is not None:
+        if lookup_key.data_space:
             res['dataSpace'] = lookup_key.data_space
-        if lookup_key.symbol is not None:
+        if lookup_key.symbol:
             res['symbol'] = lookup_key.symbol
-        if lookup_key.data_type is not None:
+        if lookup_key.data_type:
             res['dataType'] = lookup_key.data_type
-        if lookup_key.timestamp is not None:
+        if lookup_key.timestamp:
             timestamp_proto = timestamp_pb2.Timestamp()
             timestamp_proto.FromSeconds(lookup_key.timestamp)
             res['timestamp'] = timestamp_proto.ToJsonString()
