@@ -3,11 +3,14 @@ syntax = "proto3";
 package xlab;
 
 message DataType {
-  // Next ID: 5. Keep alphabetically sorted.
+  // Next ID: 7. Keep alphabetically sorted.
   enum Enum {
-    UNSPECIFIED_CALC_TYPE = 0;
+    DATA_TYPE_UNSPECIFIED = 0;
     CLOSE_PRICE = 1;
-    EMA = 2; // Exponential Moving Average.
+    // Exponential Moving Averages.
+    EMA_20D = 5;
+    EMA_50D = 6;
+    EMA_150D = 2;
     OPEN_PRICE = 4;
     VOLUME = 3;
   }
