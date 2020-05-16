@@ -21,8 +21,7 @@
 $ bazel build //xlab/...
 $ bazel test //xlab/...
 ```
-  if you have error like " Xcode version must be specified to use an Apple CROSSTOOL.", 
-try ->
+  if you have error like " Xcode version must be specified to use an Apple CROSSTOOL.", try ->
 '''
 bazel clean --expunge 
 sudo xcode-select -s /Applications/Xcode.app/Contents/Developer
