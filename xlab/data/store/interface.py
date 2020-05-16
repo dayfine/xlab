@@ -7,21 +7,20 @@ from xlab.base import time
 from xlab.data.proto import data_entry_pb2, data_type_pb2
 
 
-# Fields for retrieving data entries.
-@dataclasses.dataclass(frozen=True)
-class LookupKey:
-    data_space: int = 0  # Prot Enum data_entry_pb2.DataEntry.DataSpace
-    symbol: Optional[str] = None
-    data_type: int = 0  # Proto Enum data_type_pb2.DataType.Enum
-    timestamp: Optional[time.Seconds] = None
-
-
 class DataStore(abc.ABC):
     # Add a single data entry to the store. No exception is thrown if the
     # operation is successful.
     @abc.abstractmethod
     def add(self, data_entry: data_entry_pb2.DataEntry):
         pass
+
+    # Fields for retrieving data entries.
+    @dataclasses.dataclass(frozen=True)
+    class LookupKey:
+        data_space: int = 0  # Prot Enum data_entry_pb2.DataEntry.DataSpace
+        symbol: Optional[str] = None
+        data_type: int = 0  # Proto Enum data_type_pb2.DataType.Enum
+        timestamp: Optional[time.Seconds] = None
 
     # Read a single data entry by a key. If the data entry is not found, throw
     # an exception (instead of returns None).

@@ -1,1 +1,1 @@
-from xlab.data.importer.iex.provider import IexDataImporter
+from xlab.data.importer.iex.importer import IexDataImporter

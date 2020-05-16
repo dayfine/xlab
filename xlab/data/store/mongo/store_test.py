@@ -3,9 +3,9 @@ from absl.testing import absltest
 import mongomock
 
 from xlab.data.store import impl_test_factory
-from xlab.data.store.mongo import store
+from xlab.data.store import mongo
 
-store_factory = lambda: store.MongoDataStore(mongomock.MongoClient())
+store_factory = lambda: mongo.MongoDataStore(mongomock.MongoClient())
 
 
 class MongoDataStoreTest(impl_test_factory.create(store_factory)):

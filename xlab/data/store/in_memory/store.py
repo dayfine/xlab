@@ -1,12 +1,13 @@
 import collections
 from typing import Callable, Dict, List, Tuple
 
+from xlab.data import store
 from xlab.data.proto import data_entry_pb2
-from xlab.data.store import interface, key
+from xlab.data.store import key
 from xlab.util.status import errors
 
 
-class InMemoryDataStore(interface.DataStore):
+class InMemoryDataStore(store.DataStore):
 
     def __init__(self):
         # In memory data store has empty initial state
@@ -33,7 +34,8 @@ class InMemoryDataStore(interface.DataStore):
         self._data[data_key].append(data_entry)
         self._data[data_key].sort(key=lambda e: e.timestamp.ToSeconds())
 
-    def read(self, lookup_key: interface.LookupKey) -> data_entry_pb2.DataEntry:
+    def read(self,
+             lookup_key: store.DataStore.LookupKey) -> data_entry_pb2.DataEntry:
         data_entries = self._data[key.from_lookup_key(lookup_key)]
         try:
             return next(e for e in data_entries
@@ -42,8 +44,9 @@ class InMemoryDataStore(interface.DataStore):
             raise errors.NotFoundError(
                 f'Cannot find data matching lookup key: {lookup_key}')
 
-    def lookup(self,
-               lookup_key: interface.LookupKey) -> data_entry_pb2.DataEntries:
+    def lookup(
+            self, lookup_key: store.DataStore.LookupKey
+    ) -> data_entry_pb2.DataEntries:
         results = []
         for data_key, data_entries in self._data.items():
             if not key.key_matches(data_key, lookup_key):
