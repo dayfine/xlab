@@ -8,8 +8,8 @@ py_binary(
     srcs = ["iex_fetch_all.py"],
     srcs_version = "PY3",
     deps = [
-        "//xlab/data/provider/iex",
-        "//xlab/data/provider/iex:api",
+        "//xlab/data/importer/iex",
+        "//xlab/data/importer/iex:api",
         "//xlab/data/store/textproto",
         "//xlab/util/status:errors",
         requirement("absl-py"),
@@ -21,7 +21,7 @@ py_binary(
     srcs = ["iex_fetch_data.py"],
     srcs_version = "PY3",
     deps = [
-        "//xlab/data/provider/iex",
+        "//xlab/data/importer/iex",
         "//xlab/data/store/textproto",
         "//xlab/util/status:errors",
         requirement("absl-py"),

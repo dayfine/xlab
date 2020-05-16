@@ -5,7 +5,7 @@ from typing import Dict, List
 from xlab.data.proto import data_entry_pb2
 
 
-class DataProvider(abc.ABC):
+class DataImporter(abc.ABC):
 
     # Data gets multiple types of data for the given symbol over a requested
     # period of time, and returns those data in a Dict, where the key is the

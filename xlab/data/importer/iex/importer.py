@@ -3,11 +3,11 @@ import datetime
 from typing import Dict, List
 
 from xlab.data.proto import data_entry_pb2, data_type_pb2
-from xlab.data.provider import interface
-from xlab.data.provider.iex import api
+from xlab.data import importer
+from xlab.data.importer.iex import api
 
 
-class IexDataProvider(interface.DataProvider):
+class IexDataImporter(importer.DataImporter):
 
     def __init__(self,
                  iex_client: api.IexApiHttpClient = api.IexApiHttpClient()):

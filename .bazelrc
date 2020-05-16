@@ -1,1 +1,2 @@
 build --verbose_failures
+build --disk_cache=/tmp/xlab_bazel_disk_cache/
