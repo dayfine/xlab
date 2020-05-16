@@ -3,18 +3,8 @@ import dataclasses
 import datetime
 from typing import Callable, List, Optional
 
-from xlab.data.proto import data_entry_pb2
-from xlab.data.store import units
-
-
-# Fields for retrieving data entries.
-@dataclasses.dataclass
-class LookupKey:
-    # An xlab.DataEntry.DataSpace Enum. Incompatible with Optional type.
-    data_space: Optional[int] = None
-    symbol: Optional[str] = None
-    data_type: Optional[str] = None
-    timestamp: Optional[units.Seconds] = None
+from xlab.base import time
+from xlab.data.proto import data_entry_pb2, data_type_pb2
 
 
 class DataStore(abc.ABC):
@@ -23,6 +13,14 @@ class DataStore(abc.ABC):
     @abc.abstractmethod
     def add(self, data_entry: data_entry_pb2.DataEntry):
         pass
+
+    # Fields for retrieving data entries.
+    @dataclasses.dataclass(frozen=True)
+    class LookupKey:
+        data_space: int = 0  # Prot Enum data_entry_pb2.DataEntry.DataSpace
+        symbol: Optional[str] = None
+        data_type: int = 0  # Proto Enum data_type_pb2.DataType.Enum
+        timestamp: Optional[time.Seconds] = None
 
     # Read a single data entry by a key. If the data entry is not found, throw
     # an exception (instead of returns None).

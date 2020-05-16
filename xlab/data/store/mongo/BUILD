@@ -28,7 +28,7 @@ py_library(
     deps = [
         ":db_client",
         "//xlab/data/proto:data_entry_py_pb2",
-        "//xlab/data/store:interface",
+        "//xlab/data/store",
         "//xlab/data/store:key",
         "//xlab/util/status:errors",
         requirement("pymongo"),
@@ -40,7 +40,7 @@ py_test(
     name = "store_test",
     srcs = ["store_test.py"],
     deps = [
-        ":store",
+        ":mongo",
         "//xlab/data/store:impl_test_factory",
         requirement("absl-py"),
         requirement("mongomock"),

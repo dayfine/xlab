@@ -6,7 +6,8 @@ from absl.testing import absltest
 import requests
 from requests import exceptions as request_exceptions
 
-from xlab.data.provider.iex import api, provider
+from xlab.data.proto import data_type_pb2
+from xlab.data.importer.iex import api, importer
 from xlab.net.proto.testing import compare
 
 
@@ -20,13 +21,13 @@ def _make_response(conent: str,
     return response
 
 
-class IexDataProviderTest(absltest.TestCase):
+class IexDataImporterTest(absltest.TestCase):
 
     def setUp(self):
-        self.provider = provider.IexDataProvider(
+        self.importer = importer.IexDataImporter(
             api.IexApiHttpClient('fake_token'))
 
-    @patch.object(provider, 'datetime', Mock(wraps=datetime))
+    @patch.object(importer, 'datetime', Mock(wraps=datetime))
     @patch('requests.Session.get')
     def test_get_quotes_success(self, mock_get):
         api_response_data = """{
@@ -39,46 +40,48 @@ class IexDataProviderTest(absltest.TestCase):
         }"""
 
         mock_get.return_value = _make_response(api_response_data, 200)
-        provider.datetime.datetime.now.return_value = datetime.datetime(
+        importer.datetime.datetime.now.return_value = datetime.datetime(
             2020, 12, 31)
 
-        results = self.provider.get_data('SPY')
+        results = self.importer.get_data('SPY')
 
         _, kwargs = mock_get.call_args
         self.assertEqual(kwargs['params']['symbols'], 'SPY')
 
-        self.assertEqual(len(results['close']), 2)
+        close_data = results[data_type_pb2.DataType.CLOSE_PRICE]
+        self.assertEqual(len(close_data), 2)
         compare.assertProtoEqual(
-            self, results['close'][0], """
+            self, close_data[0], """
             symbol: "SPY"
             data_space: STOCK_DATA
-            data_type: "close"
+            data_type: CLOSE_PRICE
             value: 319.69
             timestamp { seconds: 1583107200 }
             updated_at { seconds: 1609372800 }""")
         compare.assertProtoEqual(
-            self, results['close'][1], """
+            self, close_data[1], """
             symbol: "SPY"
             data_space: STOCK_DATA
-            data_type: "close"
+            data_type: CLOSE_PRICE
             value: 308.48
             timestamp { seconds: 1583193600 }
             updated_at { seconds: 1609372800 }""")
 
-        self.assertEqual(len(results['close']), 2)
+        volume_data = results[data_type_pb2.DataType.VOLUME]
+        self.assertEqual(len(volume_data), 2)
         compare.assertProtoEqual(
-            self, results['volume'][0], """
+            self, volume_data[0], """
             symbol: "SPY"
             data_space: STOCK_DATA
-            data_type: "volume"
+            data_type: VOLUME
             value: 242964067.0
             timestamp { seconds: 1583107200 }
             updated_at { seconds: 1609372800 }""")
         compare.assertProtoEqual(
-            self, results['volume'][1], """
+            self, volume_data[1], """
             symbol: "SPY"
             data_space: STOCK_DATA
-            data_type: "volume"
+            data_type: VOLUME
             value: 300862938.0
             timestamp { seconds: 1583193600 }
             updated_at { seconds: 1609372800 }""")
@@ -89,16 +92,16 @@ class IexDataProviderTest(absltest.TestCase):
     def test_get_quotes_default_end_date(self):
         pass
 
-    @patch.object(provider, 'datetime', Mock(wraps=datetime))
+    @patch.object(importer, 'datetime', Mock(wraps=datetime))
     @patch('requests.Session.get')
     def test_get_quotes_backend_failure(self, mock_get):
         mock_get.return_value = _make_response('', 400, 'Invalid argument!')
-        provider.datetime.datetime.now.return_value = datetime.datetime(
+        importer.datetime.datetime.now.return_value = datetime.datetime(
             2020, 12, 31)
 
         with self.assertRaisesRegex(request_exceptions.HTTPError,
                                     '400 Client Error: Invalid argument'):
-            self.provider.get_data('SPY')
+            self.importer.get_data('SPY')
 
     def test_get_quotes_invalid_dates(self):
         pass

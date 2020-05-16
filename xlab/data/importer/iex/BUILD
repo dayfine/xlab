@@ -17,26 +17,28 @@ py_library(
     srcs = ["__init__.py"],
     srcs_version = "PY3",
     deps = [
-        ":provider",
+        ":importer",
     ],
 )
 
 py_library(
-    name = "provider",
-    srcs = ["provider.py"],
+    name = "importer",
+    srcs = ["importer.py"],
     srcs_version = "PY3",
     deps = [
         ":api",
+        "//xlab/data/importer",
         "//xlab/data/proto:data_entry_py_pb2",
-        "//xlab/data/provider:interface",
+        "//xlab/data/proto:data_type_py_pb2",
     ],
 )
 
 py_test(
-    name = "provider_test",
-    srcs = ["provider_test.py"],
+    name = "importer_test",
+    srcs = ["importer_test.py"],
     deps = [
-        ":provider",
+        ":importer",
+        "//xlab/data/proto:data_type_py_pb2",
         "//xlab/net/proto/testing:compare",
         requirement("absl-py"),
         requirement("requests"),

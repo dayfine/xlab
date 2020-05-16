@@ -5,8 +5,9 @@ from absl import flags
 from absl import logging
 from google.protobuf import text_format
 
-from xlab.data.proto import data_entry_pb2
-from xlab.data.store import interface, in_memory, key
+from xlab.data import store
+from xlab.data.proto import data_entry_pb2, data_type_pb2
+from xlab.data.store import in_memory, key
 from xlab.util.status import errors
 
 FLAGS = flags.FLAGS
@@ -17,7 +18,7 @@ flags.DEFINE_string('textproto_store_directory', 'data/store',
 
 # WARNING: this implementation has serve limitation and caveats. Prefer other
 # implementation when possible.
-class TextProtoDataStore(interface.DataStore):
+class TextProtoDataStore(store.DataStore):
 
     def __init__(self, data_store_directory=''):
         self._mem_store = in_memory.InMemoryDataStore()
@@ -64,12 +65,14 @@ class TextProtoDataStore(interface.DataStore):
                 self.commit()
         self._last_added_key = data_key
 
-    def read(self, lookup_key: interface.LookupKey) -> data_entry_pb2.DataEntry:
+    def read(self,
+             lookup_key: store.DataStore.LookupKey) -> data_entry_pb2.DataEntry:
         self._load(key.from_lookup_key(lookup_key))
         return self._mem_store.read(lookup_key)
 
-    def lookup(self,
-               lookup_key: interface.LookupKey) -> data_entry_pb2.DataEntries:
+    def lookup(
+            self, lookup_key: store.DataStore.LookupKey
+    ) -> data_entry_pb2.DataEntries:
         self._load(key.from_lookup_key(lookup_key))
         return self._mem_store.lookup(lookup_key)
 
@@ -83,7 +86,7 @@ class TextProtoDataStore(interface.DataStore):
             self._data_store_directory,
             data_entry_pb2.DataEntry.DataSpace.Name(data_space),
             symbol,
-            data_type + '.textproto',
+            data_type_pb2.DataType.Enum.Name(data_type) + '.textproto',
         ])
 
     def _maybe_create_dir(self, filepath: str):
