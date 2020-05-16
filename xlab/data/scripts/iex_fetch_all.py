@@ -2,8 +2,8 @@ from absl import app
 from absl import flags
 from absl import logging
 
-from xlab.data.provider import iex
-from xlab.data.provider.iex import api
+from xlab.data.importer import iex
+from xlab.data.importer.iex import api
 from xlab.data.store import textproto
 from xlab.util.status import errors
 
@@ -30,7 +30,7 @@ def main(argv):
     logging.info('Got [%d] symbols', len(all_symbols))
     logging.info('First symbol: [%s]', all_symbols[0])
 
-    iex_provider = iex.IexDataProvider()
+    iex_provider = iex.IexDataImporter()
     text_data_store = textproto.TextProtoDataStore(
         FLAGS.textproto_store_directory)
 

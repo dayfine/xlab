@@ -2,7 +2,7 @@ from absl import app
 from absl import flags
 from absl import logging
 
-from xlab.data.provider import iex
+from xlab.data.importer import iex
 from xlab.data.store import textproto
 from xlab.util.status import errors
 
@@ -19,7 +19,7 @@ def main(argv):
     if not symbol:
         raise errors.InvalidArgumentError('Symbol cannot be empty')
 
-    iex_provider = iex.IexDataProvider()
+    iex_provider = iex.IexDataImporter()
     results = iex_provider.get_data(symbol)
 
     text_data_store = textproto.TextProtoDataStore(

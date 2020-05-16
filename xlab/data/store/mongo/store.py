@@ -4,13 +4,14 @@ from google.protobuf import json_format, timestamp_pb2
 import pymongo
 from pymongo import client_session
 
+from xlab.data import store
 from xlab.data.proto import data_entry_pb2
-from xlab.data.store import interface, key
+from xlab.data.store import key
 from xlab.data.store.mongo import db_client
 from xlab.util.status import errors
 
 
-class MongoDataStore(interface.DataStore):
+class MongoDataStore(store.DataStore):
 
     _DATABASE = 'xlab'
     _DATA_ENTRY_COLLECTION = 'data_entries'
@@ -38,15 +39,17 @@ class MongoDataStore(interface.DataStore):
             for d in data_entries.entries
         ])
 
-    def read(self, lookup_key: interface.LookupKey) -> data_entry_pb2.DataEntry:
+    def read(self,
+             lookup_key: store.DataStore.LookupKey) -> data_entry_pb2.DataEntry:
         record = self._coll.find_one(self._get_filter(lookup_key))
         if record is None:
             raise errors.NotFoundError(
                 f'Cannot find data matching lookup key: {lookup_key}')
         return self._parse(record)
 
-    def lookup(self,
-               lookup_key: interface.LookupKey) -> data_entry_pb2.DataEntries:
+    def lookup(
+            self, lookup_key: store.DataStore.LookupKey
+    ) -> data_entry_pb2.DataEntries:
         cursor = self._coll.find(self._get_filter(lookup_key))
         entries = [self._parse(record) for record in cursor]
         result = data_entry_pb2.DataEntries()
@@ -65,7 +68,7 @@ class MongoDataStore(interface.DataStore):
                                      data_entry_pb2.DataEntry(),
                                      ignore_unknown_fields=True)
 
-    def _get_filter(self, lookup_key: interface.LookupKey) -> Dict:
+    def _get_filter(self, lookup_key: store.DataStore.LookupKey) -> Dict:
         res = {}
         if lookup_key.data_space:
             res['dataSpace'] = lookup_key.data_space

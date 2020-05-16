@@ -4,12 +4,14 @@ import unittest
 from absl.testing import absltest, parameterized
 from google.protobuf import timestamp_pb2
 
-from xlab.data.store import interface, key, units
+from xlab.base import time
+from xlab.data import store
+from xlab.data.store import key
 from xlab.data.proto import data_entry_pb2, data_type_pb2
 from xlab.net.proto.testing import compare, parse
 from xlab.util.status import errors
 
-StoreFactory = Callable[[], interface.DataStore]
+StoreFactory = Callable[[], store.DataStore]
 
 
 def get_data_entry_one():
@@ -72,11 +74,11 @@ def create(impl_factory: StoreFactory) -> absltest.TestCase:
             self._store.add(get_data_entry_one())
 
             with self.assertRaises(errors.NotFoundError):
-                lookup_key = interface.LookupKey(
+                lookup_key = store.DataStore.LookupKey(
                     data_space=int(data_entry_pb2.DataEntry.STOCK_DATA),
                     symbol="SPY",
                     data_type=data_type_pb2.DataType.CLOSE_PRICE,
-                    timestamp=units.Seconds(
+                    timestamp=time.Seconds(
                         timestamp_pb2.Timestamp(seconds=654321).ToSeconds()))
                 self._store.read(lookup_key)
 
@@ -114,15 +116,15 @@ def create_parameterized_test(
         def test_lookup(self, data_space: data_entry_pb2.DataEntry.DataSpace,
                         symbol: str, data_type: data_type_pb2.DataType.Enum,
                         data_entries: Tuple[data_entry_pb2.DataEntry]):
-            store = impl_factory()
-            store.add(get_data_entry_one())
-            store.add(get_data_entry_two())
-            store.add(get_data_entry_three())
+            store_impl = impl_factory()
+            store_impl.add(get_data_entry_one())
+            store_impl.add(get_data_entry_two())
+            store_impl.add(get_data_entry_three())
 
-            lookup_key = interface.LookupKey(data_space=data_space,
-                                             symbol=symbol or "",
-                                             data_type=data_type)
-            actual = store.lookup(lookup_key)
+            lookup_key = store.DataStore.LookupKey(data_space=data_space,
+                                                   symbol=symbol or "",
+                                                   data_type=data_type)
+            actual = store_impl.lookup(lookup_key)
 
             expected = data_entry_pb2.DataEntries()
             expected.entries.extend(data_entries)
