@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package xlab;
+
+message DataType {
+  // Next ID: 5. Keep alphabetically sorted.
+  enum Enum {
+    UNSPECIFIED_CALC_TYPE = 0;
+    CLOSE_PRICE = 1;
+    EMA = 2; // Exponential Moving Average.
+    OPEN_PRICE = 4;
+    VOLUME = 3;
+  }
+}

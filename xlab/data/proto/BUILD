@@ -6,10 +6,23 @@ package(default_visibility = ["//xlab:internal"])
 proto_library(
     name = "data_entry_proto",
     srcs = ["data_entry.proto"],
-    deps = ["@com_google_protobuf//:timestamp_proto"],
+    deps = [
+        "data_type_proto",
+        "@com_google_protobuf//:timestamp_proto",
+    ],
 )
 
 py_proto_library(
     name = "data_entry_py_pb2",
     deps = [":data_entry_proto"],
+)
+
+proto_library(
+    name = "data_type_proto",
+    srcs = ["data_type.proto"],
+)
+
+py_proto_library(
+    name = "data_type_py_pb2",
+    deps = [":data_type_proto"],
 )

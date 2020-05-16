@@ -5,7 +5,7 @@ from absl import flags
 from absl import logging
 from google.protobuf import text_format
 
-from xlab.data.proto import data_entry_pb2
+from xlab.data.proto import data_entry_pb2, data_type_pb2
 from xlab.data.store import interface, in_memory, key
 from xlab.util.status import errors
 
@@ -83,7 +83,7 @@ class TextProtoDataStore(interface.DataStore):
             self._data_store_directory,
             data_entry_pb2.DataEntry.DataSpace.Name(data_space),
             symbol,
-            data_type + '.textproto',
+            data_type_pb2.DataType.Enum.Name(data_type) + '.textproto',
         ])
 
     def _maybe_create_dir(self, filepath: str):

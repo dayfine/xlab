@@ -9,6 +9,7 @@ py_library(
     srcs_version = "PY3",
     deps = [
         "//xlab/data/proto:data_entry_py_pb2",
+        "//xlab/data/proto:data_type_py_pb2",
         "//xlab/data/store:interface",
         "//xlab/data/store/in_memory",
         "//xlab/util/status:errors",
