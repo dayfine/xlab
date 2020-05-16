@@ -8,7 +8,7 @@ py_library(
     srcs = ["interface.py"],
     srcs_version = "PY3",
     deps = [
-        ":units",
+        "//xlab/base:time",
         "//xlab/data/proto:data_entry_py_pb2",
     ],
 )
@@ -35,7 +35,7 @@ py_library(
     srcs_version = "PY3",
     deps = [
         ":interface",
-        ":units",
+        "//xlab/base:time",
         "//xlab/data/proto:data_entry_py_pb2",
         "//xlab/data/proto:data_type_py_pb2",
     ],
@@ -50,10 +50,4 @@ py_test(
         "//xlab/data/proto:data_type_py_pb2",
         requirement("absl-py"),
     ],
-)
-
-py_library(
-    name = "units",
-    srcs = ["units.py"],
-    srcs_version = "PY3",
 )

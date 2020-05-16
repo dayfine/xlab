@@ -4,7 +4,8 @@ import unittest
 from absl.testing import absltest, parameterized
 from google.protobuf import timestamp_pb2
 
-from xlab.data.store import interface, key, units
+from xlab.base import time
+from xlab.data.store import interface, key
 from xlab.data.proto import data_entry_pb2, data_type_pb2
 from xlab.net.proto.testing import compare, parse
 from xlab.util.status import errors
@@ -76,7 +77,7 @@ def create(impl_factory: StoreFactory) -> absltest.TestCase:
                     data_space=int(data_entry_pb2.DataEntry.STOCK_DATA),
                     symbol="SPY",
                     data_type=data_type_pb2.DataType.CLOSE_PRICE,
-                    timestamp=units.Seconds(
+                    timestamp=time.Seconds(
                         timestamp_pb2.Timestamp(seconds=654321).ToSeconds()))
                 self._store.read(lookup_key)
 
