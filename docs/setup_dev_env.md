@@ -6,7 +6,7 @@
    Note: using vim to add the snippet to your ~/.config/direnv/direnvrc
          vim command to use: "i" -> copy&paste -> "ESC" -> ":wq";
 
-3. Hook direnv into your shell (https://direnv.net/docs/hook.html). 
+3. Hook direnv into your shell (https://direnv.net/docs/hook.html).
    Note: cd into your xlab project directory and do "direnv allow";
          Using vim to add eval "$(direnv hook bash)" to ~/.bashrc, then do "source ~/.bashrc" to enable the file.
 
@@ -23,11 +23,19 @@ $ bazel test //xlab/...
 ```
   if you have error like " Xcode version must be specified to use an Apple CROSSTOOL.", try ->
 '''
-bazel clean --expunge 
+bazel clean --expunge
 sudo xcode-select -s /Applications/Xcode.app/Contents/Developer
 sudo xcodebuild -license
 bazel clean --expunge
 '''
+
+If you have error like " Xcode version must be specified to use an Apple CROSSTOOL.", try:
+```sh
+$ bazel clean --expunge
+$ sudo xcode-select -s /Applications/Xcode.app/Contents/Developer
+$ sudo xcodebuild -license
+$ bazel clean --expunge
+```
 
 6. Also install the dev tools:
 
