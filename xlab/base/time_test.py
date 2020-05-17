@@ -87,7 +87,7 @@ class TimeTest(absltest.TestCase):
             0, time.ToUnixNanos(time.UnixEpoch() + time.Nanoseconds(1) / 2))
         self.assertEqual(
             0, time.ToUnixNanos(time.UnixEpoch() + time.Nanoseconds(0)))
-        # NOTE: the following three assertions are different from time.Time,
+        # NOTE: the following three assertions are different from absl::Time,
         # as nanoseconds is the ultimate precison here.
         self.assertEqual(
             0, time.ToUnixNanos(time.UnixEpoch() - time.Nanoseconds(1) / 2))
