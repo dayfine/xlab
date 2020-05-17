@@ -2,7 +2,9 @@ from typing import Tuple
 
 from xlab.base import time
 from xlab.data import store
-from xlab.data.proto import data_entry_pb2, data_type_pb2
+from xlab.data.proto import data_entry_pb2
+from xlab.data.proto import data_type_pb2
+from xlab.net.proto import time_util
 
 DataKey = Tuple[int,  # Prot Enum data_entry_pb2.DataEntry.DataSpace
                 str,  # symbol
@@ -35,5 +37,5 @@ def make_lookup_key(
     return store.DataStore.LookupKey(data_space=data_entry.data_space,
                                      symbol=data_entry.symbol,
                                      data_type=data_entry.data_type,
-                                     timestamp=time.Seconds(
-                                         data_entry.timestamp.ToSeconds()))
+                                     timestamp=time_util.to_time(
+                                         data_entry.timestamp))

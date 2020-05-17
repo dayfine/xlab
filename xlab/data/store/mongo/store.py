@@ -1,6 +1,7 @@
 from typing import Callable, Dict, List, Tuple
 
-from google.protobuf import json_format, timestamp_pb2
+from google.protobuf import json_format
+from google.protobuf import timestamp_pb2
 import pymongo
 from pymongo import client_session
 
@@ -8,6 +9,7 @@ from xlab.data import store
 from xlab.data.proto import data_entry_pb2
 from xlab.data.store import key
 from xlab.data.store.mongo import db_client
+from xlab.net.proto import time_util
 from xlab.util.status import errors
 
 
@@ -77,7 +79,6 @@ class MongoDataStore(store.DataStore):
         if lookup_key.data_type:
             res['dataType'] = lookup_key.data_type
         if lookup_key.timestamp:
-            timestamp_proto = timestamp_pb2.Timestamp()
-            timestamp_proto.FromSeconds(lookup_key.timestamp)
-            res['timestamp'] = timestamp_proto.ToJsonString()
+            res['timestamp'] = time_util.from_time(
+                lookup_key.timestamp).ToJsonString()
         return res

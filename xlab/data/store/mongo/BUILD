@@ -30,6 +30,7 @@ py_library(
         "//xlab/data/proto:data_entry_py_pb2",
         "//xlab/data/store",
         "//xlab/data/store:key",
+        "//xlab/net/proto:time_util",
         "//xlab/util/status:errors",
         requirement("pymongo"),
         requirement("protobuf"),

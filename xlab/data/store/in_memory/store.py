@@ -4,6 +4,7 @@ from typing import Callable, Dict, List, Tuple
 from xlab.data import store
 from xlab.data.proto import data_entry_pb2
 from xlab.data.store import key
+from xlab.net.proto import time_util
 from xlab.util.status import errors
 
 
@@ -26,8 +27,8 @@ class InMemoryDataStore(store.DataStore):
     def add(self, data_entry: data_entry_pb2.DataEntry):
         data_key = key.make_key(data_entry)
         data_entries = self._data[data_key]
-        if data_entry.timestamp.ToSeconds() in {
-                e.timestamp.ToSeconds() for e in data_entries
+        if time_util.to_time(data_entry.timestamp) in {
+                time_util.to_time(e.timestamp) for e in data_entries
         }:
             raise errors.AlreadyExistsError(
                 f'The data entry to add already exists: {data_entry}')
@@ -38,8 +39,9 @@ class InMemoryDataStore(store.DataStore):
              lookup_key: store.DataStore.LookupKey) -> data_entry_pb2.DataEntry:
         data_entries = self._data[key.from_lookup_key(lookup_key)]
         try:
-            return next(e for e in data_entries
-                        if e.timestamp.ToSeconds() == lookup_key.timestamp)
+            return next(
+                e for e in data_entries
+                if time_util.to_time(e.timestamp) == lookup_key.timestamp)
         except StopIteration:
             raise errors.NotFoundError(
                 f'Cannot find data matching lookup key: {lookup_key}')
@@ -51,9 +53,9 @@ class InMemoryDataStore(store.DataStore):
         for data_key, data_entries in self._data.items():
             if not key.key_matches(data_key, lookup_key):
                 continue
-            results.extend((e for e in data_entries
-                            if lookup_key.timestamp is None or
-                            e.timestamp.ToSeconds() == lookup_key.timestamp))
+            results.extend(
+                (e for e in data_entries if lookup_key.timestamp is None or
+                 time_util.to_time(e.timestamp) == lookup_key.timestamp))
         # Return a value, as extend makes copies.
         data_entries = data_entry_pb2.DataEntries()
         data_entries.entries.extend(results)
