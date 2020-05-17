@@ -26,8 +26,7 @@ class EmaCalculationTest(absltest.TestCase):
 
     def setUp(self):
         self._data_store = in_memory.InMemoryDataStore()
-        self._ema_producer = ema.get_producer_factory(
-            data_type_pb2.DataType.EMA_20D)(self._data_store)
+        self._ema_producer = ema.make_ema_20d_producer(self._data_store)
 
     def test_ema_20_for_constant_list(self):
         date = time.FromDatetime(datetime.datetime(2000, 10, 10))
@@ -99,28 +98,6 @@ class EmaCalculationTest(absltest.TestCase):
 
         with self.assertRaisesRegex(errors.NotFoundError, 'Cannot find data'):
             self._ema_producer.calculate('TEST', date)
-
-
-class EmaProducerFactoryTest(absltest.TestCase):
-
-    def test_factories_available(self):
-        self.assertCountEqual(ema.available_calc_types(), (
-            data_type_pb2.DataType.EMA_20D,
-            data_type_pb2.DataType.EMA_50D,
-            data_type_pb2.DataType.EMA_150D,
-        ))
-
-    def test_raise_for_unsupported_calc_type(self):
-        with self.assertRaisesRegex(errors.NotFoundError,
-                                    'No available EMA factory'):
-            ema.get_producer_factory(
-                data_type_pb2.DataType.DATA_TYPE_UNSPECIFIED)
-
-    def test_factories_are_for_the_right_type(self):
-        for calc_type in ema.available_calc_types():
-            calc_producer = ema.get_producer_factory(calc_type)(
-                in_memory.InMemoryDataStore())
-            self.assertEqual(calc_type, calc_producer.calc_type)
 
 
 if __name__ == '__main__':

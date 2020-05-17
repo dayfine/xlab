@@ -1,9 +1,8 @@
-from typing import List
-
 import pandas as pd
 
 from xlab.base import time
-from xlab.data import calc, store
+from xlab.data.calc import interface as calc
+from xlab.data import store
 from xlab.data.proto import data_entry_pb2
 from xlab.data.proto import data_type_pb2
 from xlab.net.proto import time_util
@@ -13,7 +12,7 @@ from xlab.util.status import errors
 # CalcProducer for Exponential Moving Average:
 #   https://en.wikipedia.org/wiki/Moving_average#Exponential_moving_average
 #   https://www.investopedia.com/terms/e/ema.asp
-class _EmaProducer:
+class EmaProducer:
 
     def __init__(self, calc_type: data_type_pb2.DataType.Enum, periods: int,
                  period_length: time.Duration, data_store: store.DataStore):
@@ -79,27 +78,16 @@ class _EmaProducer:
         return self._store.read(lookup_key)
 
 
-_FACTORIES = {
-    data_type_pb2.DataType.EMA_20D:
-        lambda data_store: _EmaProducer(data_type_pb2.DataType.EMA_20D, 20,
-                                        time.Hours(24), data_store),
-    data_type_pb2.DataType.EMA_50D:
-        lambda data_store: _EmaProducer(data_type_pb2.DataType.EMA_50D, 50,
-                                        time.Hours(24), data_store),
-    data_type_pb2.DataType.EMA_150D:
-        lambda data_store: _EmaProducer(data_type_pb2.DataType.EMA_150D, 150,
-                                        time.Hours(24), data_store),
-}
+def make_ema_20d_producer(data_store: store.DataStore) -> EmaProducer:
+    return EmaProducer(data_type_pb2.DataType.EMA_20D, 20, time.Hours(24),
+                       data_store)
 
 
-def get_producer_factory(
-        calc_type: data_type_pb2.DataType.Enum) -> calc.CalcProducerFactory:
-    try:
-        return _FACTORIES[calc_type]
-    except KeyError:
-        raise errors.NotFoundError('No available EMA factory for {}'.format(
-            data_type_pb2.DataType.Enum.Name(calc_type)))
+def make_ema_50d_producer(data_store: store.DataStore) -> EmaProducer:
+    return EmaProducer(data_type_pb2.DataType.EMA_50D, 50, time.Hours(24),
+                       data_store)
 
 
-def available_calc_types() -> List[int]:  #data_type_pb2.DataType.Enum
-    return _FACTORIES.keys()
+def make_ema_150d_producer(data_store: store.DataStore) -> EmaProducer:
+    return EmaProducer(data_type_pb2.DataType.EMA_150D, 150, time.Hours(24),
+                       data_store)
