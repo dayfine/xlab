@@ -30,11 +30,11 @@ class SimpleIexApiHttpClient:
 
 class IexApiHttpClient:
 
-    def __init__(self, token: str = ''):
-        get_parmas: Callable[str, Mapping[str, Any]] = lambda symbol: {
+    def __init__(self, token: str = '', date_range: str = ''):
+        get_parmas: Callable[[str], Mapping[str, Any]] = lambda symbol: {
             'symbols': ','.join([symbol]),
             'types': ','.join(['quote', 'chart']),
-            'range': '6m',
+            'range': date_range,
             'chartCloseOnly': True,
         }
 
