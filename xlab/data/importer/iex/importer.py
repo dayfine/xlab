@@ -17,18 +17,17 @@ class IexDataImporter(importer.DataImporter):
     def get_data(
         self,
         symbol: str,
-        start_date: datetime.date = datetime.date.today(),
-        end_date: datetime.date = datetime.date.today()
+        start_date: datetime.date,
+        end_date: datetime.date
     ) -> Dict[str, List[data_entry_pb2.DataEntry]]:
         # TODO: handle dates properly.
-        if end_date != datetime.date.today():
-            pass
-        data = self._iex_client.get_batch_quotes(symbol)
-        chart_series = data[symbol]['chart']
+        date_range = self._get_date_range(start_date, end_date)
+        data = self._iex_client.get_batch_quotes(symbol, date_range)
 
         now = datetime.datetime.now()
         close_results = []
         volume_results = []
+        chart_series = data[symbol]['chart']
         for chart_data in chart_series:
             data_date = datetime.datetime.strptime(chart_data['date'],
                                                    '%Y-%m-%d')
@@ -56,3 +55,31 @@ class IexDataImporter(importer.DataImporter):
         data_entry.timestamp.FromDatetime(data_date)
         data_entry.updated_at.FromDatetime(now)
         return data_entry
+
+    def _get_date_range(self, start_date: datetime.datetime, end_date: datetime.datetime):
+        '''
+        calculate date range by counting no. of days between start and end days
+        '''
+
+        date_range = {
+            (0, 6): '5d',
+            (6, 28): '1m',
+            (28, 84): '3m',
+            (84, 168): '6m',
+            (168, 365): '1y',
+            (365, 730): '2y',
+            (730, 1826): '5y',
+            (1826, 5478): 'max',
+        }
+
+        timedelta = (end_date - start_date).days
+        timedelta_to_today = (datetime.datetime.now() - start_date).days
+
+        if timedelta < 0:
+            raise ValueError('Start date cannot be smaller than end date!')
+        elif timedelta_to_today >= 5478:
+            raise ValueError('Start date must be within past 15 years!')
+        else:
+            for key, value in date_range.items():
+                if key[0] <= timedelta < key[1]:
+                    return value
