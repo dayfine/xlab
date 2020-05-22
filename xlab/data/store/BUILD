@@ -31,6 +31,7 @@ py_library(
         ":store",
         "//xlab/data/proto:data_entry_py_pb2",
         "//xlab/data/proto:data_type_py_pb2",
+        "//xlab/net/proto:time_util",
         "//xlab/net/proto/testing:compare",
         "//xlab/net/proto/testing:parse",
         requirement("absl-py"),
@@ -47,6 +48,7 @@ py_library(
         "//xlab/base:time",
         "//xlab/data/proto:data_entry_py_pb2",
         "//xlab/data/proto:data_type_py_pb2",
+        "//xlab/net/proto:time_util",
     ],
 )
 

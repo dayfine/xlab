@@ -20,7 +20,7 @@ class DataStore(abc.ABC):
         data_space: int = 0  # Prot Enum data_entry_pb2.DataEntry.DataSpace
         symbol: Optional[str] = None
         data_type: int = 0  # Proto Enum data_type_pb2.DataType.Enum
-        timestamp: Optional[time.Seconds] = None
+        timestamp: Optional[time.Time] = None
 
     # Read a single data entry by a key. If the data entry is not found, throw
     # an exception (instead of returns None).

@@ -4,11 +4,13 @@ import unittest
 from absl.testing import absltest, parameterized
 from google.protobuf import timestamp_pb2
 
-from xlab.base import time
 from xlab.data import store
 from xlab.data.store import key
-from xlab.data.proto import data_entry_pb2, data_type_pb2
-from xlab.net.proto.testing import compare, parse
+from xlab.data.proto import data_entry_pb2
+from xlab.data.proto import data_type_pb2
+from xlab.net.proto import time_util
+from xlab.net.proto.testing import compare
+from xlab.net.proto.testing import parse
 from xlab.util.status import errors
 
 StoreFactory = Callable[[], store.DataStore]
@@ -78,8 +80,8 @@ def create(impl_factory: StoreFactory) -> absltest.TestCase:
                     data_space=int(data_entry_pb2.DataEntry.STOCK_DATA),
                     symbol="SPY",
                     data_type=data_type_pb2.DataType.CLOSE_PRICE,
-                    timestamp=time.Seconds(
-                        timestamp_pb2.Timestamp(seconds=654321).ToSeconds()))
+                    timestamp=time_util.to_time(
+                        timestamp_pb2.Timestamp(seconds=654321)))
                 self._store.read(lookup_key)
 
         def test_each(self):
