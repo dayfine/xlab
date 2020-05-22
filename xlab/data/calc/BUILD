@@ -9,7 +9,36 @@ py_library(
     srcs_version = "PY3",
     deps = [
         ":interface",
-        ":registry",
+    ],
+)
+
+py_library(
+    name = "input_util",
+    srcs = ["input_util.py"],
+    srcs_version = "PY3",
+    deps = [
+        ":calc",
+        "//xlab/base:time",
+        "//xlab/data/proto:data_entry_py_pb2",
+        "//xlab/data/proto:data_type_py_pb2",
+        "//xlab/net/proto:time_util",
+        "//xlab/util/status:errors",
+    ],
+)
+
+py_test(
+    name = "input_util_test",
+    srcs = ["input_util_test.py"],
+    srcs_version = "PY3",
+    deps = [
+        ":calc",
+        ":input_util",
+        "//xlab/data/proto:data_entry_py_pb2",
+        "//xlab/data/proto:data_type_py_pb2",
+        "//xlab/net/proto/testing:compare",
+        "//xlab/net/proto/testing:parse",
+        "//xlab/util/status:errors",
+        requirement("absl-py"),
     ],
 )
 
@@ -29,7 +58,7 @@ py_library(
     srcs = ["registry.py"],
     srcs_version = "PY3",
     deps = [
-        ":interface",
+        ":calc",
         "//xlab/data/calc/producers:factories",
         "//xlab/data/proto:data_type_py_pb2",
         "//xlab/util/status:errors",

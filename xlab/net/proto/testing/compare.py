@@ -21,3 +21,9 @@ def assertProtoEqual(self, a, b, msg=None):
     self.assertMultiLineEqual(text_format.MessageToString(a),
                               text_format.MessageToString(b),
                               msg=msg)
+
+
+def assertProtoSequencesEqual(self, left, right, msg=None):
+    self.assertEqual(len(left), len(right), msg=msg)
+    for a, b in zip(left, right):
+        assertProtoEqual(self, a, b, msg=msg)
