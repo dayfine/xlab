@@ -24,11 +24,15 @@ def is_same_input_shape(input: Optional[DataEntry],
     ])
 
 
-def are_for_stock(inputs: calc.CalcInputs, symbol: str):
+def are_for_stock(inputs: calc.CalcInputs) -> str:
+    if not inputs:
+        raise errors.InvalidArgumentError('Cannot get stock for empty input')
+    symbol = inputs[0].symbol
     for input in inputs:
         if input.data_space != DataEntry.STOCK_DATA or input.symbol != symbol:
             raise errors.InvalidArgumentError(
-                f'Expecting data for stock: {symbol}, got: {input}')
+                f'Expecting data series all for stock: {symbol}, got: {input}')
+    return symbol
 
 
 def validate_inputs(inputs: calc.CalcInputs, inputs_shapes: calc.CalcInputs):

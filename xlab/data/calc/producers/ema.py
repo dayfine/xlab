@@ -1,11 +1,19 @@
+from typing import Tuple
+
 import pandas as pd
 
 from xlab.base import time
 from xlab.data import calc
-from xlab.data.proto.data_entry_pb2 import DataEntry
-from xlab.data.proto.data_type_pb2 import DataType
+from xlab.data.calc import input_util
+from xlab.data.proto import data_entry_pb2
+from xlab.data.proto import data_type_pb2
 from xlab.net.proto import time_util
 from xlab.util.status import errors
+
+DataEntry = data_entry_pb2.DataEntry
+DataType = data_type_pb2.DataType
+
+SMOOTHING_FACTOR = 2
 
 
 # CalcProducer for Exponential Moving Average:
@@ -17,55 +25,57 @@ class EmaProducer:
                  time_specs: calc.CalcTimeSpecs):
         self.calc_type = calc_type
         self.time_specs = time_specs
+        self._source_calc = DataType.Enum.CLOSE_PRICE
 
-    def calculate(self, inputs: Sequence[DataEntry]) -> DataEntry:
+    def calculate(self, inputs: calc.CalcInputs) -> DataEntry:
+        if not inputs:
+            raise errors.InvalidArgumentError('Inputs cannot be empty')
+
+        symbol = input_util.are_for_stock(inputs)
+        t = time_util.to_time(inputs[-1].timestamp)
         try:
-            ema = self._recur(self._to_recursive_inputs(inputs))
-        except errors.FailedPreconditionError:
-            self.validate_initial_inputs(inputs)
+            input_util.validate_inputs(inputs, self._recursive_input_shape(t))
+            ema = self._recur(inputs)
+        except errors.InvalidArgumentError:
+            input_util.validate_inputs(inputs,
+                                       self._initial_source_input_shape(t))
             ema = self._initial(inputs)
         except errors.InvalidArgumentError as e:
             raise e
 
-        result = data_entry_pb2.DataEntry()
-        result.symbol = symbol
-        result.data_space = data_entry_pb2.DataEntry.STOCK_DATA
-        result.data_type = self.calc_type
-        result.value = ema
-        result.timestamp.CopyFrom(time_util.from_time(t))
-        return result
+        return DataEntry(
+            symbol=symbol,
+            data_space=data_entry_pb2.DataEntry.STOCK_DATA,
+            data_type=self.calc_type,
+            value=ema,
+            timestamp=time_util.from_time(t),
+        )
 
     # EMA is computed based on previous EMA. However, it must starts somewhere,
     # where the first EMA need to calculated from X days of close prices.
-    def _initial(self, inputs: Sequence[DataEntry]) -> float:
+    def _initial(self, inputs: calc.CalcInputs) -> float:
         prices = (data.value for data in inputs)
-        return pd.DataFrame(prices).ewm(span=self._periods,
+        return pd.DataFrame(prices).ewm(span=self.time_specs.num_periods,
                                         adjust=False).mean().iloc[-1][0]
 
-    def _recur(self, ema_last: DataEntry, close_now: DataEntry) -> float:
-        return (2 / (self._periods + 1) * close_now.value \
-          + (self._periods - 1) / (self._periods + 1) * ema_last.value)
+    def _recur(self, inputs: calc.CalcInputs) -> float:
+        num_periods = self.time_specs.num_periods
+        return (SMOOTHING_FACTOR / (num_periods + 1) * inputs[1].value \
+          + (num_periods + 1 - SMOOTHING_FACTOR) / (num_periods + 1) * inputs[0].value)
 
-    def _to_recursive_inputs(
-            self, inputs: Sequence[DataEntry]) -> Tuple[DataEntry, DataEntry]:
-        if (len(inputs) != 2 \
-              or inputs[0].data_type != self.calc_type \
-              or inputs[1].data_type != DataType.Enum.CLOSE_PRICE):
-            raise errors.FailedPreconditionError(
-                'Inputs cannot be used to recursively compute {}'.format(
-                    DataType.Enum.Name(self.calc_type)))
-        return (inputs[0], inputs[1])
+    def accepted_input_shapes(self,
+                              t: time.Time) -> Tuple[calc.CalcInputs, ...]:
+        return (self._recursive_input_shape(t),
+                self._initial_source_input_shape(t))
 
-    def accepted_input_shapes(self, symbol: str,
-                              t: time.Time) -> Tuple[Sequence[DataEntry]]:
-        return ()
+    def _recursive_input_shape(self, t: time.Time) -> calc.CalcInputs:
+        return input_util.recursive_inputs_shape(self.calc_type,
+                                                 self._source_calc, t,
+                                                 self.time_specs)
 
-    def _recursive_input_shape(self, symbol: str, t: time.Time):
-        result = data_entry_pb2.DataEntry()
-        result.symbol = symbol
-        result.data_space = DataEntry.STOCK_DATA
-        result.data_type = self.calc_type
-        result.timestamp.CopyFrom(time_util.from_time(t))
+    def _initial_source_input_shape(self, t: time.Time) -> calc.CalcInputs:
+        return input_util.series_source_inputs_shape(self._source_calc, t,
+                                                     self.time_specs)
 
 
 make_ema_20d_producer: calc.CalcProducerFactory = lambda: EmaProducer(

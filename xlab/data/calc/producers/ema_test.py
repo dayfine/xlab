@@ -10,11 +10,13 @@ from xlab.net.proto import time_util
 from xlab.net.proto.testing import compare
 from xlab.util.status import errors
 
+DataEntry = data_entry_pb2.DataEntry
 
-def _make_close_price(value: float, t: time.Time):
-    return data_entry_pb2.DataEntry(
+
+def _make_close_price(value: float, t: time.Time) -> DataEntry:
+    return DataEntry(
         symbol='TEST',
-        data_space=data_entry_pb2.DataEntry.STOCK_DATA,
+        data_space=DataEntry.STOCK_DATA,
         data_type=data_type_pb2.DataType.CLOSE_PRICE,
         value=value,
         timestamp=time_util.from_time(t),
@@ -48,7 +50,7 @@ class EmaCalculationTest(absltest.TestCase):
             57.23, 57.17, 57.96, 58.95, 59.23, 59.41, 59.82, 60.08, 59.62, 59.85,
         ]  # yapf: disable
 
-        date = time.FromDatetime(datetime.datetime(2000, 10, 10))
+        date = time.FromDatetime(datetime.datetime(2019, 12, 31))
         close_prices = [
             _make_close_price(value, date - (19 - idx) * time.Hours(24))
             for idx, value in enumerate(price_data)
@@ -71,12 +73,13 @@ class EmaCalculationTest(absltest.TestCase):
         date = time.FromDatetime(datetime.datetime(2020, 1, 1))
         close_now = _make_close_price(60.84, date)
 
-        ema_last = data_entry_pb2.DataEntry()
-        ema_last.symbol = 'TEST'
-        ema_last.data_space = data_entry_pb2.DataEntry.STOCK_DATA
-        ema_last.data_type = data_type_pb2.DataType.EMA_20D
-        ema_last.value = 58.46
-        ema_last.timestamp.CopyFrom(time_util.from_time(date - time.Hours(24)))
+        ema_last = DataEntry(
+            symbol='TEST',
+            data_space=DataEntry.STOCK_DATA,
+            data_type=data_type_pb2.DataType.EMA_20D,
+            value=58.46,
+            timestamp=time_util.from_time(date - time.Hours(24)),
+        )
 
         compare.assertProtoEqual(
             self,
@@ -89,15 +92,17 @@ class EmaCalculationTest(absltest.TestCase):
                     seconds: 1577836800
                 }""")
 
-    def test_raise_when_source_data_is_insufficient(self):
+    def test_raise_when_inputs_do_not_meet_accpeted_input_shapes(self):
         date = time.FromDatetime(datetime.datetime(2000, 10, 10))
         close_prices = [
             _make_close_price(200.0, date - i * time.Hours(24))
-            for i in range(19, -1, -1)
+            for i in range(19, 0, -1)
         ]
 
-        with self.assertRaisesRegex(errors.NotFoundError, 'Cannot find data'):
-            ema.make_ema_20d_producer().calculate([close_prices])
+        with self.assertRaisesRegex(
+                errors.InvalidArgumentError,
+                'Expecting data with input shape: data_type: CLOSE_PRICE'):
+            ema.make_ema_20d_producer().calculate(close_prices)
 
 
 if __name__ == '__main__':

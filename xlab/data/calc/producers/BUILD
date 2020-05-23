@@ -9,7 +9,8 @@ py_library(
     srcs_version = "PY3",
     deps = [
         "//xlab/base:time",
-        "//xlab/data/calc:interface",
+        "//xlab/data/calc",
+        "//xlab/data/calc:input_util",
         "//xlab/data/proto:data_entry_py_pb2",
         "//xlab/data/proto:data_type_py_pb2",
         "//xlab/net/proto:time_util",
@@ -39,6 +40,7 @@ py_library(
     srcs_version = "PY3",
     deps = [
         ":ema",
+        "//xlab/data/calc",
         "//xlab/data/proto:data_type_py_pb2",
     ],
 )

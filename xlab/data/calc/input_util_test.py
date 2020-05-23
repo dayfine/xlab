@@ -79,18 +79,18 @@ class CalcInputUtilTest(absltest.TestCase):
     def test_valid_inputs_do_not_raise(self):
         inputs = get_valid_inputs()
         input_util.validate_inputs(inputs, get_input_shapes())
-        input_util.are_for_stock(inputs, 'SPY')
+        self.assertEqual(input_util.are_for_stock(inputs), 'SPY')
 
     def test_raise_for_inputs_with_fewer_items(self):
         inputs = get_valid_inputs()[:1]
-        input_util.are_for_stock(inputs, 'SPY')
+        self.assertEqual(input_util.are_for_stock(inputs), 'SPY')
         with self.assertRaisesRegex(errors.InvalidArgumentError,
                                     'Expecting data with input shape'):
             input_util.validate_inputs(inputs, get_input_shapes())
 
     def test_raise_for_inputs_with_more_items(self):
         inputs = [*get_valid_inputs(), *get_valid_inputs()]
-        input_util.are_for_stock(inputs, 'SPY')
+        self.assertEqual(input_util.are_for_stock(inputs), 'SPY')
         with self.assertRaisesRegex(errors.InvalidArgumentError,
                                     'Expecting data with input shape'):
             input_util.validate_inputs(inputs, get_input_shapes())
@@ -99,10 +99,9 @@ class CalcInputUtilTest(absltest.TestCase):
         inputs = get_valid_inputs()
         inputs[0].symbol = 'IBM'
         input_util.validate_inputs(inputs, get_input_shapes())
-        with self.assertRaisesRegex(
-                errors.InvalidArgumentError,
-                'Expecting data for stock: SPY, got: symbol: "IBM"'):
-            input_util.are_for_stock(inputs, 'SPY')
+        with self.assertRaisesRegex(errors.InvalidArgumentError,
+                                    'Expecting data series all for stock:'):
+            input_util.are_for_stock(inputs)
 
 
 if __name__ == '__main__':

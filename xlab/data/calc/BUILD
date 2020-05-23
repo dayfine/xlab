@@ -71,8 +71,8 @@ py_test(
     srcs_version = "PY3",
     deps = [
         ":registry",
+        "//xlab/data/calc/producers:factories",
         "//xlab/data/proto:data_type_py_pb2",
-        "//xlab/data/store/in_memory",
         "//xlab/util/status:errors",
         requirement("absl-py"),
     ],

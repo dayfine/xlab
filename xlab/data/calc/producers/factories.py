@@ -1,3 +1,6 @@
+from typing import Dict
+
+from xlab.data import calc
 from xlab.data.calc.producers import ema
 from xlab.data.proto.data_type_pb2 import DataType
 
