@@ -35,16 +35,24 @@ class CalcProducer(abc.ABC):
     def time_spec(self) -> CalcTimeSpecs:
         pass
 
-    # Compute the calc for a given security at a given timestamp.
+    # Computes the calc for a given security at a given timestamp.
     @abc.abstractmethod
     def calculate(self, inputs: CalcInputs) -> DataEntry:
         pass
 
-    # List all input shapes that can be used to produce this type of calc.
-    # An input shape is a sequence of DataEntry with specific data type,
-    # symbol, and timestamps.
+    # An input shape is a sequence of DataEntry(s) with specific data type and
+    # timestamps.
+    # Returns the input shape that can be used to recursively produce this type
+    # of calc, i.e. using the same calc from a prior time period / point. Empty
+    # if this calc cannot be done recursively.
     @abc.abstractmethod
-    def accepted_inputs_shapes(self, t: time.Time) -> Tuple[CalcInputs, ...]:
+    def recursive_inputs_shape(self, t: time.Time) -> RecursiveInputs:
+        pass
+
+    # Returns the input shapes that can be used to produce this type of calc
+    # using source data.
+    @abc.abstractmethod
+    def source_inputs_shape(self, t: time.Time) -> SourceInputs:
         pass
 
 

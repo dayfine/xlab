@@ -34,11 +34,10 @@ class EmaProducer:
         symbol = input_util.are_for_stock(inputs)
         t = time_util.to_time(inputs[-1].timestamp)
         try:
-            input_util.validate_inputs(inputs, self._recursive_input_shape(t))
+            input_util.validate_inputs(inputs, self.recursive_inputs_shape(t))
             ema = self._recur(inputs)
         except errors.InvalidArgumentError:
-            input_util.validate_inputs(inputs,
-                                       self._initial_source_input_shape(t))
+            input_util.validate_inputs(inputs, self.source_inputs_shape(t))
             ema = self._initial(inputs)
         except errors.InvalidArgumentError as e:
             raise e
@@ -63,17 +62,12 @@ class EmaProducer:
         return (SMOOTHING_FACTOR / (num_periods + 1) * inputs[1].value \
           + (num_periods + 1 - SMOOTHING_FACTOR) / (num_periods + 1) * inputs[0].value)
 
-    def accepted_input_shapes(self,
-                              t: time.Time) -> Tuple[calc.CalcInputs, ...]:
-        return (self._recursive_input_shape(t),
-                self._initial_source_input_shape(t))
-
-    def _recursive_input_shape(self, t: time.Time) -> calc.CalcInputs:
+    def recursive_inputs_shape(self, t: time.Time) -> calc.RecursiveInputs:
         return input_util.recursive_inputs_shape(self.calc_type,
                                                  self._source_calc, t,
                                                  self.time_specs)
 
-    def _initial_source_input_shape(self, t: time.Time) -> calc.CalcInputs:
+    def source_inputs_shape(self, t: time.Time) -> calc.SourceInputs:
         return input_util.series_source_inputs_shape(self._source_calc, t,
                                                      self.time_specs)
 

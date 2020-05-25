@@ -76,6 +76,22 @@ class CalcInputUtilTest(absltest.TestCase):
               seconds: 2234567
             }"""))
 
+    def test_sort_to_inputs_shape(self):
+        inputs = reversed(get_valid_inputs())
+        got = input_util.sort_to_inputs_shape(inputs, get_input_shapes())
+        compare.assertProtoSequencesEqual(self, got, get_valid_inputs())
+
+    def test_not_enough_data_to_sort_to_inputs_shape(self):
+        inputs = get_valid_inputs()[:1]
+        with self.assertRaisesRegex(errors.InvalidArgumentError,
+                                    'Cannot sort inputs to the given shape'):
+            input_util.sort_to_inputs_shape(inputs, get_input_shapes())
+
+    def test_more_data_than_needed_to_sort_to_inputs_shape(self):
+        inputs = [*reversed(get_valid_inputs()), *get_valid_inputs()]
+        got = input_util.sort_to_inputs_shape(inputs, get_input_shapes())
+        compare.assertProtoSequencesEqual(self, got, get_valid_inputs())
+
     def test_valid_inputs_do_not_raise(self):
         inputs = get_valid_inputs()
         input_util.validate_inputs(inputs, get_input_shapes())

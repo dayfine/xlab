@@ -1,6 +1,6 @@
 import functools
 import itertools
-from typing import Optional
+from typing import List, Optional, Tuple
 
 from xlab.base import time
 from xlab.data import calc
@@ -22,6 +22,27 @@ def is_same_input_shape(input: Optional[DataEntry],
         time_util.to_time(input.timestamp) == time_util.to_time(
             input_shape.timestamp),
     ])
+
+
+def _make_input_shape_key(data_entry: DataEntry) -> Tuple[int, time.Time]:
+    return (data_entry.data_type, time_util.to_time(data_entry.timestamp))
+
+
+# Sort a list of data entries with no assumed ordering into the given inputs
+# shape. Raises if such sorting cannot produce the expected inputs shape.
+def sort_to_inputs_shape(data_entries: List[DataEntry],
+                         inputs_shape: calc.CalcInputs) -> calc.CalcInputs:
+    data_entry_dict = {_make_input_shape_key(d): d for d in data_entries}
+    try:
+        return [
+            data_entry_dict[_make_input_shape_key(input_shape)]
+            for input_shape in inputs_shape
+        ]
+    except KeyError as e:
+        nl = '\n'
+        raise errors.InvalidArgumentError(
+            f'Cannot sort inputs to the given shape: {e}{nl}'
+            f'Inputs are: {nl.join(str(d) for d in data_entries)}')
 
 
 def are_for_stock(inputs: calc.CalcInputs) -> str:
