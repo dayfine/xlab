@@ -92,18 +92,16 @@ jobs:
           bazel build xlab/...
           bazel test xlab/...
 
-      - run: |
-          shopt -s globstar
-          mkdir /tmp/test_results
-          for f in bazel-testlogs/**/test.{log,xml}; do
-              cp -v "$f" /tmp/test_results/"${f//\//_}"
-          done
-
-      - store_test_results:
-          path: /tmp/test_results
+      - run:
+          name: Copy out bazel test results
+          command: cp -r -L bazel-testlogs bazel-test-results
+          when: always
 
       - store_artifacts:
-          path: /tmp/test_results
+          path: bazel-test-results
+
+      - store_test_results:
+          path: bazel-test-results
 
       - save_cache:
           key: *cache_key
