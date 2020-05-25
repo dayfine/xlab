@@ -6,7 +6,7 @@ from xlab.data.proto import data_type_pb2
 from xlab.util.status import errors
 
 
-@functools.lru_cache
+@functools.lru_cache(maxsize=None)
 def get_calc_producer(
         calc_type: data_type_pb2.DataType.Enum) -> calc.CalcProducer:
     try:
