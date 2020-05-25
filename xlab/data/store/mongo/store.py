@@ -1,16 +1,18 @@
 from typing import Callable, Dict, List, Tuple
 
-from google.protobuf import json_format
 from google.protobuf import timestamp_pb2
 import pymongo
 from pymongo import client_session
 
 from xlab.data import store
+from xlab.data.converters import mongo as mongo_converter
 from xlab.data.proto import data_entry_pb2
 from xlab.data.store import key
 from xlab.data.store.mongo import db_client
 from xlab.net.proto import time_util
 from xlab.util.status import errors
+
+DataEntry = data_entry_pb2.DataEntry
 
 
 class MongoDataStore(store.DataStore):
@@ -23,7 +25,7 @@ class MongoDataStore(store.DataStore):
         self._db = self._client[self._DATABASE]
         self._coll = self._db[self._DATA_ENTRY_COLLECTION]
 
-    def add(self, data_entry: data_entry_pb2.DataEntry):
+    def add(self, data_entry: DataEntry):
         # TODO: causal_consistency should be supported with |start_session|;
         # however, this is not supported by the mock: https://github.com/mongomock/mongomock/issues/614
         lookup_key = key.make_lookup_key(data_entry)
@@ -32,28 +34,24 @@ class MongoDataStore(store.DataStore):
             raise errors.AlreadyExistsError(
                 f'The data entry to add already exists: {record}')
 
-        self._coll.insert_one(
-            json_format.MessageToDict(data_entry, use_integers_for_enums=True))
+        self._coll.insert_one(mongo_converter.to_mongo_doc(data_entry))
 
     def batch_add(self, data_entry_list: List[data_entry_pb2.DataEntry]):
-        self._coll.insert_many([
-            json_format.MessageToDict(d, use_integers_for_enums=True)
-            for d in data_entry_list
-        ])
+        self._coll.insert_many(
+            [mongo_converter.to_mongo_doc(d) for d in data_entry_list])
 
-    def read(self,
-             lookup_key: store.DataStore.LookupKey) -> data_entry_pb2.DataEntry:
+    def read(self, lookup_key: store.DataStore.LookupKey) -> DataEntry:
         record = self._coll.find_one(self._get_filter(lookup_key))
         if record is None:
             raise errors.NotFoundError(
                 f'Cannot find data matching lookup key: {lookup_key}')
-        return self._parse(record)
+        return mongo_converter.from_mongo_doc(record)
 
     def lookup(
             self, lookup_key: store.DataStore.LookupKey
     ) -> data_entry_pb2.DataEntries:
         cursor = self._coll.find(self._get_filter(lookup_key))
-        entries = [self._parse(record) for record in cursor]
+        entries = [mongo_converter.from_mongo_doc(record) for record in cursor]
         result = data_entry_pb2.DataEntries()
         result.entries.extend(entries)
         return result
@@ -61,14 +59,7 @@ class MongoDataStore(store.DataStore):
     def each(self, fn: Callable[[data_entry_pb2.DataEntry], None]):
         all_cursor = self._coll.find()
         for record in all_cursor:
-            fn(self._parse(record))
-
-    def _parse(self, document: Dict) -> data_entry_pb2.DataEntry:
-        # ParseDict takes a message type and also return it as results
-        # ignore_unknown_fields is used to ignore mongo's _id field.
-        return json_format.ParseDict(document,
-                                     data_entry_pb2.DataEntry(),
-                                     ignore_unknown_fields=True)
+            fn(mongo_converter.from_mongo_doc(record))
 
     def _get_filter(self, lookup_key: store.DataStore.LookupKey) -> Dict:
         res = {}
