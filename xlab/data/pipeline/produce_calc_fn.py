@@ -37,13 +37,13 @@ def produce_recursive_calc_fn(inputs: PCollection, calc_type: DataType,
 def _produce_calc_fn(inputs: PCollection, calc_producer: calc.CalcProducer,
                      inputs_shape: calc.CalcInputs) -> PCollection:
     return (inputs \
-      | 'FilterByInputsShape' >> beam.Filter(filter_by_input_shapes,
-                                             inputs_shape) \
-      | 'WithSymbolAsKey' >> beam.Map(lambda d: (d.symbol, d)) \
-      | 'GroupByKey' >> beam.GroupByKey() \
-      | 'Values' >> beam.Values() \
-      | 'PerformCalc' >> beam.FlatMap(perform_calc, inputs_shape,
-                                      calc_producer))
+        | 'FilterByInputsShape' >> beam.Filter(filter_by_input_shapes,
+                                               inputs_shape) \
+        | 'WithSymbolAsKey' >> beam.Map(lambda d: (d.symbol, d)) \
+        | 'GroupByKey' >> beam.GroupByKey() \
+        | 'Values' >> beam.Values() \
+        | 'PerformCalc' >> beam.FlatMap(perform_calc, inputs_shape,
+                                        calc_producer))
 
 
 def filter_by_input_shapes(data_entry: DataEntry,
