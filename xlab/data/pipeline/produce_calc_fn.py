@@ -17,16 +17,23 @@ DataType = data_type_pb2.DataType
 PCollection = beam.pvalue.PCollection
 
 
+def get_calc_fn(is_recursive_calc: bool, calc_type: DataType.Enum,
+                t: time.Time) -> ptransform.PTransform:
+    if is_recursive_calc:
+        return produce_recursive_calc_fn(calc_type, t)
+    return produce_source_calc_fn(calc_type, t)
+
+
 @ptransform.ptransform_fn
-def produce_initial_calc_fn(inputs: PCollection, calc_type: DataType,
-                            t: time.Time) -> PCollection:
+def produce_source_calc_fn(inputs: PCollection, calc_type: DataType.Enum,
+                           t: time.Time) -> PCollection:
     calc_producer = calc_registry.get_calc_producer(calc_type)
     inputs_shape = calc_producer.source_inputs_shape(t)
     return _produce_calc_fn(inputs, calc_producer, inputs_shape)
 
 
 @ptransform.ptransform_fn
-def produce_recursive_calc_fn(inputs: PCollection, calc_type: DataType,
+def produce_recursive_calc_fn(inputs: PCollection, calc_type: DataType.Enum,
                               t: time.Time) -> PCollection:
     calc_producer = calc_registry.get_calc_producer(calc_type)
     inputs_shape = calc_producer.recursive_inputs_shape(t)

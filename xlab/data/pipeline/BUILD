@@ -38,6 +38,7 @@ py_binary(
     srcs = ["produce_calc.py"],
     srcs_version = "PY3",
     deps = [
+        ":mongo_util",
         ":produce_calc_fn",
         "//xlab/base:time",
         "//xlab/data/proto:data_type_py_pb2",

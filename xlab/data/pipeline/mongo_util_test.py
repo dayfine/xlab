@@ -48,8 +48,9 @@ class BeamMongoUtilTest(absltest.TestCase):
             write_option = mongo_util.MongoWriteOption(uri=_TEST_URI,
                                                        db=_TEST_DB,
                                                        coll=_TEST_COLL)
-            (p | beam.Create(get_data_entries()) |
-             mongo_util.WriteDataToMongoDB(write_option))
+            (p \
+              | beam.Create(get_data_entries()) \
+              | mongo_util.WriteDataToMongoDB(write_option))
 
         with TestPipeline() as p:
             read_option = mongo_util.MongoReadOption(uri=_TEST_URI,

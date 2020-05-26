@@ -17,7 +17,7 @@ from xlab.trading.dates import trading_days
 
 DataEntry = data_entry_pb2.DataEntry
 DataType = data_type_pb2.DataType
-produce_initial_calc_fn = produce_calc_fn.produce_initial_calc_fn
+produce_source_calc_fn = produce_calc_fn.produce_source_calc_fn
 produce_recursive_calc_fn = produce_calc_fn.produce_recursive_calc_fn
 
 
@@ -86,48 +86,48 @@ def expected_recursive_ema20d_test() -> DataEntry:
 
 class ProduceCalcFnTest(absltest.TestCase):
 
-    def test_produce_initial_calc_fn_with_no_input(self):
+    def test_produce_source_calc_fn_with_no_input(self):
         t = time.FromUnixSeconds(12345)
         inputs = []
         with TestPipeline() as p:
             out = (p \
                 | beam.Create(inputs) \
-                | produce_initial_calc_fn(DataType.EMA_20D, t))
+                | produce_source_calc_fn(DataType.EMA_20D, t))
 
             assert_that(out, equal_to([]))
 
-    def test_produce_initial_calc_fn(self):
+    def test_produce_source_calc_fn(self):
         t = time.FromCivil(time.CivilTime(2019, 12, 31))
         inputs = get_close_prices_for_ema20(t, 'TEST')
         with TestPipeline() as p:
             out = (p \
                 | beam.Create(inputs) \
-                | produce_initial_calc_fn(DataType.EMA_20D, t))
+                | produce_source_calc_fn(DataType.EMA_20D, t))
 
             assert_that(out, equal_to([expected_ema20d_test()]))
 
-    def test_produce_initial_calc_fn_ignores_irrelevant_data(self):
+    def test_produce_source_calc_fn_ignores_irrelevant_data(self):
         t = time.FromCivil(time.CivilTime(2019, 12, 31))
         inputs = get_close_prices_for_ema20(t, 'TEST')
         inputs.append(_make_close_price('X', 123.45, t))
         with TestPipeline() as p:
             out = (p \
                 | beam.Create(inputs) \
-                | produce_initial_calc_fn(DataType.EMA_20D, t))
+                | produce_source_calc_fn(DataType.EMA_20D, t))
 
             assert_that(out, equal_to([expected_ema20d_test()]))
 
-    def test_produce_initial_calc_fn_not_enough_data(self):
+    def test_produce_source_calc_fn_not_enough_data(self):
         t = time.FromCivil(time.CivilTime(2019, 12, 31))
         inputs = get_close_prices_for_ema20(t, 'TEST')[:19]
         with TestPipeline() as p:
             out = (p \
                 | beam.Create(inputs) \
-                | produce_initial_calc_fn(DataType.EMA_20D, t))
+                | produce_source_calc_fn(DataType.EMA_20D, t))
 
             assert_that(out, equal_to([]))
 
-    def test_produce_initial_calc_fn_multiple_symbols(self):
+    def test_produce_source_calc_fn_multiple_symbols(self):
         t = time.FromCivil(time.CivilTime(2019, 12, 31))
         inputs = [
             *get_close_prices_for_ema20(t, 'TEST'),
@@ -136,7 +136,7 @@ class ProduceCalcFnTest(absltest.TestCase):
         with TestPipeline() as p:
             out = (p \
                 | beam.Create(inputs) \
-                | produce_initial_calc_fn(DataType.EMA_20D, t))
+                | produce_source_calc_fn(DataType.EMA_20D, t))
 
             assert_that(
                 out,
