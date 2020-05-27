@@ -109,6 +109,35 @@ class IexDataImporterTest(absltest.TestCase):
     def test_get_quotes_empty_symbol(self):
         pass
 
+    @patch.object(importer, 'datetime', Mock(wraps=datetime))
+    @patch('requests.Session.get')
+    def test_get_quotes_with_proper_date_range(self, mock_get):
+        api_response_data = """{
+          "SPY": {
+            "chart": [
+              {"date":"2020-03-02","close":319.69,"volume":242964067,"change":0,"changePercent":0,"changeOverTime":0},
+              {"date":"2020-03-03","close":308.48,"volume":300862938,"change":-9.12,"changePercent":-2.9921,"changeOverTime":-0.029457},
+              {"date":"2020-03-04","close":309.48,"volume":300862938,"change":-9.00,"changePercent":-2.9921,"changeOverTime":-0.029457},
+              {"date":"2020-03-05","close":309.48,"volume":300862938,"change":-9.00,"changePercent":-2.9921,"changeOverTime":-0.029457},
+              {"date":"2020-03-06","close":309.48,"volume":300862938,"change":-9.00,"changePercent":-2.9921,"changeOverTime":-0.029457},
+              {"date":"2020-03-07","close":309.48,"volume":300862938,"change":-9.00,"changePercent":-2.9921,"changeOverTime":-0.029457},
+            ]
+          }
+        }"""
+
+        mock_get.return_value = _make_response(api_response_data, 200)
+        importer.datetime.datetime.now.return_value = datetime.datetime(
+            2020, 12, 31)
+
+        results = self.importer.get_data('SPY', datetime.date(2020, 3, 2), datetime.date(2020, 3, 6))
+
+        _, kwargs = mock_get.call_args
+        self.assertEqual(kwargs['params']['symbols'], 'SPY')
+        self.assertEqual(kwargs['params']['range'], '5d')
+        self.assertEqual(kwargs['params']['date'], datetime.date(2020, 3, 2))
+
+        pass
+
 
 if __name__ == '__main__':
     absltest.main()
