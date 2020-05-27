@@ -1,4 +1,5 @@
 import os
+import datetime
 
 from typing import Any, Callable, Mapping
 
@@ -30,16 +31,19 @@ class SimpleIexApiHttpClient:
 
 class IexApiHttpClient:
 
-    def __init__(self, token: str = '', date_range: str = ''):
+    def __init__(self, token: str = '', date_range: str = '',
+                 start_date: datetime.date = datetime.date):
+
         get_parmas: Callable[[str], Mapping[str, Any]] = lambda symbol: {
             'symbols': ','.join([symbol]),
             'types': ','.join(['quote', 'chart']),
             'range': date_range,
+            'date': start_date,
             'chartCloseOnly': True,
         }
 
         self._client = SimpleIexApiHttpClient(token, 'stock/market/batch',
                                               get_parmas)
 
-    def get_batch_quotes(self, symbol: str):
-        return self._client.call(symbol)
+    def get_batch_quotes(self, symbol: str, range: str, date: datetime.date):
+        return self._client.call(symbol, range, date)
