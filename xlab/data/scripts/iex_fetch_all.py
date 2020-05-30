@@ -4,7 +4,7 @@ from absl import logging
 
 from xlab.data.importer import iex
 from xlab.data.importer.iex import api
-from xlab.data.store import textproto
+from xlab.data.store import mongo
 from xlab.util.status import errors
 
 FLAGS = flags.FLAGS
@@ -31,8 +31,7 @@ def main(argv):
     logging.info('First symbol: [%s]', all_symbols[0])
 
     iex_provider = iex.IexDataImporter()
-    text_data_store = textproto.TextProtoDataStore(
-        FLAGS.textproto_store_directory)
+    store = mongo.MongoDataStore()
 
     for symbol_dict in all_symbols:
         symbol = symbol_dict['symbol']
@@ -40,12 +39,11 @@ def main(argv):
         for data_type, data_entry_list in results.items():
             logging.info('%d items fetched for [%s|%s]', len(data_entry_list),
                          symbol, data_type)
-            for data_entry in data_entry_list:
-                try:
-                    text_data_store.add(data_entry, maybe_commit=False)
-                except errors.AlreadyExistsError:
-                    continue
-            text_data_store.commit(unload_afterwards=True)
+            try:
+                store.batch_add(data_entry_list)
+            except Exception as e:
+                logging.error('Error batch adding: %s', e)
+                continue
 
 
 if __name__ == '__main__':

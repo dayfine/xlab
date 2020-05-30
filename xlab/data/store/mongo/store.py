@@ -35,10 +35,10 @@ class MongoDataStore(store.DataStore):
         self._coll.insert_one(
             json_format.MessageToDict(data_entry, use_integers_for_enums=True))
 
-    def batch_add(self, data_entries: data_entry_pb2.DataEntries):
+    def batch_add(self, data_entry_list: List[data_entry_pb2.DataEntry]):
         self._coll.insert_many([
             json_format.MessageToDict(d, use_integers_for_enums=True)
-            for d in data_entries.entries
+            for d in data_entry_list
         ])
 
     def read(self,

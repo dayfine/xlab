@@ -10,7 +10,7 @@ py_binary(
     deps = [
         "//xlab/data/importer/iex",
         "//xlab/data/importer/iex:api",
-        "//xlab/data/store/textproto",
+        "//xlab/data/store/mongo",
         "//xlab/util/status:errors",
         requirement("absl-py"),
     ],
