@@ -31,9 +31,9 @@ def main(argv):
     read_option = mongo_util.MongoReadOption(uri=MONGO_URI, db=DB, coll=COLL)
     write_option = mongo_util.MongoWriteOption(uri=MONGO_URI, db=DB, coll=COLL)
 
-    t = time.FromDatetime(datetime.datetime.strptime(FLAGS.date, '%Y-%m-%d'))
+    t = time.FromCivil(time.ParseCivilTime(FLAGS.date))
     calc_type = DataType.Enum.Value(FLAGS.calc_type)
-    calc_fn = get_calc_fn(FLAGS.recursive_calc, calc_type, t)
+    calc_fn = produce_calc_fn.get_calc_fn(FLAGS.recursive_calc, calc_type, t)
     with beam.Pipeline() as p:
         (
           p \
