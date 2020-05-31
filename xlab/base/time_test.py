@@ -113,6 +113,8 @@ class TimeTest(absltest.TestCase):
         self.assertEqual("2015-02-03T04:00:00+00:00", time.FormatTime(t))
         t = time.FromDatetime(datetime.datetime(2015, 2, 3))
         self.assertEqual("2015-02-03T00:00:00+00:00", time.FormatTime(t))
+        t = time.FromDate(datetime.date(2015, 2, 3))
+        self.assertEqual("2015-02-03T00:00:00+00:00", time.FormatTime(t))
 
 
 if __name__ == '__main__':

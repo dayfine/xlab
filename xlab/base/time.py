@@ -98,6 +98,10 @@ def FromDatetime(dt: datetime.datetime) -> Time:
     return Time(time.mktime(dt.timetuple()) * 1e9)
 
 
+def FromDate(d: datetime.date) -> Time:
+    return Time(time.mktime(d.timetuple()) * 1e9)
+
+
 def ToUnixNanos(t: Time) -> int:
     return int(t)
 
@@ -116,3 +120,7 @@ def ToUnixSeconds(time: Time) -> int:
 
 def ToDatetime(t: Time) -> datetime.datetime:
     return datetime.datetime.fromtimestamp(int(t) / 1e9)
+
+
+def ToDate(t: Time) -> datetime.date:
+    return datetime.date.fromtimestamp(int(t) / 1e9)

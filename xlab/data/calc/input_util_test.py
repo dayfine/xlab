@@ -18,13 +18,13 @@ def get_input_shapes():
         """
         data_type: CLOSE_PRICE
         timestamp {
-          seconds: 1234567
+          seconds: 1577923200  # 2020-01-02
         }""", DataEntry),
             parse.parse_test_proto(
                 """
         data_type: CLOSE_PRICE
         timestamp {
-          seconds: 2234567
+          seconds: 1578009600  # 2020-01-03
         }""", DataEntry))
 
 
@@ -36,7 +36,7 @@ def get_valid_inputs():
         data_type: CLOSE_PRICE
         value: 123.45
         timestamp {
-          seconds: 1234567
+          seconds: 1577923200
         }""", data_entry_pb2.DataEntry),
             parse.parse_test_proto(
                 """
@@ -45,7 +45,7 @@ def get_valid_inputs():
         data_type: CLOSE_PRICE
         value: 111.11
         timestamp {
-          seconds: 2234567
+          seconds: 1578009600
         }""", data_entry_pb2.DataEntry))
 
 
@@ -54,26 +54,26 @@ class CalcInputUtilTest(absltest.TestCase):
     def test_making_series_input_shape(self):
         got = input_util.series_source_inputs_shape(
             source_calc_type=DataType.Enum.CLOSE_PRICE,
-            t=time.FromUnixSeconds(2234567),
+            t=time.FromUnixSeconds(1578009600),
             time_spec=calc.CalcTimeSpecs(num_periods=2,
-                                         period_length=time.Seconds(1000000)))
+                                         period_length=time.Hours(24)))
         compare.assertProtoSequencesEqual(self, got, get_input_shapes())
 
     def test_making_recursive_input_shape(self):
         got = input_util.recursive_inputs_shape(
             base_calc_type=DataType.Enum.EMA_20D,
             incr_calc_type=DataType.Enum.CLOSE_PRICE,
-            t=time.FromUnixSeconds(2234567),
+            t=time.FromUnixSeconds(1578009600),
             time_spec=calc.CalcTimeSpecs(num_periods=20,
-                                         period_length=time.Seconds(1000000)))
+                                         period_length=time.Hours(24)))
         compare.assertProtoSequencesEqual(self, got, ("""
             data_type: EMA_20D
             timestamp {
-              seconds: 1234567
+              seconds: 1577923200
             }""", """
             data_type: CLOSE_PRICE
             timestamp {
-              seconds: 2234567
+              seconds: 1578009600
             }"""))
 
     def test_sort_to_inputs_shape(self):

@@ -14,6 +14,7 @@ from xlab.data.proto import data_entry_pb2
 from xlab.data.proto import data_type_pb2
 from xlab.net.proto import time_util
 from xlab.net.proto.testing import parse
+from xlab.trading.dates import trading_days
 
 DataEntry = data_entry_pb2.DataEntry
 DataType = data_type_pb2.DataType
@@ -39,8 +40,8 @@ def get_close_prices_for_ema20(t: time.Time, symbol: str) -> List[DataEntry]:
     ]  # yapf: disable
 
     close_prices = [
-        _make_close_price(symbol, value, t - (19 - idx) * time.Hours(24))
-        for idx, value in enumerate(price_data)
+        _make_close_price(symbol, value, time.FromDate(d)) for value, d in zip(
+            price_data, trading_days.get_last_n(time.ToDate(t), 20))
     ]
     random.shuffle(close_prices)
     return close_prices
@@ -97,7 +98,7 @@ class ProduceCalcFnTest(absltest.TestCase):
             assert_that(out, equal_to([]))
 
     def test_produce_initial_calc_fn(self):
-        t = time.FromDatetime(datetime.datetime(2019, 12, 31))
+        t = time.FromDate(datetime.date(2019, 12, 31))
         inputs = get_close_prices_for_ema20(t, 'TEST')
         with TestPipeline() as p:
             out = (p \
@@ -107,7 +108,7 @@ class ProduceCalcFnTest(absltest.TestCase):
             assert_that(out, equal_to([expected_ema20d_test()]))
 
     def test_produce_initial_calc_fn_ignores_irrelevant_data(self):
-        t = time.FromDatetime(datetime.datetime(2019, 12, 31))
+        t = time.FromDate(datetime.date(2019, 12, 31))
         inputs = get_close_prices_for_ema20(t, 'TEST')
         inputs.append(_make_close_price('X', 123.45, t))
         with TestPipeline() as p:
@@ -118,7 +119,7 @@ class ProduceCalcFnTest(absltest.TestCase):
             assert_that(out, equal_to([expected_ema20d_test()]))
 
     def test_produce_initial_calc_fn_not_enough_data(self):
-        t = time.FromDatetime(datetime.datetime(2019, 12, 31))
+        t = time.FromDate(datetime.date(2019, 12, 31))
         inputs = get_close_prices_for_ema20(t, 'TEST')[:19]
         with TestPipeline() as p:
             out = (p \
@@ -128,7 +129,7 @@ class ProduceCalcFnTest(absltest.TestCase):
             assert_that(out, equal_to([]))
 
     def test_produce_initial_calc_fn_multiple_symbols(self):
-        t = time.FromDatetime(datetime.datetime(2019, 12, 31))
+        t = time.FromDate(datetime.date(2019, 12, 31))
         inputs = [
             *get_close_prices_for_ema20(t, 'TEST'),
             *get_close_prices_for_ema20(t, 'IBM')
@@ -154,7 +155,7 @@ class ProduceCalcFnTest(absltest.TestCase):
                 ]))
 
     def test_produce_recursive_calc_fn(self):
-        t = time.FromDatetime(datetime.datetime(2019, 12, 31))
+        t = time.FromDate(datetime.date(2019, 12, 31))
         inputs = get_recursive_inputs_for_ema20(t, 'TEST')
         with TestPipeline() as p:
             out = (p \
@@ -164,7 +165,7 @@ class ProduceCalcFnTest(absltest.TestCase):
             assert_that(out, equal_to([expected_recursive_ema20d_test()]))
 
     def test_produce_recursive_calc_fn_with_swapped_inputs(self):
-        t = time.FromDatetime(datetime.datetime(2019, 12, 31))
+        t = time.FromDate(datetime.date(2019, 12, 31))
         inputs = reversed(get_recursive_inputs_for_ema20(t, 'TEST'))
         with TestPipeline() as p:
             out = (p \
@@ -174,7 +175,7 @@ class ProduceCalcFnTest(absltest.TestCase):
             assert_that(out, equal_to([expected_recursive_ema20d_test()]))
 
     def test_produce_recursive_calc_fn_with_extra_data(self):
-        t = time.FromDatetime(datetime.datetime(2019, 12, 31))
+        t = time.FromDate(datetime.date(2019, 12, 31))
         inputs = [
             *get_recursive_inputs_for_ema20(t, 'TEST'),
             *get_close_prices_for_ema20(t, 'IBM')

@@ -7,6 +7,7 @@ from xlab.data import calc
 from xlab.data.proto import data_entry_pb2
 from xlab.data.proto import data_type_pb2
 from xlab.net.proto import time_util
+from xlab.trading.dates import trading_days
 from xlab.util.status import errors
 
 DataEntry = data_entry_pb2.DataEntry
@@ -66,11 +67,18 @@ def validate_inputs(inputs: calc.CalcInputs, inputs_shapes: calc.CalcInputs):
 def series_source_inputs_shape(
         source_calc_type: DataType.Enum, t: time.Time,
         time_spec: calc.CalcTimeSpecs) -> calc.SourceInputs:
+    # TODO: right now this is still no properly generalized. For time span
+    # longer than a day, they should all work. However for day and shorter span,
+    # they need to be checked against trading days and trading hours.
+    timestamps = [
+        time.FromDate(day) for day in trading_days.get_last_n(
+            time.ToDate(t), time_spec.num_periods)
+    ]
     return [
         DataEntry(
             data_type=source_calc_type,
-            timestamp=time_util.from_time(t - i * time_spec.period_length),
-        ) for i in range(time_spec.num_periods - 1, -1, -1)
+            timestamp=time_util.from_time(timestmap),
+        ) for timestmap in timestamps
     ]
 
 

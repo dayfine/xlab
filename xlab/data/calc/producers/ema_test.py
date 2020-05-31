@@ -8,6 +8,7 @@ from xlab.data.proto import data_type_pb2
 from xlab.data.calc.producers import ema
 from xlab.net.proto import time_util
 from xlab.net.proto.testing import compare
+from xlab.trading.dates import trading_days
 from xlab.util.status import errors
 
 DataEntry = data_entry_pb2.DataEntry
@@ -26,10 +27,10 @@ def _make_close_price(value: float, t: time.Time) -> DataEntry:
 class EmaCalculationTest(absltest.TestCase):
 
     def test_ema_20_for_constant_list(self):
-        date = time.FromDatetime(datetime.datetime(2000, 10, 10))
+        date = datetime.date(2017, 10, 10)
         close_prices = [
-            _make_close_price(200.0, date - i * time.Hours(24))
-            for i in range(19, -1, -1)
+            _make_close_price(200.0, time.FromDate(d))
+            for d in trading_days.get_last_n(date, 20)
         ]
 
         compare.assertProtoEqual(
@@ -40,7 +41,7 @@ class EmaCalculationTest(absltest.TestCase):
                 data_type: EMA_20D
                 value: 200.0
                 timestamp {
-                    seconds: 971136000
+                    seconds: 1507593600  # 2017-10-10
                 }""")
 
     def test_ema_20_initial_calculation(self):
@@ -50,10 +51,10 @@ class EmaCalculationTest(absltest.TestCase):
             57.23, 57.17, 57.96, 58.95, 59.23, 59.41, 59.82, 60.08, 59.62, 59.85,
         ]  # yapf: disable
 
-        date = time.FromDatetime(datetime.datetime(2019, 12, 31))
+        date = datetime.date(2019, 12, 31)
         close_prices = [
-            _make_close_price(value, date - (19 - idx) * time.Hours(24))
-            for idx, value in enumerate(price_data)
+            _make_close_price(value, time.FromDate(d))
+            for value, d in zip(price_data, trading_days.get_last_n(date, 20))
         ]
 
         # Note: this is different than the actual EMA20 for Intel on 2019/12/31,
@@ -70,7 +71,7 @@ class EmaCalculationTest(absltest.TestCase):
                 }""")
 
     def test_ema20_recursive_calculation(self):
-        date = time.FromDatetime(datetime.datetime(2020, 1, 1))
+        date = time.FromDate(datetime.date(2020, 1, 1))
         close_now = _make_close_price(60.84, date)
 
         ema_last = DataEntry(
@@ -93,10 +94,10 @@ class EmaCalculationTest(absltest.TestCase):
                 }""")
 
     def test_raise_when_inputs_do_not_meet_accpeted_input_shapes(self):
-        date = time.FromDatetime(datetime.datetime(2000, 10, 10))
+        date = datetime.date(2017, 10, 10)
         close_prices = [
-            _make_close_price(200.0, date - i * time.Hours(24))
-            for i in range(19, 0, -1)
+            _make_close_price(200.0, time.FromDate(d))
+            for d in trading_days.get_last_n(date, 19)
         ]
 
         with self.assertRaisesRegex(
