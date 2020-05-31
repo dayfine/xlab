@@ -1,7 +1,12 @@
+'''Time module creates types and alias for all necessary time and date related operations'''
 import datetime
 import time
+from typing import Optional
+
+import pendulum
 
 
+# For the rationales of theses classes: https://abseil.io/docs/cpp/guides/time
 # Time class follows the interface of https://github.com/abseil/abseil-cpp/blob/master/absl/time/time.h.
 class Time(int):
 
@@ -22,32 +27,45 @@ class Time(int):
 
     def __str__(self):
         seconds, nanoseconds = divmod(self, 1e9)
-        return f"Seconds: {seconds}, Nanoseconds: {nanoseconds}"
+        return f'Seconds: {seconds}, Nanoseconds: {nanoseconds}'
 
     def __repr__(self):
-        return f"Time({self})"
+        return f'Time({self})'
 
 
 Duration = Time
 
+# CivilTime is timezone-agnostic / timezone-naive
+# NOTE: to diff CivilTimes, convert them to Time first. For adding and
+# substracting, use CivilTime.add(days=n) and CivilTime.substract(months=m)
+# See https://pendulum.eustace.io/docs/#addition-and-subtraction.
+CivilTime = pendulum.DateTime
+
+Timezone = pendulum._Timezone
+UTC: Timezone = pendulum.UTC
+
+
+def timezone(name) -> Timezone:
+    return pendulum.timezone(name)
+
+
+def GetCurrentTimeNanos() -> int:
+    return time.time_ns()
+
 
 def Now() -> Time:
-    return Time(time.time_ns())
+    return Time(GetCurrentTimeNanos())
 
 
 def UnixEpoch() -> Time:
     return Time()
 
 
-# Return the RFC3339 Full representation of the time.
-def FormatTime(t: Time, tz: datetime.timezone = None) -> str:
-    if tz is None:
-        tz = datetime.timezone.utc
-    rfc3339_secs = time.strftime('%Y-%m-%dT%H:%M:%S', time.gmtime(int(t) / 1e9))
-    tz_offset = datetime.time(tzinfo=tz).strftime('%z')
-    # -0700 -> -07:00
-    tz_offset = ''.join((tz_offset[:3], ':', tz_offset[3:]))
-    return ''.join((rfc3339_secs, tz_offset))
+def FormatTime(t: Time, tz: Timezone = None, fmt: Optional[str] = None) -> str:
+    dt = _to_datetime(t, tz)
+    if fmt:
+        return dt.strftime(fmt)
+    return dt.isoformat()
 
 
 def ZeroDuration() -> Duration:
@@ -94,14 +112,6 @@ def FromUnixSeconds(seconds: int) -> Time:
     return Time(seconds * 1e9)
 
 
-def FromDatetime(dt: datetime.datetime) -> Time:
-    return Time(time.mktime(dt.timetuple()) * 1e9)
-
-
-def FromDate(d: datetime.date) -> Time:
-    return Time(time.mktime(d.timetuple()) * 1e9)
-
-
 def ToUnixNanos(t: Time) -> int:
     return int(t)
 
@@ -114,13 +124,57 @@ def ToUnixMicros(t: Time) -> int:
     return int(t) / 1e6
 
 
-def ToUnixSeconds(time: Time) -> int:
+def ToUnixSeconds(t: Time) -> int:
     return int(t) / 1e9
 
 
-def ToDatetime(t: Time) -> datetime.datetime:
-    return datetime.datetime.fromtimestamp(int(t) / 1e9)
+def FromCivil(ct: CivilTime, tz: Timezone = None) -> Time:
+    dt = _make_datetime_with_preferred_dst(ct, tz or UTC)
+    return Time(dt.timestamp() * 1e9)
 
 
-def ToDate(t: Time) -> datetime.date:
-    return datetime.date.fromtimestamp(int(t) / 1e9)
+def ToCivil(t: Time, tz: Timezone = None) -> CivilTime:
+    return _to_datetime(t, tz).naive()
+
+
+def FormatCivilTime(ct: CivilTime) -> str:
+    return ct.to_iso8601_string()
+
+
+def ParseCivilTime(isoformat: str) -> CivilTime:
+    ct = CivilTime.fromisoformat(isoformat)
+    return _make_datetime_with_preferred_dst(ct, UTC).naive()
+
+
+def _to_datetime(t: Time, tz: Timezone = None) -> pendulum.DateTime:
+    if not tz:
+        tz = UTC
+    dt = pendulum.from_timestamp(int(t) / 1e9, tz=tz)
+    return _make_datetime_with_preferred_dst(dt, tz)
+
+
+def _make_datetime_with_preferred_dst(dt: pendulum.DateTime,
+                                      tz: Timezone = None) -> pendulum.DateTime:
+    try:
+        return _make_datetime(dt, tz, dst_rule=pendulum.TRANSITION_ERROR)
+    except pendulum.tz.exceptions.AmbiguousTime:
+        # Prefer the earlier of the possible interpretations of an ambiguous
+        # time.
+        return _make_datetime(dt, tz, dst_rule=pendulum.PRE_TRANSITION)
+    except pendulum.tz.exceptions.NonExistingTime:
+        # Prefer the later of the possible interpretations of a
+        # non-existent time.
+        return _make_datetime(dt, tz, dst_rule=pendulum.POST_TRANSITION)
+
+
+def _make_datetime(dt: pendulum.DateTime, tz: Timezone,
+                   dst_rule) -> pendulum.DateTime:
+    return pendulum.datetime(dt.year,
+                             dt.month,
+                             dt.day,
+                             dt.hour,
+                             dt.minute,
+                             dt.second,
+                             dt.microsecond,
+                             tz=tz,
+                             dst_rule=dst_rule)

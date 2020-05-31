@@ -7,6 +7,9 @@ py_library(
     name = "time",
     srcs = ["time.py"],
     srcs_version = "PY3",
+    deps = [
+        requirement("pendulum"),
+    ],
 )
 
 py_test(
