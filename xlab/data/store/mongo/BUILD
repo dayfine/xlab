@@ -27,6 +27,7 @@ py_library(
     srcs_version = "PY3",
     deps = [
         ":db_client",
+        "//xlab/data/converters:mongo",
         "//xlab/data/proto:data_entry_py_pb2",
         "//xlab/data/store",
         "//xlab/data/store:key",
