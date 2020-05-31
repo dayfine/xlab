@@ -1,5 +1,3 @@
-import datetime
-
 from absl.testing import absltest
 
 from xlab.base import time
@@ -27,9 +25,9 @@ def _make_close_price(value: float, t: time.Time) -> DataEntry:
 class EmaCalculationTest(absltest.TestCase):
 
     def test_ema_20_for_constant_list(self):
-        date = datetime.date(2017, 10, 10)
+        date = time.CivilTime(2017, 10, 10)
         close_prices = [
-            _make_close_price(200.0, time.FromDate(d))
+            _make_close_price(200.0, time.FromCivil(d))
             for d in trading_days.get_last_n(date, 20)
         ]
 
@@ -51,9 +49,9 @@ class EmaCalculationTest(absltest.TestCase):
             57.23, 57.17, 57.96, 58.95, 59.23, 59.41, 59.82, 60.08, 59.62, 59.85,
         ]  # yapf: disable
 
-        date = datetime.date(2019, 12, 31)
+        date = time.CivilTime(2019, 12, 31)
         close_prices = [
-            _make_close_price(value, time.FromDate(d))
+            _make_close_price(value, time.FromCivil(d))
             for value, d in zip(price_data, trading_days.get_last_n(date, 20))
         ]
 
@@ -71,7 +69,7 @@ class EmaCalculationTest(absltest.TestCase):
                 }""")
 
     def test_ema20_recursive_calculation(self):
-        date = time.FromDate(datetime.date(2020, 1, 1))
+        date = time.FromCivil(time.CivilTime(2020, 1, 1))
         close_now = _make_close_price(60.84, date)
 
         ema_last = DataEntry(
@@ -94,9 +92,9 @@ class EmaCalculationTest(absltest.TestCase):
                 }""")
 
     def test_raise_when_inputs_do_not_meet_accpeted_input_shapes(self):
-        date = datetime.date(2017, 10, 10)
+        date = time.CivilTime(2017, 10, 10)
         close_prices = [
-            _make_close_price(200.0, time.FromDate(d))
+            _make_close_price(200.0, time.FromCivil(d))
             for d in trading_days.get_last_n(date, 19)
         ]
 

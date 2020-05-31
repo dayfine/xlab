@@ -9,6 +9,7 @@ py_library(
     data = ["data/us_trading_days.txt"],
     srcs_version = "PY3",
     deps = [
+        "//xlab/base:time",
         "@rules_python//python/runfiles",
     ],
 )
