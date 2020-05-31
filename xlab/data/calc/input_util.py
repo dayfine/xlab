@@ -70,9 +70,12 @@ def series_source_inputs_shape(
     # TODO: right now this is still no properly generalized. For time span
     # longer than a day, they should all work. However for day and shorter span,
     # they need to be checked against trading days and trading hours.
+    # NOTE: both FromCivil and ToCivil assumes UTC, which later might
+    # be updated to take into account the exchange timezone of a
+    # security.
     timestamps = [
-        time.FromDate(day) for day in trading_days.get_last_n(
-            time.ToDate(t), time_spec.num_periods)
+        time.FromCivil(day) for day in trading_days.get_last_n(
+            time.ToCivil(t), time_spec.num_periods)
     ]
     return [
         DataEntry(
