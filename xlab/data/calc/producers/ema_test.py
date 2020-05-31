@@ -26,7 +26,7 @@ def _make_close_price(value: float, t: time.Time) -> DataEntry:
 class EmaCalculationTest(absltest.TestCase):
 
     def test_ema_20_for_constant_list(self):
-        date = time.FromDatetime(datetime.datetime(2000, 10, 10))
+        date = time.FromDate(datetime.date(2000, 10, 10))
         close_prices = [
             _make_close_price(200.0, date - i * time.Hours(24))
             for i in range(19, -1, -1)
@@ -50,7 +50,7 @@ class EmaCalculationTest(absltest.TestCase):
             57.23, 57.17, 57.96, 58.95, 59.23, 59.41, 59.82, 60.08, 59.62, 59.85,
         ]  # yapf: disable
 
-        date = time.FromDatetime(datetime.datetime(2019, 12, 31))
+        date = time.FromDate(datetime.date(2019, 12, 31))
         close_prices = [
             _make_close_price(value, date - (19 - idx) * time.Hours(24))
             for idx, value in enumerate(price_data)
@@ -70,7 +70,7 @@ class EmaCalculationTest(absltest.TestCase):
                 }""")
 
     def test_ema20_recursive_calculation(self):
-        date = time.FromDatetime(datetime.datetime(2020, 1, 1))
+        date = time.FromDate(datetime.date(2020, 1, 1))
         close_now = _make_close_price(60.84, date)
 
         ema_last = DataEntry(
@@ -93,7 +93,7 @@ class EmaCalculationTest(absltest.TestCase):
                 }""")
 
     def test_raise_when_inputs_do_not_meet_accpeted_input_shapes(self):
-        date = time.FromDatetime(datetime.datetime(2000, 10, 10))
+        date = time.FromDate(datetime.date(2000, 10, 10))
         close_prices = [
             _make_close_price(200.0, date - i * time.Hours(24))
             for i in range(19, 0, -1)
