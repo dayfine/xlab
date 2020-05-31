@@ -86,3 +86,19 @@ def get_trading_day_finder():
             for line in f.readlines()
         ]
         return TradingDayFinder(dates)
+
+
+def is_trading_day(date: datetime.date) -> bool:
+    return get_trading_day_finder().is_trading_day(date)
+
+
+def get_last_n(date: datetime.date,
+               n: int,
+               include_input_date: bool = True) -> List[datetime.date]:
+    return get_trading_day_finder().get_last_n(date, n, include_input_date)
+
+
+def get_next_n(date: datetime.date,
+               n: int,
+               include_input_date: bool = False) -> List[datetime.date]:
+    return get_trading_day_finder().get_next_n(date, n, include_input_date)

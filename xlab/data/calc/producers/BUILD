@@ -29,6 +29,7 @@ py_test(
         "//xlab/data/proto:data_type_py_pb2",
         "//xlab/net/proto:time_util",
         "//xlab/net/proto/testing:compare",
+        "//xlab/trading/dates:trading_days",
         "//xlab/util/status:errors",
         requirement("absl-py"),
     ],

@@ -14,6 +14,7 @@ from xlab.data.proto import data_entry_pb2
 from xlab.data.proto import data_type_pb2
 from xlab.net.proto import time_util
 from xlab.net.proto.testing import parse
+from xlab.trading.dates import trading_days
 
 DataEntry = data_entry_pb2.DataEntry
 DataType = data_type_pb2.DataType
@@ -39,8 +40,8 @@ def get_close_prices_for_ema20(t: time.Time, symbol: str) -> List[DataEntry]:
     ]  # yapf: disable
 
     close_prices = [
-        _make_close_price(symbol, value, t - (19 - idx) * time.Hours(24))
-        for idx, value in enumerate(price_data)
+        _make_close_price(symbol, value, time.FromDate(d)) for value, d in zip(
+            price_data, trading_days.get_last_n(time.ToDate(t), 20))
     ]
     random.shuffle(close_prices)
     return close_prices
