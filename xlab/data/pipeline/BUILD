@@ -42,6 +42,7 @@ py_binary(
         ":produce_calc_fn",
         "//xlab/base:time",
         "//xlab/data/proto:data_type_py_pb2",
+        "//xlab/trading/dates:trading_days",
         requirement("absl-py"),
         requirement("apache-beam"),
     ],
