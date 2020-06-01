@@ -9,6 +9,7 @@ from xlab.base import time
 from xlab.data.pipeline import mongo_util
 from xlab.data.pipeline import produce_calc_fn
 from xlab.data.proto import data_type_pb2
+from xlab.trading.dates import trading_days
 
 DataType = data_type_pb2.DataType
 FLAGS = flags.FLAGS
@@ -24,6 +25,11 @@ flags.DEFINE_string('calc_type', None,
 def main(argv):
     del argv  # Unused.
 
+    day = time.ParseCivilTime(FLAGS.date)
+    if not trading_days.is_trading_day(day):
+        raise ValueError(f'Date requested {FLAGS.date} is not a trading day')
+    t = time.FromCivil(day)
+
     MONGO_URI = 'mongodb://localhost:27017'
     DB = 'xlab'
     COLL = 'data_entries'
@@ -31,7 +37,6 @@ def main(argv):
     read_option = mongo_util.MongoReadOption(uri=MONGO_URI, db=DB, coll=COLL)
     write_option = mongo_util.MongoWriteOption(uri=MONGO_URI, db=DB, coll=COLL)
 
-    t = time.FromCivil(time.ParseCivilTime(FLAGS.date))
     calc_type = DataType.Enum.Value(FLAGS.calc_type)
     calc_fn = produce_calc_fn.get_calc_fn(FLAGS.recursive_calc, calc_type, t)
     with beam.Pipeline() as p:

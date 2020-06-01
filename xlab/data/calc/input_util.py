@@ -88,9 +88,14 @@ def series_source_inputs_shape(
 def recursive_inputs_shape(
         base_calc_type: DataType.Enum, incr_calc_type: DataType.Enum,
         t: time.Time, time_spec: calc.CalcTimeSpecs) -> calc.RecursiveInputs:
+    # TODO: same here, think about how to get it work with period other than
+    # days. e.g week-based moving averages.
+    the_day_before = trading_days.get_last_n(time.ToCivil(t),
+                                             1,
+                                             include_input_date=False)[0]
     return (DataEntry(
         data_type=base_calc_type,
-        timestamp=time_util.from_time(t - time_spec.period_length),
+        timestamp=time_util.from_time(time.FromCivil(the_day_before)),
     ), DataEntry(
         data_type=incr_calc_type,
         timestamp=time_util.from_time(t),
