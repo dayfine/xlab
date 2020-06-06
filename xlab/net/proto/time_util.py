@@ -10,3 +10,11 @@ def from_time(t: time.Time) -> timestamp_pb2.Timestamp:
     pb = timestamp_pb2.Timestamp()
     pb.FromNanoseconds(time.ToUnixNanos(t))
     return pb
+
+
+def to_civl(pb: timestamp_pb2.Timestamp) -> time.CivilTime:
+    return time.ToCivil(to_time(pb))
+
+
+def from_civil(ct: time.CivilTime) -> timestamp_pb2.Timestamp:
+    return from_time(time.FromCivil(ct))

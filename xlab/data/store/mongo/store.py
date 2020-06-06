@@ -2,14 +2,14 @@ from typing import Callable, Dict, List, Tuple
 
 from google.protobuf import timestamp_pb2
 import pymongo
-from pymongo import client_session
 
+from xlab.base import time
 from xlab.data import store
 from xlab.data.converters import mongo as mongo_converter
 from xlab.data.proto import data_entry_pb2
 from xlab.data.store import key
+from xlab.data.store.mongo import constants
 from xlab.data.store.mongo import db_client
-from xlab.net.proto import time_util
 from xlab.util.status import errors
 
 DataEntry = data_entry_pb2.DataEntry
@@ -17,13 +17,10 @@ DataEntry = data_entry_pb2.DataEntry
 
 class MongoDataStore(store.DataStore):
 
-    _DATABASE = 'xlab'
-    _DATA_ENTRY_COLLECTION = 'data_entries'
-
     def __init__(self, client: pymongo.MongoClient = db_client.connect()):
         self._client = client
-        self._db = self._client[self._DATABASE]
-        self._coll = self._db[self._DATA_ENTRY_COLLECTION]
+        self._db = self._client[constants.XLAB_DB]
+        self._coll = self._db[constants.DATA_ENTRY_COL]
 
     def add(self, data_entry: DataEntry):
         # TODO: causal_consistency should be supported with |start_session|;
@@ -70,6 +67,5 @@ class MongoDataStore(store.DataStore):
         if lookup_key.data_type:
             res['dataType'] = lookup_key.data_type
         if lookup_key.timestamp:
-            res['timestamp'] = time_util.from_time(
-                lookup_key.timestamp).ToJsonString()
+            res['timestamp'] = time.ToCivil(lookup_key.timestamp)
         return res

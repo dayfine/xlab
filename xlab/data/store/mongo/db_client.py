@@ -1,9 +1,8 @@
 import pymongo
 
-_LOCAL_HOST = 'localhost'
-_DEFAULT_PORT = 27017
+from xlab.data.store.mongo import constants
 
 
-def connect(host: str = _LOCAL_HOST,
-            port: int = _DEFAULT_PORT) -> pymongo.MongoClient:
+def connect(host: str = constants.LOCAL_HOST,
+            port: int = constants.MONGO_DEFAULT_PORT) -> pymongo.MongoClient:
     return pymongo.MongoClient(host, port)

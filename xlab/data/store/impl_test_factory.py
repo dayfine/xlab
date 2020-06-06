@@ -24,7 +24,7 @@ def get_data_entry_one():
         data_type: CLOSE_PRICE
         value: 290.87
         timestamp {
-        seconds: 1234567
+            seconds: 1234567
         }""", data_entry_pb2.DataEntry)
 
 
@@ -36,7 +36,7 @@ def get_data_entry_two():
         data_type: CLOSE_PRICE
         value: 300.01
         timestamp {
-        seconds: 567890
+            seconds: 567890
         }""", data_entry_pb2.DataEntry)
 
 
@@ -48,7 +48,7 @@ def get_data_entry_three():
         data_type: CLOSE_PRICE
         value: 115.32
         timestamp {
-        seconds: 1234567
+            seconds: 1234567
         }
         """, data_entry_pb2.DataEntry)
 

@@ -1,0 +1,5 @@
+LOCAL_HOST = 'localhost'
+MONGO_DEFAULT_PORT = 27017
+MONGO_LOCAL_URI = f'mongodb://{LOCAL_HOST}:{MONGO_DEFAULT_PORT}'
+XLAB_DB = 'xlab'
+DATA_ENTRY_COL = 'data_entries'

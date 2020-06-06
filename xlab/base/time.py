@@ -142,7 +142,9 @@ def FormatCivilTime(ct: CivilTime) -> str:
 
 
 def ParseCivilTime(isoformat: str) -> CivilTime:
-    ct = CivilTime.fromisoformat(isoformat)
+    # Right now |fromisoformat| doesn't handle Z:
+    #   https://discuss.python.org/t/parse-z-timezone-suffix-in-datetime/2220
+    ct = CivilTime.fromisoformat(isoformat.rstrip('Z'))
     return _make_datetime_with_preferred_dst(ct, UTC).naive()
 
 

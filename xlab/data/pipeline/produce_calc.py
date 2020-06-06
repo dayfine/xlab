@@ -6,9 +6,11 @@ from absl import logging
 import apache_beam as beam
 
 from xlab.base import time
+from xlab.data.calc import registry as calc_registry
 from xlab.data.pipeline import mongo_util
 from xlab.data.pipeline import produce_calc_fn
 from xlab.data.proto import data_type_pb2
+from xlab.net.proto import time_util
 from xlab.trading.dates import trading_days
 
 DataType = data_type_pb2.DataType
@@ -30,21 +32,26 @@ def main(argv):
         raise ValueError(f'Date requested {FLAGS.date} is not a trading day')
     t = time.FromCivil(day)
 
-    MONGO_URI = 'mongodb://localhost:27017'
-    DB = 'xlab'
-    COLL = 'data_entries'
-
-    read_option = mongo_util.MongoReadOption(uri=MONGO_URI, db=DB, coll=COLL)
-    write_option = mongo_util.MongoWriteOption(uri=MONGO_URI, db=DB, coll=COLL)
-
     calc_type = DataType.Enum.Value(FLAGS.calc_type)
-    calc_fn = produce_calc_fn.get_calc_fn(FLAGS.recursive_calc, calc_type, t)
+    calc_producer = calc_registry.get_calc_producer(calc_type)
+    inputs_shape = calc_producer.recursive_inputs_shape(
+        t) if FLAGS.recursive_calc else calc_producer.source_inputs_shape(t)
+
+    mongo_read_filter = {
+        'timestamp': {
+            '$gte': time_util.to_civl(inputs_shape[0].timestamp),
+            '$lte': time_util.to_civl(inputs_shape[-1].timestamp)
+        }
+    }
+
     with beam.Pipeline() as p:
         (
           p \
-          | mongo_util.ReadDataFromMongoDB(read_option)
-          | "ProduceCalcs" >> calc_fn \
-          | mongo_util.WriteDataToMongoDB(write_option)
+          | mongo_util.ReadDataFromMongoDB(
+              mongo_util.default_read_option(mongo_read_filter))
+          | "ProduceCalcs" >> produce_calc_fn.produce_calc_fn(
+              calc_producer, inputs_shape) \
+          | mongo_util.WriteDataToMongoDB(mongo_util.default_write_option())
         )
 
 
