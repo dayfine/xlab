@@ -4,10 +4,17 @@ load("@py_deps//:requirements.bzl", "requirement")
 package(default_visibility = ["//xlab:internal"])
 
 py_library(
+    name = "constants",
+    srcs = ["constants.py"],
+    srcs_version = "PY3",
+)
+
+py_library(
     name = "db_client",
     srcs = ["db_client.py"],
     srcs_version = "PY3",
     deps = [
+        ":constants",
         requirement("pymongo"),
     ],
 )
@@ -26,12 +33,13 @@ py_library(
     srcs = ["store.py"],
     srcs_version = "PY3",
     deps = [
+        ":constants",
         ":db_client",
+        "//xlab/base:time",
         "//xlab/data/converters:mongo",
         "//xlab/data/proto:data_entry_py_pb2",
         "//xlab/data/store",
         "//xlab/data/store:key",
-        "//xlab/net/proto:time_util",
         "//xlab/util/status:errors",
         requirement("pymongo"),
         requirement("protobuf"),

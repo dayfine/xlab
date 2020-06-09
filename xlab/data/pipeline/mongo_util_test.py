@@ -26,12 +26,14 @@ def get_data_entries():
                   data_space=DataEntry.DataSpace.STOCK_DATA,
                   data_type=DataType.Enum.VOLUME,
                   value=105344.0,
-                  timestamp=time_util.from_time(time.FromUnixSeconds(1234567))),
+                  timestamp=time_util.from_civil(
+                      time.CivilTime(2015, 2, 3, 4, 5, 6))),
         DataEntry(symbol='LANC',
                   data_space=DataEntry.DataSpace.STOCK_DATA,
                   data_type=DataType.Enum.VOLUME,
                   value=134612.0,
-                  timestamp=time_util.from_time(time.FromUnixSeconds(2345678))),
+                  timestamp=time_util.from_civil(
+                      time.CivilTime(2015, 2, 3, 4, 5, 7))),
     ]
 
 
@@ -76,6 +78,43 @@ class BeamMongoUtilTest(absltest.TestCase):
                                                      filter=read_filter)
             out = (p | mongo_util.ReadDataFromMongoDB(read_option))
             assert_that(out, equal_to(get_data_entries()[1:]))
+
+    def test_beam_mongodb_read_filter_for_time_range(self):
+        with TestPipeline() as p:
+            write_option = mongo_util.MongoWriteOption(uri=_TEST_URI,
+                                                       db=_TEST_DB,
+                                                       coll=_TEST_COLL)
+            (p \
+                | beam.Create(get_data_entries())
+                | mongo_util.WriteDataToMongoDB(write_option))
+
+        read_filter = {
+            'timestamp': {
+                '$gte': time.CivilTime(2015, 2, 3, 4, 5, 6),
+                '$lte': time.CivilTime(2015, 2, 3, 4, 5, 7),
+            }
+        }
+        with TestPipeline() as p:
+            read_option = mongo_util.MongoReadOption(uri=_TEST_URI,
+                                                     db=_TEST_DB,
+                                                     coll=_TEST_COLL,
+                                                     filter=read_filter)
+            out = (p | mongo_util.ReadDataFromMongoDB(read_option))
+            assert_that(out, equal_to(get_data_entries()))
+
+        read_filter = {
+            'timestamp': {
+                '$gte': time.CivilTime(2015, 2, 3, 4, 5, 6),
+                '$lte': time.CivilTime(2015, 2, 3, 4, 5, 6),
+            }
+        }
+        with TestPipeline() as p:
+            read_option = mongo_util.MongoReadOption(uri=_TEST_URI,
+                                                     db=_TEST_DB,
+                                                     coll=_TEST_COLL,
+                                                     filter=read_filter)
+            out = (p | mongo_util.ReadDataFromMongoDB(read_option))
+            assert_that(out, equal_to(get_data_entries()[:1]))
 
 
 if __name__ == '__main__':

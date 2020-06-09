@@ -29,7 +29,7 @@ def produce_source_calc_fn(inputs: PCollection, calc_type: DataType.Enum,
                            t: time.Time) -> PCollection:
     calc_producer = calc_registry.get_calc_producer(calc_type)
     inputs_shape = calc_producer.source_inputs_shape(t)
-    return _produce_calc_fn(inputs, calc_producer, inputs_shape)
+    return inputs | produce_calc_fn(calc_producer, inputs_shape)
 
 
 @ptransform.ptransform_fn
@@ -37,12 +37,12 @@ def produce_recursive_calc_fn(inputs: PCollection, calc_type: DataType.Enum,
                               t: time.Time) -> PCollection:
     calc_producer = calc_registry.get_calc_producer(calc_type)
     inputs_shape = calc_producer.recursive_inputs_shape(t)
-    return _produce_calc_fn(inputs, calc_producer, inputs_shape)
+    return inputs | produce_calc_fn(calc_producer, inputs_shape)
 
 
-# Note this convenience function is not decorated with @ptransform_fn.
-def _produce_calc_fn(inputs: PCollection, calc_producer: calc.CalcProducer,
-                     inputs_shape: calc.CalcInputs) -> PCollection:
+@ptransform.ptransform_fn
+def produce_calc_fn(inputs: PCollection, calc_producer: calc.CalcProducer,
+                    inputs_shape: calc.CalcInputs) -> PCollection:
     return (inputs \
         | 'FilterByInputsShape' >> beam.Filter(filter_by_input_shapes,
                                                inputs_shape) \
