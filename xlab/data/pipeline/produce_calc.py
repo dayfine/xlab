@@ -24,18 +24,12 @@ flags.DEFINE_string('calc_type', None,
                     'Name of the calc type (DataType.Enum) to perform')
 
 
-def main(argv):
-    del argv  # Unused.
-
-    day = time.ParseCivilTime(FLAGS.date)
-    if not trading_days.is_trading_day(day):
-        raise ValueError(f'Date requested {FLAGS.date} is not a trading day')
-    t = time.FromCivil(day)
-
-    calc_type = DataType.Enum.Value(FLAGS.calc_type)
+def run(date: time.CivilTime, calc_type: DataType.Enum,
+        is_recursive_calc: bool):
+    t = time.FromCivil(date)
     calc_producer = calc_registry.get_calc_producer(calc_type)
     inputs_shape = calc_producer.recursive_inputs_shape(
-        t) if FLAGS.recursive_calc else calc_producer.source_inputs_shape(t)
+        t) if is_recursive_calc else calc_producer.source_inputs_shape(t)
 
     mongo_read_filter = {
         'timestamp': {
@@ -53,6 +47,16 @@ def main(argv):
               calc_producer, inputs_shape) \
           | mongo_util.WriteDataToMongoDB(mongo_util.default_write_option())
         )
+
+
+def main(argv):
+    del argv  # Unused.
+
+    date = time.ParseCivilTime(FLAGS.date)
+    if not trading_days.is_trading_day(date):
+        raise ValueError(f'Date requested {FLAGS.date} is not a trading day')
+    calc_type = DataType.Enum.Value(FLAGS.calc_type)
+    run(date, calc_type, FLAGS.recursive_calc)
 
 
 if __name__ == '__main__':
