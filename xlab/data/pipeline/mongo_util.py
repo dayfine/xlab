@@ -43,7 +43,7 @@ def default_read_option(filter=None, projection=None) -> MongoReadOption:
                            projection=projection)
 
 
-def default_write_option() -> MongoReadOption:
+def default_write_option() -> MongoWriteOption:
     return MongoWriteOption(uri=constants.MONGO_LOCAL_URI,
                             db=constants.XLAB_DB,
                             coll=constants.DATA_ENTRY_COL)
