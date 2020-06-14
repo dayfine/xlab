@@ -23,17 +23,17 @@ commands:
     description: Install Python
     steps:
       - run:
-          name: install Python 3.7
+          name: install Python 3.8
           command: |
             python3 --version
 
             apt-get install software-properties-common
             add-apt-repository --yes ppa:deadsnakes/ppa
             apt-get update
-            apt-get install --yes python3.7
-            apt-get install --yes python3.7-venv
+            apt-get install --yes python3.8
+            apt-get install --yes python3.8-venv
 
-            python3.7 -m venv .venv --without-pip
+            python3.8 -m venv .venv --without-pip
 
   # Initializes the CI environment by setting up common environment variables.
   init_environment:

@@ -19,13 +19,21 @@ SMOOTHING_FACTOR = 2
 # CalcProducer for Exponential Moving Average:
 #   https://en.wikipedia.org/wiki/Moving_average#Exponential_moving_average
 #   https://www.investopedia.com/terms/e/ema.asp
-class EmaProducer:
+class EmaProducer(calc.CalcProducer):
 
     def __init__(self, calc_type: DataType.Enum,
                  time_specs: calc.CalcTimeSpecs):
-        self.calc_type = calc_type
-        self.time_specs = time_specs
+        self._calc_type = calc_type
+        self._time_specs = time_specs
         self._source_calc = DataType.Enum.CLOSE_PRICE
+
+    @property
+    def calc_type(self) -> DataType.Enum:
+        return self._calc_type
+
+    @property
+    def time_specs(self) -> calc.CalcTimeSpecs:
+        return self._time_specs
 
     def calculate(self, inputs: calc.CalcInputs) -> DataEntry:
         if not inputs:
@@ -45,7 +53,7 @@ class EmaProducer:
         return DataEntry(
             symbol=symbol,
             data_space=data_entry_pb2.DataEntry.STOCK_DATA,
-            data_type=self.calc_type,
+            data_type=self._calc_type,
             value=ema,
             timestamp=time_util.from_time(t),
         )
@@ -54,22 +62,22 @@ class EmaProducer:
     # where the first EMA need to calculated from X days of close prices.
     def _initial(self, inputs: calc.CalcInputs) -> float:
         prices = (data.value for data in inputs)
-        return pd.DataFrame(prices).ewm(span=self.time_specs.num_periods,
+        return pd.DataFrame(prices).ewm(span=self._time_specs.num_periods,
                                         adjust=False).mean().iloc[-1][0]
 
     def _recur(self, inputs: calc.CalcInputs) -> float:
-        num_periods = self.time_specs.num_periods
+        num_periods = self._time_specs.num_periods
         return (SMOOTHING_FACTOR / (num_periods + 1) * inputs[1].value \
           + (num_periods + 1 - SMOOTHING_FACTOR) / (num_periods + 1) * inputs[0].value)
 
     def recursive_inputs_shape(self, t: time.Time) -> calc.RecursiveInputs:
-        return input_util.recursive_inputs_shape(self.calc_type,
+        return input_util.recursive_inputs_shape(self._calc_type,
                                                  self._source_calc, t,
-                                                 self.time_specs)
+                                                 self._time_specs)
 
     def source_inputs_shape(self, t: time.Time) -> calc.SourceInputs:
         return input_util.series_source_inputs_shape(self._source_calc, t,
-                                                     self.time_specs)
+                                                     self._time_specs)
 
 
 make_ema_20d_producer: calc.CalcProducerFactory = lambda: EmaProducer(
