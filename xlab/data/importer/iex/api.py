@@ -1,6 +1,6 @@
 import os
 
-from typing import Any, Callable, Mapping
+from typing import Any, Callable, Dict
 
 from xlab.net.http import requests
 
@@ -12,7 +12,7 @@ class SimpleIexApiHttpClient:
     def __init__(self,
                  token: str = '',
                  endpoint_url: str = '',
-                 param_builder: Callable[..., Mapping[str, Any]] = None):
+                 param_builder: Callable[..., Dict[str, Any]] = None):
         self._session = requests.requests_retry_session()
         self._token = token or os.getenv('IEX_API_SECRET_TOKEN')
         self._endpoint_url = endpoint_url
@@ -31,7 +31,7 @@ class SimpleIexApiHttpClient:
 class IexApiHttpClient:
 
     def __init__(self, token: str = ''):
-        get_parmas: Callable[str, Mapping[str, Any]] = lambda symbol: {
+        get_parmas: Callable[[str], Dict[str, Any]] = lambda symbol: {
             'symbols': ','.join([symbol]),
             'types': ','.join(['quote', 'chart']),
             'range': '6m',
