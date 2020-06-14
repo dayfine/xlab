@@ -32,7 +32,7 @@ class CalcProducer(abc.ABC):
 
     @property
     @abc.abstractmethod
-    def time_spec(self) -> CalcTimeSpecs:
+    def time_specs(self) -> CalcTimeSpecs:
         pass
 
     # Computes the calc for a given security at a given timestamp.

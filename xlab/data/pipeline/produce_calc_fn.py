@@ -1,4 +1,4 @@
-from typing import Generator, List
+from typing import Generator, Iterable
 
 from absl import logging
 import apache_beam as beam
@@ -62,7 +62,7 @@ def filter_by_input_shapes(data_entry: DataEntry,
 
 
 def perform_calc(
-        data_entries: List[DataEntry], inputs_shape: calc.CalcInputs,
+        data_entries: Iterable[DataEntry], inputs_shape: calc.CalcInputs,
         calc_producer: calc.CalcProducer) -> Generator[DataEntry, None, None]:
     try:
         calc_inputs = input_util.sort_to_inputs_shape(data_entries,
