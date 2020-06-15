@@ -9,8 +9,14 @@ py_binary(
     srcs_version = "PY3",
     deps = [
         ":notebook_deps",
+        # Required notebook libraries
         requirement("jupyter_http_over_ws"),
         requirement("notebook"),
+        # Other 3rd party libraries
+        requirement("altair"),
+        requirement("apache-beam"),
+        requirement("ipywidgets"),
+        requirement("pandas"),
     ],
 )
 
@@ -18,7 +24,6 @@ py_library(
     name = "notebook_deps",
     srcs_version = "PY3",
     deps = [
-        "//xlab/data/importer/iex",
-        "//xlab/util/status:errors",
+        "//xlab/data:notebook_deps",
     ],
 )

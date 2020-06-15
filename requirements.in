@@ -1,10 +1,12 @@
 absl-py>=0.9.0
+altair>=4.1.0
 apache-beam>=2.22.0
-jupyter_http_over_ws==0.0.8
+ipywidgets>=7.5.1
+jupyter-http-over-ws>=0.0.8
 mongomock>=3.19.0
 notebook>=6.0.0
-pandas==1.0.1
+pandas>=1.0.1
 pendulum>=2.1.0
-protobuf==3.11.3
+protobuf>=3.11.3
 pymongo>=3.10.0
-requests==2.23.0
+requests>=2.23.0

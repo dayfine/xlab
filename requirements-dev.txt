@@ -1,3 +1,9 @@
+# Dev tools
 pip-tools
 pytype
 yapf
+# Notebook related packages (those required to start up, i.e. extensions). Keep
+# in sync with requirements.in
+ipywidgets>=7.5.1
+jupyter-http-over-ws>=0.0.8
+notebook>=6.0.0
