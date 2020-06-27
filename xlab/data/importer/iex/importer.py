@@ -1,4 +1,5 @@
 import datetime
+import numpy as np
 
 from typing import Dict, List
 
@@ -9,8 +10,7 @@ from xlab.data.importer.iex import api
 
 class IexDataImporter(importer.DataImporter):
 
-    def __init__(self,
-                 iex_client: api.IexApiHttpClient = api.IexApiHttpClient()):
+    def __init__(self, iex_client: api.IexApiHttpClient = api.IexApiHttpClient()):
         self._iex_client = iex_client
 
     # TODO: map to canonical error space.
@@ -22,7 +22,7 @@ class IexDataImporter(importer.DataImporter):
     ) -> Dict[str, List[data_entry_pb2.DataEntry]]:
         # TODO: handle dates properly.
         date_range = self._get_date_range(start_date, end_date)
-        data = self._iex_client.get_batch_quotes(symbol, date_range)
+        data = self._iex_client.get_batch_quotes(symbol, date_range, start_date)
 
         now = datetime.datetime.now()
         close_results = []
@@ -64,15 +64,15 @@ class IexDataImporter(importer.DataImporter):
         date_range = {
             (0, 6): '5d',
             (6, 28): '1m',
-            (28, 84): '3m',
-            (84, 168): '6m',
+            (28, 28*3): '3m',
+            (84, 28*6): '6m',
             (168, 365): '1y',
-            (365, 730): '2y',
-            (730, 1826): '5y',
-            (1826, 5478): 'max',
+            (365, 365*2): '2y',
+            (730, 365*5+1): '5y', # consider 1 leap year
+            (1826, 365*15+3): 'max', # consider 3 leap years in 15 years period
         }
 
-        timedelta = (end_date - start_date).days
+        timedelta = (end_date - start_date).days + 1
         timedelta_to_today = (datetime.datetime.now() - start_date).days
 
         if timedelta < 0:
