@@ -1,0 +1,9 @@
+[package]
+name = "portfolio"
+version = "0.0.1"
+authors = ["Di Fan <di@tempiternity.com>"]
+publish = false
+edition = "2018"
+
+[dependencies]
+approx = "0.3.2"

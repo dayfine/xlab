@@ -1,0 +1,27 @@
+[package]
+name = "compile_with_bazel"
+version = "0.0.0"
+edition = "2018"
+
+[lib]
+path = "fake_lib.rs"
+
+[dependencies]
+approx = "=0.3.2"
+protobuf =  { version = "=1.6.0", features = ["with-bytes"] }
+
+[raze]
+genmode = "Remote"
+workspace_path = "//third_party/cargo"
+output_buildfile_suffix = "BUILD"
+
+[raze.crates.protobuf.'1.6.0']
+gen_buildrs = true
+buildrs_additional_environment_variables = [
+    "RUSTC=$$PWD/$(location @dayfine_xlab//xlab/third_party/cargo:rustc)",
+    "CARGO_PKG_VERSION=1.6.0",
+]
+
+[raze.crates.protobuf-codegen.'1.6.0']
+gen_buildrs = true
+extra_aliased_targets = ["cargo_bin_protoc_gen_rust"]

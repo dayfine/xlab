@@ -1,0 +1,42 @@
+syntax = "proto3";
+
+package xlab;
+
+
+// A financial security / instrument.
+message Security {
+  // Required. The internal ID of this security.
+  fixed64 id = 1;
+
+  // Details about this contract.
+  Contract contract_info = 2;
+}
+
+message SettlementType {
+  enum Enum {
+    UNSPECIFIED = 0;
+    STOCK = 1;
+    FUTURE = 2;
+  }
+}
+
+message SettlementMethod {
+  enum Enum {
+    UNSPECIFIED = 0;
+    PHYSICAL_DELIVERY = 1;
+    CASH = 2;
+  }
+}
+
+// A contract, usually one traded on exchange.
+message Contract {
+  SettlementType.Enum settle_type = 1;
+
+  SettlementMethod.Enum settle_method = 2;
+
+  // The multiplier of this contract, e.g. a multiplier of 100 means trading
+  // one contract actually trade a contract that corresponds to 100 unit of
+  // underlying security.
+  // Unset multiplier should be treated as 1.
+  int32 multiplier = 3;
+}

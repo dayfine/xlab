@@ -44,8 +44,27 @@ http_archive(
     url = "https://github.com/dillon-giacoppo/rules_python_external/archive/v{version}.zip".format(version = rules_python_external_version),
 )
 
+http_archive(
+    name = "io_bazel_rules_rust",
+    sha256 = "56c39b600d25374f414dd0805edabf773e81c68537c1a4131eb2519191a5b6a4",
+    strip_prefix = "rules_rust-dc65ea42c7a4684366bfb2b3df2804c425f3c99f",
+    urls = [
+        "https://github.com/bazelbuild/rules_rust/archive/dc65ea42c7a4684366bfb2b3df2804c425f3c99f.tar.gz",
+    ],
+)
+
+http_archive(
+    name = "bazel_skylib",
+    sha256 = "9a737999532daca978a158f94e77e9af6a6a169709c0cee274f0a4c3359519bd",
+    strip_prefix = "bazel-skylib-1.0.0",
+    url = "https://github.com/bazelbuild/bazel-skylib/archive/1.0.0.tar.gz",
+)
+
 register_toolchains("//:py_toolchain")
 
+# ================================================================
+# Proto extensions
+# ================================================================
 load("@com_google_protobuf//:protobuf_deps.bzl", "protobuf_deps")
 
 protobuf_deps()
@@ -64,6 +83,9 @@ rules_proto_dependencies()
 
 rules_proto_toolchains()
 
+# ================================================================
+# Python extensions
+# ================================================================
 load("@rules_python//python:repositories.bzl", "py_repositories")
 
 py_repositories()
@@ -79,3 +101,22 @@ pip_install(
     name = "py_deps",
     requirements = "//:requirements.txt",
 )
+
+# ================================================================
+# Rust extensions
+# ================================================================
+load("@io_bazel_rules_rust//rust:repositories.bzl", "rust_repositories")
+
+rust_repositories()
+
+load("@io_bazel_rules_rust//:workspace.bzl", "bazel_version")
+
+bazel_version(name = "bazel_version")
+
+load("@io_bazel_rules_rust//proto:repositories.bzl", "rust_proto_repositories")
+
+rust_proto_repositories()
+
+load("//third_party/cargo:crates.bzl", "raze_fetch_remote_crates")
+
+raze_fetch_remote_crates()
