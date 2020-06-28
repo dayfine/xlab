@@ -5,4 +5,4 @@ raze:
 	mv BUILD BUILD.suffix; \
 	cat BUILD.prefix BUILD.suffix > BUILD; \
 	rm BUILD.suffix; \
-	sed -i 's#":protobuf_build_script",#":protobuf_build_script","@dayfine_xlab//third_party/cargo:rustc",#' remote/protobuf-*.BUILD; \
+	sed -i 's#":protobuf_build_script",#":protobuf_build_script","@xlab//third_party/cargo:rustc",#' remote/protobuf-*.BUILD; \
