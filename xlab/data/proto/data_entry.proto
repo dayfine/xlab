@@ -25,7 +25,7 @@ message DataEntry {
 
   double value = 4;
 
-  // Timestamp which the data value is for.
+  // Timestamp at which the data value is for.
   google.protobuf.Timestamp timestamp = 5;
 
   // Timestamp at which the data value was last updated.

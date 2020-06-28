@@ -7,7 +7,7 @@ proto_library(
     name = "data_entry_proto",
     srcs = ["data_entry.proto"],
     deps = [
-        "data_type_proto",
+        ":data_type_proto",
         "@com_google_protobuf//:timestamp_proto",
     ],
 )
