@@ -1,0 +1,33 @@
+syntax = "proto3";
+
+package xlab;
+
+import "google/protobuf/timestamp.proto";
+import "xlab/proto/security.proto";
+
+message Portfolio {
+    repeated Position positions = 1;
+}
+
+message Position {
+    // Which security this position is for.
+    Security security = 1;
+
+    repeated PositionLot lots = 2;
+
+    // The accumulate realized P&L of this position.
+    double realized_profit_and_loss = 3;
+}
+
+message PositionLot {
+    // The number of securites / contracts held in this position. A negative
+    // size represents a short position. A fraction size is possible.
+    double size = 1;
+
+    // The price paid to acquire this slice of the position in a long transaction,
+    // or the price was paid to sell this slice in a shor transaction.
+    double cost = 2;
+
+    // Timestamp at which this lot is added.
+    google.protobuf.Timestamp timestamp = 3;
+}

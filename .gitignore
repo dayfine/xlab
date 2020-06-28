@@ -172,3 +172,6 @@ dmypy.json
 *.app
 
 bazel-*
+
+# Rust generated codes
+target
