@@ -1,2 +1,7 @@
+# cargo-raze related files
+BUILD
+crates.bzl
+
+remote
 vendor
 target
