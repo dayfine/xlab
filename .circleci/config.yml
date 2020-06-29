@@ -107,11 +107,13 @@ jobs:
       - install_python
       - install_rust
       - init_environment
-      - run: |
-          # Virtual env can only take effect if activated here.
-          source .venv/bin/activate
-          bazel build xlab/...
-          bazel test xlab/...
+      - run:
+          name: Build and test
+          command: |
+            # Virtual env can only take effect if activated here.
+            source .venv/bin/activate
+            bazel build xlab/...
+            bazel test xlab/...
 
       - run:
           name: Copy out bazel test results
