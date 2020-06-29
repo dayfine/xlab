@@ -52,7 +52,8 @@ commands:
             export PATH="${HOME}/.cargo/bin:${PATH}"
             rustc -V
 
-            cargo install cargo-raze
+            # https://github.com/google/cargo-raze/issues/179
+            cargo install cargo-raze --version=0.3.3
             make raze
 
   # Initializes the CI environment by setting up common environment variables.
@@ -107,11 +108,13 @@ jobs:
       - install_python
       - install_rust
       - init_environment
-      - run: |
-          # Virtual env can only take effect if activated here.
-          source .venv/bin/activate
-          bazel build xlab/...
-          bazel test xlab/...
+      - run:
+          name: Build and test
+          command: |
+            # Virtual env can only take effect if activated here.
+            source .venv/bin/activate
+            bazel build xlab/...
+            bazel test xlab/...
 
       - run:
           name: Copy out bazel test results
