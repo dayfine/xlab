@@ -20,6 +20,7 @@ def from_mongo_doc(bson: Dict[Any, Any]) -> DataEntry:
     # built-in datetime class. Also add the 'Z' which is expected by ParseDict
     # and is consistent withMessageToDict.
     bson['timestamp'] = bson['timestamp'].isoformat() + 'Z'
+    bson['id'] = str(bson['_id'])
 
     # ParseDict takes a message type and also return it as results
     # ignore_unknown_fields is used to ignore mongo's _id field.

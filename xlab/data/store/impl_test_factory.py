@@ -3,7 +3,9 @@ from typing import Callable, Tuple
 from absl.testing import absltest, parameterized
 from hamcrest import assert_that
 from google.protobuf import timestamp_pb2, text_format
-from proto_matcher import equals_proto, ignoring_repeated_field_ordering
+from proto_matcher import equals_proto
+from proto_matcher import ignoring_field_paths
+from proto_matcher import ignoring_repeated_field_ordering
 
 from xlab.data import store
 from xlab.data.store import key
@@ -65,8 +67,10 @@ def create(impl_factory: StoreFactory) -> absltest.TestCase:
             self._store.add(get_data_entry_one())
 
             lookup_key = key.make_lookup_key(get_data_entry_one())
-            assert_that(self._store.read(lookup_key),
-                        equals_proto(get_data_entry_one()))
+            assert_that(
+                self._store.read(lookup_key),
+                ignoring_field_paths({('id',)},
+                                     equals_proto(get_data_entry_one())))
 
         def test_add_data_entry_with_the_same_timestamp(self):
             self._store.add(get_data_entry_one())
@@ -133,6 +137,8 @@ def create_parameterized_test(
 
             assert_that(
                 actual,
-                ignoring_repeated_field_ordering(equals_proto(expected)))
+                ignoring_field_paths({('entries', 'id')},
+                                     ignoring_repeated_field_ordering(
+                                         equals_proto(expected))))
 
     return ParameterizedLookupTest

@@ -10,13 +10,18 @@ message DataEntries {
 }
 
 message DataEntry {
+  // A unique ID of this data entry.
+  string id = 7;
+
+  // The symbol of the security for this data entry.
+  // Right now this is simply a stock symbol, e.g. SPY, X.
+  string symbol = 1;
+
   enum DataSpace {
     DATA_SPACE_UNSPECIFIED = 0;
     STOCK_DATA = 1;
     STOCK_METADATA = 2;
   }
-
-  string symbol = 1;
 
   DataSpace data_space = 2;
 
