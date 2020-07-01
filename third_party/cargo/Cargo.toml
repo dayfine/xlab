@@ -18,10 +18,9 @@ output_buildfile_suffix = "BUILD"
 
 [raze.crates.protobuf.'2.15.1']
 gen_buildrs = true
-buildrs_additional_environment_variables = [
-    "RUSTC=$$PWD/$(location @xlab//third_party/cargo:rustc)",
-    "CARGO_PKG_VERSION=2.15.1",
-]
+
+    [raze.crates.protobuf.'2.15.1'.buildrs_additional_environment_variables]
+    CARGO_PKG_VERSION = "2.15.1"
 
 [raze.crates.protobuf-codegen.'2.15.1']
 gen_buildrs = true

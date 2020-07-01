@@ -52,8 +52,7 @@ commands:
             export PATH="${HOME}/.cargo/bin:${PATH}"
             rustc -V
 
-            # https://github.com/google/cargo-raze/issues/179
-            cargo install cargo-raze --version=0.3.3
+            cargo install cargo-raze
             make raze
 
   # Initializes the CI environment by setting up common environment variables.
