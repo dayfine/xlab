@@ -36,10 +36,10 @@ py_test(
         ":input_util",
         "//xlab/data/proto:data_entry_py_pb2",
         "//xlab/data/proto:data_type_py_pb2",
-        "//xlab/net/proto/testing:compare",
-        "//xlab/net/proto/testing:parse",
         "//xlab/util/status:errors",
         requirement("absl-py"),
+        requirement("proto-matcher"),
+        requirement("pyhamcrest"),
     ],
 )
 

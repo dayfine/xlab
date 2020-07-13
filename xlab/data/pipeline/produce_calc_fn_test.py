@@ -6,13 +6,13 @@ import apache_beam as beam
 from apache_beam.testing.test_pipeline import TestPipeline
 from apache_beam.testing.util import assert_that
 from apache_beam.testing.util import equal_to
+from google.protobuf import text_format
 
 from xlab.base import time
 from xlab.data.pipeline import produce_calc_fn
 from xlab.data.proto import data_entry_pb2
 from xlab.data.proto import data_type_pb2
 from xlab.net.proto import time_util
-from xlab.net.proto.testing import parse
 from xlab.trading.dates import trading_days
 
 DataEntry = data_entry_pb2.DataEntry
@@ -61,7 +61,7 @@ def get_recursive_inputs_for_ema20(t: time.Time,
 
 
 def expected_ema20d_test() -> DataEntry:
-    return parse.parse_test_proto(
+    return text_format.Parse(
         """
         symbol: "TEST"
         data_space: STOCK_DATA
@@ -69,11 +69,11 @@ def expected_ema20d_test() -> DataEntry:
         value: 58.255796513052346
         timestamp {
             seconds: 1577750400
-        }""", DataEntry)
+        }""", DataEntry())
 
 
 def expected_recursive_ema20d_test() -> DataEntry:
-    return parse.parse_test_proto(
+    return text_format.Parse(
         """
         symbol: "TEST"
         data_space: STOCK_DATA
@@ -81,7 +81,7 @@ def expected_recursive_ema20d_test() -> DataEntry:
         value: 58.45666666666667
         timestamp {
             seconds: 1577750400
-        }""", DataEntry)
+        }""", DataEntry())
 
 
 class ProduceCalcFnTest(absltest.TestCase):
@@ -142,7 +142,7 @@ class ProduceCalcFnTest(absltest.TestCase):
                 out,
                 equal_to([
                     expected_ema20d_test(),
-                    parse.parse_test_proto(
+                    text_format.Parse(
                         """
                         symbol: "IBM"
                         data_space: STOCK_DATA
@@ -150,7 +150,7 @@ class ProduceCalcFnTest(absltest.TestCase):
                         value: 58.255796513052346
                         timestamp {
                             seconds: 1577750400
-                        }""", DataEntry)
+                        }""", DataEntry())
                 ]))
 
     def test_produce_recursive_calc_fn(self):

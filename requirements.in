@@ -8,5 +8,7 @@ notebook>=6.0.0
 pandas>=1.0.1
 pendulum>=2.1.0
 protobuf>=3.11.3
+proto-matcher>=0.0.2
+pyhamcrest>=2.0.2
 pymongo>=3.10.0
 requests>=2.23.0

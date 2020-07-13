@@ -3,12 +3,13 @@ import json
 from unittest.mock import patch, Mock
 
 from absl.testing import absltest
+from hamcrest import assert_that
 import requests
 from requests import exceptions as request_exceptions
+from proto_matcher import equals_proto
 
 from xlab.data.proto import data_type_pb2
 from xlab.data.importer.iex import api, importer
-from xlab.net.proto.testing import compare
 
 
 def _make_response(conent: str,
@@ -50,41 +51,49 @@ class IexDataImporterTest(absltest.TestCase):
 
         close_data = results[data_type_pb2.DataType.CLOSE_PRICE]
         self.assertEqual(len(close_data), 2)
-        compare.assertProtoEqual(
-            self, close_data[0], """
+        assert_that(
+            close_data[0],
+            equals_proto("""
             symbol: "SPY"
             data_space: STOCK_DATA
             data_type: CLOSE_PRICE
             value: 319.69
             timestamp { seconds: 1583107200 }
-            updated_at { seconds: 1609372800 }""")
-        compare.assertProtoEqual(
-            self, close_data[1], """
+            updated_at { seconds: 1609372800
+        }"""))
+        assert_that(
+            close_data[1],
+            equals_proto("""
             symbol: "SPY"
             data_space: STOCK_DATA
             data_type: CLOSE_PRICE
             value: 308.48
             timestamp { seconds: 1583193600 }
-            updated_at { seconds: 1609372800 }""")
+            updated_at { seconds: 1609372800
+        }"""))
 
         volume_data = results[data_type_pb2.DataType.VOLUME]
         self.assertEqual(len(volume_data), 2)
-        compare.assertProtoEqual(
-            self, volume_data[0], """
+        assert_that(
+            volume_data[0],
+            equals_proto("""
             symbol: "SPY"
             data_space: STOCK_DATA
             data_type: VOLUME
             value: 242964067.0
             timestamp { seconds: 1583107200 }
-            updated_at { seconds: 1609372800 }""")
-        compare.assertProtoEqual(
-            self, volume_data[1], """
+            updated_at { seconds: 1609372800 }
+        """))
+        assert_that(
+            volume_data[1],
+            equals_proto("""
             symbol: "SPY"
             data_space: STOCK_DATA
             data_type: VOLUME
             value: 300862938.0
             timestamp { seconds: 1583193600 }
-            updated_at { seconds: 1609372800 }""")
+            updated_at { seconds: 1609372800 }
+        """))
 
     def test_get_quotes_default_single_day(self):
         pass
