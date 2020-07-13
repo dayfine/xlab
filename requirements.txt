@@ -55,6 +55,7 @@ pexpect==4.8.0            # via ipython
 pickleshare==0.7.5        # via ipython
 prometheus-client==0.8.0  # via notebook
 prompt-toolkit==3.0.5     # via ipython
+proto-matcher==0.0.2      # via -r requirements.in
 protobuf==3.12.2          # via -r requirements.in, apache-beam
 ptyprocess==0.6.0         # via pexpect, terminado
 pyarrow==0.17.1           # via apache-beam
@@ -62,6 +63,7 @@ pyasn1-modules==0.2.8     # via oauth2client
 pyasn1==0.4.8             # via oauth2client, pyasn1-modules, rsa
 pydot==1.4.1              # via apache-beam
 pygments==2.6.1           # via ipython, nbconvert
+pyhamcrest==2.0.2         # via -r requirements.in
 pymongo==3.10.1           # via -r requirements.in, apache-beam
 pyparsing==2.4.7          # via packaging, pydot
 pyrsistent==0.16.0        # via jsonschema

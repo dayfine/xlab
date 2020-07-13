@@ -4,10 +4,10 @@ from requests.packages.urllib3.util import retry
 
 
 def requests_retry_session(
-    retries=3,
-    backoff_factor=0.3,
-    status_forcelist=(500, 502, 504),
-    session=None,
+        retries=3,
+        backoff_factor=0.3,
+        status_forcelist=(500, 502, 504),
+        session=None,
 ):
     session = session or requests.Session()
     max_retries = retry.Retry(

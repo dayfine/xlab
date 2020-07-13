@@ -4,6 +4,7 @@ from xlab.util.status import errors, error_codes_pb2
 
 
 class ErrorsTest(absltest.TestCase):
+
     def test_cancelled_error(self):
         with self.assertRaisesWithPredicateMatch(
                 errors.GenericError,

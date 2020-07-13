@@ -39,8 +39,9 @@ py_test(
     deps = [
         ":importer",
         "//xlab/data/proto:data_type_py_pb2",
-        "//xlab/net/proto/testing:compare",
         requirement("absl-py"),
         requirement("requests"),
+        requirement("proto-matcher"),
+        requirement("pyhamcrest"),
     ],
 )
