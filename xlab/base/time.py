@@ -117,15 +117,15 @@ def ToUnixNanos(t: Time) -> int:
 
 
 def ToUnixMillis(t: Time) -> int:
-    return int(t) / 1e3
+    return int(t) // int(1e3)
 
 
 def ToUnixMicros(t: Time) -> int:
-    return int(t) / 1e6
+    return int(t) // int(1e6)
 
 
 def ToUnixSeconds(t: Time) -> int:
-    return int(t) / 1e9
+    return int(t) // int(1e9)
 
 
 def FromCivil(ct: CivilTime, tz: Timezone = None) -> Time:
