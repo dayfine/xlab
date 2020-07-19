@@ -34,12 +34,12 @@ def find_all_duplicates(
     if len(data_entry_list) < 1:
         return duplicate_ids, duplicates_with_different_values
 
-    data_entry_list.sort(key=lambda x: (time_util.to_civl(x.timestamp),
-                                        time_util.to_civl(x.updated_at)))
+    data_entry_list.sort(key=lambda x: (time_util.to_civil(x.timestamp),
+                                        time_util.to_civil(x.updated_at)))
     seen_data = {}
-    expected_trading_day = time_util.to_civl(data_entry_list[0].timestamp)
+    expected_trading_day = time_util.to_civil(data_entry_list[0].timestamp)
     for data in data_entry_list:
-        ct = time_util.to_civl(data.timestamp)
+        ct = time_util.to_civil(data.timestamp)
 
         if ct in seen_data:
             duplicate_ids.append(data.id)

@@ -18,7 +18,6 @@ py_library(
     deps = [
         "//xlab/base:time",
         "//xlab/data/proto:data_entry_py_pb2",
-        "//xlab/data/proto:data_type_py_pb2",
         "//xlab/net/proto:time_util",
         "//xlab/trading/dates:trading_days",
     ]

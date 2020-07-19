@@ -6,7 +6,6 @@ from google.protobuf import text_format
 
 from xlab.base import time
 from xlab.data.proto import data_entry_pb2
-from xlab.data.proto import data_type_pb2
 from xlab.data.validation import duplicates
 
 _DataEntry = data_entry_pb2.DataEntry
