@@ -4,6 +4,12 @@ load("@py_deps//:requirements.bzl", "requirement")
 package(default_visibility = ["//xlab:internal"])
 
 py_library(
+    name = "admin",
+    srcs = ["admin.py"],
+    srcs_version = "PY3",
+)
+
+py_library(
     name = "constants",
     srcs = ["constants.py"],
     srcs_version = "PY3",

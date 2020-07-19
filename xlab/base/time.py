@@ -6,6 +6,10 @@ from typing import Optional
 import pendulum
 
 
+_1e3 = 1000
+_1e6 = 1000_000
+_1e9 = 1000_000_000
+
 # For the rationales of theses classes: https://abseil.io/docs/cpp/guides/time
 # Time class follows the interface of https://github.com/abseil/abseil-cpp/blob/master/absl/time/time.h.
 class Time(int):
@@ -26,7 +30,7 @@ class Time(int):
         return self.__class__(super(Time, self).__truediv__(other))
 
     def __str__(self):
-        seconds, nanoseconds = divmod(self, 1e9)
+        seconds, nanoseconds = divmod(self, _1e9)
         return f'Seconds: {seconds}, Nanoseconds: {nanoseconds}'
 
     def __repr__(self):
@@ -77,23 +81,23 @@ def Nanoseconds(n: int) -> Duration:
 
 
 def Microseconds(n: int) -> Duration:
-    return Duration(n * 1e3)
+    return Duration(n * _1e3)
 
 
 def Milliseconds(n: int) -> Duration:
-    return Duration(n * 1e6)
+    return Duration(n * _1e6)
 
 
 def Seconds(n: int) -> Duration:
-    return Duration(n * 1e9)
+    return Duration(n * _1e9)
 
 
 def Minutes(n: int) -> Duration:
-    return Duration(n * 1e9 * 60)
+    return Duration(n * _1e9 * 60)
 
 
 def Hours(n: int) -> Duration:
-    return Duration(n * 1e9 * 60 * 60)
+    return Duration(n * _1e9 * 60 * 60)
 
 
 def FromUnixNanos(nanos: int) -> Time:
@@ -101,15 +105,15 @@ def FromUnixNanos(nanos: int) -> Time:
 
 
 def FromUnixMillis(millis: int) -> Time:
-    return Time(millis * 1e3)
+    return Time(millis * _1e3)
 
 
 def FromUnixMicros(micros: int) -> Time:
-    return Time(micros * 1e6)
+    return Time(micros * _1e6)
 
 
 def FromUnixSeconds(seconds: int) -> Time:
-    return Time(seconds * 1e9)
+    return Time(seconds * _1e9)
 
 
 def ToUnixNanos(t: Time) -> int:
@@ -117,20 +121,20 @@ def ToUnixNanos(t: Time) -> int:
 
 
 def ToUnixMillis(t: Time) -> int:
-    return int(t) / 1e3
+    return int(t / _1e3)
 
 
 def ToUnixMicros(t: Time) -> int:
-    return int(t) / 1e6
+    return int(t / _1e6)
 
 
 def ToUnixSeconds(t: Time) -> int:
-    return int(t) / 1e9
+    return int(t / _1e9)
 
 
 def FromCivil(ct: CivilTime, tz: Timezone = None) -> Time:
     dt = _make_datetime_with_preferred_dst(ct, tz or UTC)
-    return Time(dt.timestamp() * 1e9)
+    return Time(dt.timestamp() * _1e9)
 
 
 def ToCivil(t: Time, tz: Timezone = None) -> CivilTime:

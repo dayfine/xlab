@@ -25,5 +25,6 @@ py_library(
     srcs_version = "PY3",
     deps = [
         "//xlab/data:notebook_deps",
+        "//xlab/util:notebook_deps",
     ],
 )

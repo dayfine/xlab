@@ -33,8 +33,8 @@ def run(date: time.CivilTime, calc_type: DataType.Enum,
 
     mongo_read_filter = {
         'timestamp': {
-            '$gte': time_util.to_civl(inputs_shape[0].timestamp),
-            '$lte': time_util.to_civl(inputs_shape[-1].timestamp)
+            '$gte': time_util.to_civil(inputs_shape[0].timestamp),
+            '$lte': time_util.to_civil(inputs_shape[-1].timestamp)
         }
     }
 

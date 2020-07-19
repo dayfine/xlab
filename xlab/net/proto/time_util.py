@@ -12,7 +12,7 @@ def from_time(t: time.Time) -> timestamp_pb2.Timestamp:
     return pb
 
 
-def to_civl(pb: timestamp_pb2.Timestamp) -> time.CivilTime:
+def to_civil(pb: timestamp_pb2.Timestamp) -> time.CivilTime:
     return time.ToCivil(to_time(pb))
 
 

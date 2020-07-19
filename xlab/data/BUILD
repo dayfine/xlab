@@ -13,5 +13,7 @@ py_library(
         "//xlab/data/proto:data_entry_py_pb2",
         "//xlab/data/proto:data_type_py_pb2",
         "//xlab/data/store/mongo",
+        "//xlab/data/store/mongo:admin",
+        "//xlab/data/validation:notebook_deps",
     ],
 )
