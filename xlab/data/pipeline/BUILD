@@ -3,6 +3,32 @@ load("@py_deps//:requirements.bzl", "requirement")
 
 package(default_visibility = ["//xlab:internal"])
 
+py_binary(
+    name = "find_duplicates",
+    srcs = ["find_duplicates.py"],
+    srcs_version = "PY3",
+    deps = [
+        ":mongo_util",
+        ":find_duplicates_fn",
+        "//xlab/data/store/mongo:admin",
+        requirement("absl-py"),
+        requirement("apache-beam"),
+    ],
+)
+
+py_library(
+    name = "find_duplicates_fn",
+    srcs = ["find_duplicates_fn.py"],
+    srcs_version = "PY3",
+    deps = [
+        "//xlab/data/proto:data_entry_py_pb2",
+        "//xlab/data/validation:duplicates",
+        requirement("absl-py"),
+        requirement("apache-beam"),
+    ],
+)
+
+
 py_library(
     name = "mongo_util",
     srcs = ["mongo_util.py"],

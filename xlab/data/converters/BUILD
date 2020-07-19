@@ -8,7 +8,9 @@ py_library(
     srcs = ["mongo.py"],
     srcs_version = "PY3",
     deps = [
+        "//xlab/base:time",
         "//xlab/data/proto:data_entry_py_pb2",
+        "//xlab/data/proto:data_type_py_pb2",
         requirement("protobuf"),
     ],
 )

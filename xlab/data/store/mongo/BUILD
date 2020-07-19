@@ -7,6 +7,11 @@ py_library(
     name = "admin",
     srcs = ["admin.py"],
     srcs_version = "PY3",
+    deps = [
+        ":constants",
+        ":db_client",
+        requirement("pymongo"),
+    ]
 )
 
 py_library(
