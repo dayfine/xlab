@@ -121,7 +121,7 @@ class TimeTest(absltest.TestCase):
                                          time.ToUnixMillis)
         self._test_conversion_round_trip(1, time.FromUnixMillis,
                                          time.ToUnixMillis)
-        self._test_conversion_round_trip(time.GetCurrentTimeNanos() / 1e3,
+        self._test_conversion_round_trip(time.GetCurrentTimeNanos() // 1000,
                                          time.FromUnixMillis, time.ToUnixMillis)
 
         self._test_conversion_round_trip(-1, time.FromUnixMicros,
@@ -130,7 +130,7 @@ class TimeTest(absltest.TestCase):
                                          time.ToUnixMicros)
         self._test_conversion_round_trip(1, time.FromUnixMicros,
                                          time.ToUnixMicros)
-        self._test_conversion_round_trip(time.GetCurrentTimeNanos() / 1e6,
+        self._test_conversion_round_trip(time.GetCurrentTimeNanos() // 1000_000,
                                          time.FromUnixMicros, time.ToUnixMicros)
 
         self._test_conversion_round_trip(-1, time.FromUnixSeconds,
@@ -139,9 +139,9 @@ class TimeTest(absltest.TestCase):
                                          time.ToUnixSeconds)
         self._test_conversion_round_trip(1, time.FromUnixSeconds,
                                          time.ToUnixSeconds)
-        self._test_conversion_round_trip(time.GetCurrentTimeNanos() / 1e9,
-                                         time.FromUnixSeconds,
-                                         time.ToUnixSeconds)
+        self._test_conversion_round_trip(
+            time.GetCurrentTimeNanos() // 1000_000_000, time.FromUnixSeconds,
+            time.ToUnixSeconds)
 
     def _test_relational(self, older, younger):
         self.assertFalse(older < older)
