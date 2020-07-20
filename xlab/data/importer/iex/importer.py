@@ -28,6 +28,9 @@ class IexDataImporter(importer.DataImporter):
         start_date: Optional[time.CivilTime] = None,
         end_date: Optional[time.CivilTime] = None,
     ) -> Dict[int, List[_DataEntry]]:
+        if not symbol:
+            raise errors.InvalidArgumentError('Symbol not specified')
+
         if not end_date:
             end_date = time.ToCivil(time.Now())
         if not start_date:
@@ -35,6 +38,9 @@ class IexDataImporter(importer.DataImporter):
         if start_date > end_date:
             raise errors.InvalidArgumentError(
                 f'start_date {start_date} is later than end_date {end_date}')
+        if end_date > time.ToCivil(time.Now()):
+            raise errors.InvalidArgumentError(
+                f'end_date {end_date} must be in the past')
 
         data = self._batch_api.get_batch_quotes(symbol)
         chart_series = data[symbol]['chart']

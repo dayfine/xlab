@@ -34,6 +34,7 @@ py_test(
         ":importer",
         "//xlab/base:time",
         "//xlab/data/proto:data_type_py_pb2",
+        "//xlab/util/status:errors",
         requirement("absl-py"),
         requirement("requests"),
         requirement("proto-matcher"),
