@@ -4,15 +4,6 @@ load("@py_deps//:requirements.bzl", "requirement")
 package(default_visibility = ["//xlab:internal"])
 
 py_library(
-    name = "api",
-    srcs = ["api.py"],
-    srcs_version = "PY3",
-    deps = [
-        "//xlab/net/http:requests",
-    ],
-)
-
-py_library(
     name = "iex",
     srcs = ["__init__.py"],
     srcs_version = "PY3",
@@ -26,10 +17,13 @@ py_library(
     srcs = ["importer.py"],
     srcs_version = "PY3",
     deps = [
-        ":api",
+        "//xlab/base:time",
         "//xlab/data/importer",
+        "//xlab/data/importer/iex/api:batch",
         "//xlab/data/proto:data_entry_py_pb2",
         "//xlab/data/proto:data_type_py_pb2",
+        "//xlab/net/proto:time_util",
+        "//xlab/util/status:errors",
     ],
 )
 
@@ -38,7 +32,9 @@ py_test(
     srcs = ["importer_test.py"],
     deps = [
         ":importer",
+        "//xlab/base:time",
         "//xlab/data/proto:data_type_py_pb2",
+        "//xlab/util/status:errors",
         requirement("absl-py"),
         requirement("requests"),
         requirement("proto-matcher"),

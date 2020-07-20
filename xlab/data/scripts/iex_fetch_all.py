@@ -3,7 +3,7 @@ from absl import flags
 from absl import logging
 
 from xlab.data.importer import iex
-from xlab.data.importer.iex import api
+from xlab.data.importer.iex.api import symbols
 from xlab.data.store import mongo
 from xlab.util.status import errors
 
@@ -12,20 +12,10 @@ FLAGS = flags.FLAGS
 flags.DEFINE_string('symbol', None, 'Symbol of the stock to get data for')
 
 
-class IexSymbolsApi:
-
-    def __init__(self, token: str = ''):
-        self._client = api.SimpleIexApiHttpClient(token, 'ref-data/symbols',
-                                                  lambda: {})
-
-    def get_symbols(self):
-        return self._client.call()
-
-
 def main(argv):
     del argv  # Unused.
 
-    symbol_api = IexSymbolsApi()
+    symbol_api = symbols.IexSymbolsApi()
     all_symbols = symbol_api.get_symbols()
     logging.info('Got [%d] symbols', len(all_symbols))
     logging.info('First symbol: [%s]', all_symbols[0])

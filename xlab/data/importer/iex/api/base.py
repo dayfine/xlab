@@ -2,8 +2,9 @@ import os
 
 from typing import Any, Callable, Dict
 
+from requests import exceptions as request_exceptions
 from xlab.net.http import requests
-
+from xlab.util.status import errors
 
 class SimpleIexApiHttpClient:
 
@@ -23,23 +24,11 @@ class SimpleIexApiHttpClient:
         params['token'] = self._token
         url = self._API_URL + self._endpoint_url
         response = self._session.get(url=url, params=params)
-        # Raise if code is not 200.
-        response.raise_for_status()
+
+        try:
+            response.raise_for_status()
+        except request_exceptions.HTTPError as e:
+            if response.status_code >= 500:
+                raise errors.InternalError(e)
+            raise errors.InvalidArgumentError(e)
         return response.json()
-
-
-class IexApiHttpClient:
-
-    def __init__(self, token: str = ''):
-        get_parmas: Callable[[str], Dict[str, Any]] = lambda symbol: {
-            'symbols': ','.join([symbol]),
-            'types': ','.join(['quote', 'chart']),
-            'range': '6m',
-            'chartCloseOnly': True,
-        }
-
-        self._client = SimpleIexApiHttpClient(token, 'stock/market/batch',
-                                              get_parmas)
-
-    def get_batch_quotes(self, symbol: str):
-        return self._client.call(symbol)
