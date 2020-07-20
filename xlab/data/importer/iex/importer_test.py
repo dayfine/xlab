@@ -1,7 +1,7 @@
-import datetime
 import json
-from unittest.mock import patch, Mock
+from unittest import mock
 
+from xlab.base import time
 from absl.testing import absltest
 from hamcrest import assert_that
 import requests
@@ -21,16 +21,15 @@ def _make_response(conent: str,
     response.reason = reason
     return response
 
-
+@mock.patch('xlab.base.time.Now')
+@mock.patch('requests.Session.get')
 class IexDataImporterTest(absltest.TestCase):
 
     def setUp(self):
         self.importer = importer.IexDataImporter(
             api.IexApiHttpClient('fake_token'))
 
-    @patch.object(importer, 'datetime', Mock(wraps=datetime))
-    @patch('requests.Session.get')
-    def test_get_quotes_success(self, mock_get):
+    def test_get_quotes_success(self, mock_get, mock_now):
         api_response_data = """{
           "SPY": {
             "chart": [
@@ -41,8 +40,7 @@ class IexDataImporterTest(absltest.TestCase):
         }"""
 
         mock_get.return_value = _make_response(api_response_data, 200)
-        importer.datetime.datetime.now.return_value = datetime.datetime(
-            2020, 12, 31)
+        mock_now.return_value = time.FromCivil(time.CivilTime(2020, 12, 31))
 
         results = self.importer.get_data('SPY')
 
@@ -95,27 +93,24 @@ class IexDataImporterTest(absltest.TestCase):
             updated_at { seconds: 1609372800 }
         """))
 
-    def test_get_quotes_default_single_day(self):
+    def test_get_quotes_default_single_day(self, mock_get, mock_now):
         pass
 
-    def test_get_quotes_default_end_date(self):
+    def test_get_quotes_default_end_date(self, mock_get, mock_now):
         pass
 
-    @patch.object(importer, 'datetime', Mock(wraps=datetime))
-    @patch('requests.Session.get')
-    def test_get_quotes_backend_failure(self, mock_get):
+    def test_get_quotes_backend_failure(self, mock_get, mock_now):
         mock_get.return_value = _make_response('', 400, 'Invalid argument!')
-        importer.datetime.datetime.now.return_value = datetime.datetime(
-            2020, 12, 31)
+        mock_now.return_value = time.FromCivil(time.CivilTime(2020, 12, 31))
 
         with self.assertRaisesRegex(request_exceptions.HTTPError,
                                     '400 Client Error: Invalid argument'):
             self.importer.get_data('SPY')
 
-    def test_get_quotes_invalid_dates(self):
+    def test_get_quotes_invalid_dates(self, mock_get, mock_now):
         pass
 
-    def test_get_quotes_empty_symbol(self):
+    def test_get_quotes_empty_symbol(self, mock_get, mock_now):
         pass
 
 

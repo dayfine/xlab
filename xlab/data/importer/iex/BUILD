@@ -27,9 +27,12 @@ py_library(
     srcs_version = "PY3",
     deps = [
         ":api",
+        "//xlab/base:time",
         "//xlab/data/importer",
         "//xlab/data/proto:data_entry_py_pb2",
         "//xlab/data/proto:data_type_py_pb2",
+        "//xlab/net/proto:time_util",
+        "//xlab/util/status:errors",
     ],
 )
 
@@ -38,6 +41,7 @@ py_test(
     srcs = ["importer_test.py"],
     deps = [
         ":importer",
+        "//xlab/base:time",
         "//xlab/data/proto:data_type_py_pb2",
         requirement("absl-py"),
         requirement("requests"),

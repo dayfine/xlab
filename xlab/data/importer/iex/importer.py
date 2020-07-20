@@ -1,11 +1,15 @@
-import datetime
+from typing import Dict, List, Optional
 
-from typing import Dict, List
-
+from xlab.base import time
 from xlab.data.proto import data_entry_pb2, data_type_pb2
 from xlab.data import importer
 from xlab.data.importer.iex import api
+from xlab.net.proto import time_util
+from xlab.util.status import errors
 
+_DATA_TYPE_MAP = {
+
+}
 
 class IexDataImporter(importer.DataImporter):
 
@@ -13,25 +17,28 @@ class IexDataImporter(importer.DataImporter):
                  iex_client: api.IexApiHttpClient = api.IexApiHttpClient()):
         self._iex_client = iex_client
 
-    # TODO: map to canonical error space.
     def get_data(
         self,
         symbol: str,
-        start_date: datetime.date = datetime.date.today(),
-        end_date: datetime.date = datetime.date.today()
+        start_date: Optional[time.CivilTime] = None,
+        end_date: Optional[time.CivilTime] = None,
     ) -> Dict[str, List[data_entry_pb2.DataEntry]]:
-        # TODO: handle dates properly.
-        if end_date != datetime.date.today():
-            pass
+        if not end_date:
+            end_date = time.ToCivil(time.Now())
+        if not start_date:
+            start_date = end_date
+        if start_date > end_date:
+            raise errors.InvalidArgumentError(
+                f'start_date {start_date} is later than end_date {end_date}')
+
         data = self._iex_client.get_batch_quotes(symbol)
         chart_series = data[symbol]['chart']
 
-        now = datetime.datetime.now()
+        now = time.Now()
         close_results = []
         volume_results = []
         for chart_data in chart_series:
-            data_date = datetime.datetime.strptime(chart_data['date'],
-                                                   '%Y-%m-%d')
+            data_date = time.ParseCivilTime(chart_data['date'])
 
             close_data = self._make_data_base(symbol, data_date, now)
             close_data.data_type = data_type_pb2.DataType.CLOSE_PRICE
@@ -48,11 +55,11 @@ class IexDataImporter(importer.DataImporter):
             data_type_pb2.DataType.VOLUME: volume_results
         }
 
-    def _make_data_base(self, symbol: str, data_date: datetime.datetime,
-                        now: datetime.datetime) -> data_entry_pb2.DataEntry:
+    def _make_data_base(self, symbol: str, data_date: time.CivilTime,
+                        now: time.time) -> data_entry_pb2.DataEntry:
         data_entry = data_entry_pb2.DataEntry()
         data_entry.symbol = symbol
         data_entry.data_space = data_entry_pb2.DataEntry.STOCK_DATA
-        data_entry.timestamp.FromDatetime(data_date)
-        data_entry.updated_at.FromDatetime(now)
+        data_entry.timestamp.CopyFrom(time_util.from_civil(data_date))
+        data_entry.updated_at.CopyFrom(time_util.from_time(now))
         return data_entry
