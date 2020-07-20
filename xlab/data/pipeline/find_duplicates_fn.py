@@ -33,6 +33,6 @@ def find_duplicates(data_entries: Iterable[_DataEntry]):
             yield safe_to_delete_duplicate_ids
         if duplicates_with_different_values:
             yield _TaggedOutput('duplicates_with_different_values',
-                                duplicate_data_entries)
+                                duplicates_with_different_values)
     except Exception as e:
         logging.error(f'Error when trying to produce duplicates: {e}')
