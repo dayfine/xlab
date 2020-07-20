@@ -20,19 +20,20 @@ def find_all_duplicates(
 
     Returns:
         A tuple of two values:
-          duplicate_ids: IDs of all values that are duplicates. The IDs of the
-            authentic values are not included, and older values are assumed to
-            be authentic.
+          safe_to_delete_duplicate_ids: IDs of all duplicate data entry that are
+            safe to delete, i.e. have the same value of the authentic entries.
+            The IDs of the authentic values are not included, and older values
+            are assumed to be authentic.
           duplicates_with_different_values: a mapping where the key is the id of
             the authentic ids, and the value is all its duplicates that have a
             different value with the authentic ones. This allow returning all
             data candidates for further inspection, to determine which value
             should be kept as the authentic one.
     """
-    duplicate_ids = []
+    safe_to_delete_duplicate_ids = []
     duplicates_with_different_values = collections.defaultdict(list)
     if len(data_entry_list) < 1:
-        return duplicate_ids, duplicates_with_different_values
+        return safe_to_delete_duplicate_ids, duplicates_with_different_values
 
     data_entry_list.sort(key=lambda x: (time_util.to_civil(x.timestamp),
                                         time_util.to_civil(x.updated_at)))
@@ -41,10 +42,11 @@ def find_all_duplicates(
     for data in data_entry_list:
         ct = time_util.to_civil(data.timestamp)
 
-        if ct in seen_data:
-            duplicate_ids.append(data.id)
-            seen = seen_data[ct]
-            if data.value != seen.value:
+        seen = seen_data.get(ct)
+        if seen:
+            if data.value == seen.value:
+                safe_to_delete_duplicate_ids.append(data.id)
+            else:
                 duplicates_with_different_values[seen.id].append(data)
             continue
 
@@ -56,4 +58,4 @@ def find_all_duplicates(
         expected_trading_day = trading_days.get_next_n(expected_trading_day,
                                                        1)[0]
 
-    return duplicate_ids, duplicates_with_different_values
+    return safe_to_delete_duplicate_ids, duplicates_with_different_values
