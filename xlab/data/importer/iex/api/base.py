@@ -26,20 +26,3 @@ class SimpleIexApiHttpClient:
         # Raise if code is not 200.
         response.raise_for_status()
         return response.json()
-
-
-class IexApiHttpClient:
-
-    def __init__(self, token: str = ''):
-        get_parmas: Callable[[str], Dict[str, Any]] = lambda symbol: {
-            'symbols': ','.join([symbol]),
-            'types': ','.join(['quote', 'chart']),
-            'range': '6m',
-            'chartCloseOnly': True,
-        }
-
-        self._client = SimpleIexApiHttpClient(token, 'stock/market/batch',
-                                              get_parmas)
-
-    def get_batch_quotes(self, symbol: str):
-        return self._client.call(symbol)

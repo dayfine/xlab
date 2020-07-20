@@ -52,7 +52,8 @@ def find_all_duplicates(
 
         if ct != expected_trading_day:
             raise ValueError(
-                f'Time error: expected({expected_trading_day}) got({ct}) while checking {data}')
+                f'Time error: expected({expected_trading_day}) got({ct}) while checking {data}'
+            )
 
         seen_data[ct] = data
         expected_trading_day = trading_days.get_next_n(expected_trading_day,

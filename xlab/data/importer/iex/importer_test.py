@@ -9,7 +9,8 @@ from requests import exceptions as request_exceptions
 from proto_matcher import equals_proto
 
 from xlab.data.proto import data_type_pb2
-from xlab.data.importer.iex import api, importer
+from xlab.data.importer.iex import importer
+from xlab.data.importer.iex.api import batch
 
 
 def _make_response(conent: str,
@@ -21,13 +22,14 @@ def _make_response(conent: str,
     response.reason = reason
     return response
 
+
 @mock.patch('xlab.base.time.Now')
 @mock.patch('requests.Session.get')
 class IexDataImporterTest(absltest.TestCase):
 
     def setUp(self):
         self.importer = importer.IexDataImporter(
-            api.IexApiHttpClient('fake_token'))
+            batch.IexBatchApi('fake_token'))
 
     def test_get_quotes_success(self, mock_get, mock_now):
         api_response_data = """{

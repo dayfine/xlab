@@ -22,7 +22,7 @@ py_binary(
     srcs_version = "PY3",
     deps = [
         "//xlab/data/importer/iex",
-        "//xlab/data/importer/iex:api",
+        "//xlab/data/importer/iex/api:symbols",
         "//xlab/data/store/mongo",
         "//xlab/util/status:errors",
         requirement("absl-py"),

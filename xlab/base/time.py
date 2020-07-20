@@ -5,10 +5,10 @@ from typing import Optional
 
 import pendulum
 
-
 _1e3 = 1000
 _1e6 = 1000_000
 _1e9 = 1000_000_000
+
 
 # For the rationales of theses classes: https://abseil.io/docs/cpp/guides/time
 # Time class follows the interface of https://github.com/abseil/abseil-cpp/blob/master/absl/time/time.h.
