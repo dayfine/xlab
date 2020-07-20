@@ -113,7 +113,7 @@ class DataValiationDuplicatesTestCase(absltest.TestCase):
                 get_data_entry_one_duplicate('125'), diff_one_a, diff_one_b,
                 get_data_entry_two(), diff_two
             ]),
-            equal_to((['124', '125', '666', '777', 'abcdefg'], {
+            equal_to((['124', '125'], {
                 '123': [diff_one_a, diff_one_b],
                 '234': [diff_two],
             })))
