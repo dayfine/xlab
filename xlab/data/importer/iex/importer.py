@@ -42,7 +42,7 @@ class IexDataImporter(importer.DataImporter):
             raise errors.InvalidArgumentError(
                 f'end_date {end_date} must be in the past')
 
-        data = self._batch_api.get_batch_quotes(symbol)
+        data = self._batch_api.get_batch_quotes(symbol, start_date, end_date)
         chart_series = data[symbol]['chart']
 
         now = time.Now()

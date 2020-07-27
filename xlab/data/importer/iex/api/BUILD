@@ -8,10 +8,10 @@ py_library(
     deps = [
         ":base",
         ":batch",
+        ":historical_price",
         ":symbols",
     ],
 )
-
 
 py_library(
     name = "base",
@@ -30,6 +30,18 @@ py_library(
     srcs_version = "PY3",
     deps = [
         ":base",
+        "//xlab/base:time",
+    ],
+)
+
+py_library(
+    name = "historical_price",
+    srcs = ["historical_price.py"],
+    srcs_version = "PY3",
+    deps = [
+        ":base",
+        ":util",
+        "//xlab/base:time",
     ],
 )
 
@@ -39,5 +51,14 @@ py_library(
     srcs_version = "PY3",
     deps = [
         ":base",
+    ],
+)
+
+py_library(
+    name = "util",
+    srcs = ["util.py"],
+    srcs_version = "PY3",
+    deps = [
+        "//xlab/base:time",
     ],
 )
