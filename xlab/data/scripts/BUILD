@@ -30,18 +30,6 @@ py_binary(
 )
 
 py_binary(
-    name = "iex_fetch_data",
-    srcs = ["iex_fetch_data.py"],
-    srcs_version = "PY3",
-    deps = [
-        "//xlab/data/importer/iex",
-        "//xlab/data/store/textproto",
-        "//xlab/util/status:errors",
-        requirement("absl-py"),
-    ],
-)
-
-py_binary(
     name = "import_to_mongo",
     srcs = ["import_to_mongo.py"],
     srcs_version = "PY3",

@@ -4,6 +4,16 @@ load("@py_deps//:requirements.bzl", "requirement")
 package(default_visibility = ["//xlab:internal"])
 
 py_library(
+    name = "api",
+    deps = [
+        ":base",
+        ":batch",
+        ":symbols",
+    ],
+)
+
+
+py_library(
     name = "base",
     srcs = ["base.py"],
     srcs_version = "PY3",
