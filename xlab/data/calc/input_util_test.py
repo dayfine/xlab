@@ -15,39 +15,43 @@ _DataType = data_type_pb2.DataType
 
 
 def get_input_shapes():
-    return (text_format.Parse(
-        f"""
-        data_type: CLOSE_PRICE
-        timestamp {{
-          seconds: {time.as_seconds(2020, 1, 2)}
-        }}""", _DataEntry()),
-            text_format.Parse(
-                f"""
-        data_type: CLOSE_PRICE
-        timestamp {{
-          seconds: {time.as_seconds(2020, 1, 3)}
-        }}""", _DataEntry()))
+    return (
+        text_format.Parse(
+            f"""
+            data_type: CLOSE_PRICE
+            timestamp {{
+                seconds: {time.as_seconds(2020, 1, 2)}
+            }}""", _DataEntry()),
+        text_format.Parse(
+            f"""
+            data_type: CLOSE_PRICE
+            timestamp {{
+                seconds: {time.as_seconds(2020, 1, 3)}
+            }}""", _DataEntry()),
+    )
 
 
 def get_valid_inputs():
-    return (text_format.Parse(
-        f"""
-        data_space: STOCK_DATA
-        symbol: "SPY"
-        data_type: CLOSE_PRICE
-        value: 123.45
-        timestamp {{
-          seconds: {time.as_seconds(2020, 1, 2)}
-        }}""", _DataEntry()),
-            text_format.Parse(
-                f"""
-        data_space: STOCK_DATA
-        symbol: "SPY"
-        data_type: CLOSE_PRICE
-        value: 111.11
-        timestamp {{
-          seconds: {time.as_seconds(2020, 1, 3)}
-        }}""", _DataEntry()))
+    return (
+        text_format.Parse(
+            f"""
+            data_space: STOCK_DATA
+            symbol: "SPY"
+            data_type: CLOSE_PRICE
+            value: 123.45
+            timestamp {{
+                seconds: {time.as_seconds(2020, 1, 2)}
+            }}""", _DataEntry()),
+        text_format.Parse(
+            f"""
+            data_space: STOCK_DATA
+            symbol: "SPY"
+            data_type: CLOSE_PRICE
+            value: 111.11
+            timestamp {{
+                seconds: {time.as_seconds(2020, 1, 3)}
+            }}""", _DataEntry()),
+    )
 
 
 class CalcInputUtilTest(absltest.TestCase):
@@ -72,15 +76,15 @@ class CalcInputUtilTest(absltest.TestCase):
             got,
             contains(
                 equals_proto(f"""
-            data_type: CLOSE_PRICE
-            timestamp {{
-                seconds: {time.as_seconds(2017, 12, 22)}
-            }}"""),
+                    data_type: CLOSE_PRICE
+                    timestamp {{
+                        seconds: {time.as_seconds(2017, 12, 22)}
+                    }}"""),
                 equals_proto(f"""
-            data_type: CLOSE_PRICE
-            timestamp {{
-                seconds: {time.as_seconds(2017, 12, 26)}
-            }}""")))
+                    data_type: CLOSE_PRICE
+                    timestamp {{
+                        seconds: {time.as_seconds(2017, 12, 26)}
+                    }}""")))
 
     def test_making_recursive_input_shape(self):
         got = input_util.recursive_inputs_shape(
@@ -93,15 +97,15 @@ class CalcInputUtilTest(absltest.TestCase):
             got,
             contains(
                 equals_proto(f"""
-            data_type: EMA_20D
-            timestamp {{
-                seconds: {time.as_seconds(2020, 1, 2)}
-            }}"""),
+                    data_type: EMA_20D
+                    timestamp {{
+                        seconds: {time.as_seconds(2020, 1, 2)}
+                    }}"""),
                 equals_proto(f"""
-            data_type: CLOSE_PRICE
-            timestamp {{
-                seconds: {time.as_seconds(2020, 1, 3)}
-            }}""")))
+                    data_type: CLOSE_PRICE
+                    timestamp {{
+                        seconds: {time.as_seconds(2020, 1, 3)}
+                    }}""")))
 
     def test_making_recursive_input_shape_account_for_trading_days(self):
         got = input_util.recursive_inputs_shape(
@@ -114,15 +118,15 @@ class CalcInputUtilTest(absltest.TestCase):
             got,
             contains(
                 equals_proto(f"""
-            data_type: EMA_20D
-            timestamp {{
-                seconds: {time.as_seconds(2017, 12, 22)}
-            }}"""),
+                    data_type: EMA_20D
+                    timestamp {{
+                        seconds: {time.as_seconds(2017, 12, 22)}
+                    }}"""),
                 equals_proto(f"""
-            data_type: CLOSE_PRICE
-            timestamp {{
-                seconds: {time.as_seconds(2017, 12, 26)}
-            }}""")))
+                    data_type: CLOSE_PRICE
+                    timestamp {{
+                        seconds: {time.as_seconds(2017, 12, 26)}
+                    }}""")))
 
     def test_sort_to_inputs_shape(self):
         inputs = reversed(get_valid_inputs())

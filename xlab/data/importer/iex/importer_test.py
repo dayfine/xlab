@@ -33,7 +33,8 @@ class IexDataImporterTest(absltest.TestCase):
             batch.IexBatchApi('fake_token'))
 
     def test_get_quotes_success(self, mock_get, mock_now):
-        mock_get.return_value = _make_response(200, """{
+        mock_get.return_value = _make_response(
+            200, """{
           "SPY": {
             "chart": [
               {"date":"2020-03-05","close":319.69,"volume":242964067,"change":0,"changePercent":0,"changeOverTime":0},
@@ -53,41 +54,43 @@ class IexDataImporterTest(absltest.TestCase):
 
         assert_that(
             results[data_type_pb2.DataType.CLOSE_PRICE],
-            contains(equals_proto(f"""
-                symbol: "SPY"
-                data_space: STOCK_DATA
-                data_type: CLOSE_PRICE
-                value: 319.69
-                timestamp {{ seconds: {time.as_seconds(2020, 3, 5)} }}
-                updated_at {{ seconds: {time.as_seconds(2020, 3, 11)} }}
-            """),
-            equals_proto(f"""
-                symbol: "SPY"
-                data_space: STOCK_DATA
-                data_type: CLOSE_PRICE
-                value: 308.48
-                timestamp {{ seconds: {time.as_seconds(2020, 3, 6)} }}
-                updated_at {{ seconds: {time.as_seconds(2020, 3, 11)} }}
-            """)))
+            contains(
+                equals_proto(f"""
+                    symbol: "SPY"
+                    data_space: STOCK_DATA
+                    data_type: CLOSE_PRICE
+                    value: 319.69
+                    timestamp {{ seconds: {time.as_seconds(2020, 3, 5)} }}
+                    updated_at {{ seconds: {time.as_seconds(2020, 3, 11)} }}
+                """),
+                equals_proto(f"""
+                    symbol: "SPY"
+                    data_space: STOCK_DATA
+                    data_type: CLOSE_PRICE
+                    value: 308.48
+                    timestamp {{ seconds: {time.as_seconds(2020, 3, 6)} }}
+                    updated_at {{ seconds: {time.as_seconds(2020, 3, 11)} }}
+                """)))
 
         assert_that(
             results[data_type_pb2.DataType.VOLUME],
-            contains(equals_proto(f"""
-                symbol: "SPY"
-                data_space: STOCK_DATA
-                data_type: VOLUME
-                value: 242964067.0
-                timestamp {{ seconds: {time.as_seconds(2020, 3, 5)} }}
-                updated_at {{ seconds: {time.as_seconds(2020, 3, 11)} }}
-            """),
-            equals_proto(f"""
-                symbol: "SPY"
-                data_space: STOCK_DATA
-                data_type: VOLUME
-                value: 300862938.0
-                timestamp {{ seconds: {time.as_seconds(2020, 3, 6)} }}
-                updated_at {{ seconds: {time.as_seconds(2020, 3, 11)} }}
-            """)))
+            contains(
+                equals_proto(f"""
+                    symbol: "SPY"
+                    data_space: STOCK_DATA
+                    data_type: VOLUME
+                    value: 242964067.0
+                    timestamp {{ seconds: {time.as_seconds(2020, 3, 5)} }}
+                    updated_at {{ seconds: {time.as_seconds(2020, 3, 11)} }}
+                """),
+                equals_proto(f"""
+                    symbol: "SPY"
+                    data_space: STOCK_DATA
+                    data_type: VOLUME
+                    value: 300862938.0
+                    timestamp {{ seconds: {time.as_seconds(2020, 3, 6)} }}
+                    updated_at {{ seconds: {time.as_seconds(2020, 3, 11)} }}
+                """)))
 
     def test_get_quotes_default_single_day(self, mock_get, mock_now):
         mock_get.return_value = _make_response(
@@ -108,25 +111,27 @@ class IexDataImporterTest(absltest.TestCase):
 
         assert_that(
             results[data_type_pb2.DataType.CLOSE_PRICE],
-            contains(equals_proto(f"""
-                symbol: "ABC"
-                data_space: STOCK_DATA
-                data_type: CLOSE_PRICE
-                value: 300.00
-                timestamp {{ seconds: {time.as_seconds(2020, 3, 11)} }}
-                updated_at {{ seconds: {time.as_seconds(2020, 3, 11)} }}
-            """)))
+            contains(
+                equals_proto(f"""
+                    symbol: "ABC"
+                    data_space: STOCK_DATA
+                    data_type: CLOSE_PRICE
+                    value: 300.00
+                    timestamp {{ seconds: {time.as_seconds(2020, 3, 11)} }}
+                    updated_at {{ seconds: {time.as_seconds(2020, 3, 11)} }}
+                """)))
 
         assert_that(
             results[data_type_pb2.DataType.VOLUME],
-            contains(equals_proto(f"""
-                symbol: "ABC"
-                data_space: STOCK_DATA
-                data_type: VOLUME
-                value: 231231312.0
-                timestamp {{ seconds: {time.as_seconds(2020, 3, 11)} }}
-                updated_at {{ seconds: {time.as_seconds(2020, 3, 11)} }}
-            """)))
+            contains(
+                equals_proto(f"""
+                    symbol: "ABC"
+                    data_space: STOCK_DATA
+                    data_type: VOLUME
+                    value: 231231312.0
+                    timestamp {{ seconds: {time.as_seconds(2020, 3, 11)} }}
+                    updated_at {{ seconds: {time.as_seconds(2020, 3, 11)} }}
+                """)))
 
     def test_get_quotes_default_end_date(self, mock_get, mock_now):
         mock_get.return_value = _make_response(
@@ -150,41 +155,41 @@ class IexDataImporterTest(absltest.TestCase):
             results[data_type_pb2.DataType.CLOSE_PRICE],
             contains(
                 equals_proto(f"""
-                symbol: "SPY"
-                data_space: STOCK_DATA
-                data_type: CLOSE_PRICE
-                value: 319.69
-                timestamp {{ seconds: {time.as_seconds(2020, 3, 5)} }}
-                updated_at {{ seconds: {time.as_seconds(2020, 3, 7)} }}
-            """),
+                    symbol: "SPY"
+                    data_space: STOCK_DATA
+                    data_type: CLOSE_PRICE
+                    value: 319.69
+                    timestamp {{ seconds: {time.as_seconds(2020, 3, 5)} }}
+                    updated_at {{ seconds: {time.as_seconds(2020, 3, 7)} }}
+                """),
                 equals_proto(f"""
-                symbol: "SPY"
-                data_space: STOCK_DATA
-                data_type: CLOSE_PRICE
-                value: 308.48
-                timestamp {{ seconds: {time.as_seconds(2020, 3, 6)} }}
-                updated_at {{ seconds: {time.as_seconds(2020, 3, 7)} }}
-            """)))
+                    symbol: "SPY"
+                    data_space: STOCK_DATA
+                    data_type: CLOSE_PRICE
+                    value: 308.48
+                    timestamp {{ seconds: {time.as_seconds(2020, 3, 6)} }}
+                    updated_at {{ seconds: {time.as_seconds(2020, 3, 7)} }}
+                """)))
 
         assert_that(
             results[data_type_pb2.DataType.VOLUME],
             contains(
                 equals_proto(f"""
-                symbol: "SPY"
-                data_space: STOCK_DATA
-                data_type: VOLUME
-                value: 242964067.0
-                timestamp {{ seconds: {time.as_seconds(2020, 3, 5)} }}
-                updated_at {{ seconds: {time.as_seconds(2020, 3, 7)} }}
-            """),
+                    symbol: "SPY"
+                    data_space: STOCK_DATA
+                    data_type: VOLUME
+                    value: 242964067.0
+                    timestamp {{ seconds: {time.as_seconds(2020, 3, 5)} }}
+                    updated_at {{ seconds: {time.as_seconds(2020, 3, 7)} }}
+                """),
                 equals_proto(f"""
-                symbol: "SPY"
-                data_space: STOCK_DATA
-                data_type: VOLUME
-                value: 300862938.0
-                timestamp {{ seconds: {time.as_seconds(2020, 3, 6)} }}
-                updated_at {{ seconds: {time.as_seconds(2020, 3, 7)} }}
-            """)))
+                    symbol: "SPY"
+                    data_space: STOCK_DATA
+                    data_type: VOLUME
+                    value: 300862938.0
+                    timestamp {{ seconds: {time.as_seconds(2020, 3, 6)} }}
+                    updated_at {{ seconds: {time.as_seconds(2020, 3, 7)} }}
+                """)))
 
     def test_get_quotes_backend_failure(self, mock_get, mock_now):
         mock_get.return_value = _make_response(501, '', 'Server Unavailable')
