@@ -21,21 +21,10 @@ py_binary(
     srcs = ["iex_fetch_all.py"],
     srcs_version = "PY3",
     deps = [
+        "//xlab/base:time",
         "//xlab/data/importer/iex",
         "//xlab/data/importer/iex/api:symbols",
         "//xlab/data/store/mongo",
-        "//xlab/util/status:errors",
-        requirement("absl-py"),
-    ],
-)
-
-py_binary(
-    name = "iex_fetch_data",
-    srcs = ["iex_fetch_data.py"],
-    srcs_version = "PY3",
-    deps = [
-        "//xlab/data/importer/iex",
-        "//xlab/data/store/textproto",
         "//xlab/util/status:errors",
         requirement("absl-py"),
     ],

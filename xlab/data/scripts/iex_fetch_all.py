@@ -2,6 +2,7 @@ from absl import app
 from absl import flags
 from absl import logging
 
+from xlab.base import time
 from xlab.data.importer import iex
 from xlab.data.importer.iex.api import symbols
 from xlab.data.store import mongo
@@ -9,7 +10,9 @@ from xlab.util.status import errors
 
 FLAGS = flags.FLAGS
 
-flags.DEFINE_string('symbol', None, 'Symbol of the stock to get data for')
+flags.DEFINE_string(
+    'start_date', None,
+    'Staring from which past date to backfill, in YYYY-MM-DD format')
 
 
 def main(argv):
@@ -22,10 +25,11 @@ def main(argv):
 
     iex_provider = iex.IexDataImporter()
     store = mongo.MongoDataStore()
+    start_date = time.ParseCivilTime(FLAGS.start_date)
 
     for symbol_dict in all_symbols:
         symbol = symbol_dict['symbol']
-        results = iex_provider.get_data(symbol)
+        results = iex_provider.get_data(symbol, start_date)
         for data_type, data_entry_list in results.items():
             logging.info('%d items fetched for [%s|%s]', len(data_entry_list),
                          symbol, data_type)

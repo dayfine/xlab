@@ -8,6 +8,7 @@ py_library(
     deps = [
         "//xlab/data/calc",
         "//xlab/data/importer/iex",
+        "//xlab/data/importer/iex/api",
         "//xlab/data/pipeline:mongo_util",
         "//xlab/data/pipeline:produce_calc_fn",
         "//xlab/data/proto:data_entry_py_pb2",

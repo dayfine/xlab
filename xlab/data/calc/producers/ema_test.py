@@ -35,15 +35,14 @@ class EmaCalculationTest(absltest.TestCase):
 
         assert_that(
             ema.make_ema_20d_producer().calculate(close_prices),
-            equals_proto("""
+            equals_proto(f"""
                 symbol: "TEST"
                 data_space: STOCK_DATA
                 data_type: EMA_20D
                 value: 200.0
-                timestamp {
-                    seconds: 1507593600  # 2017-10-10
-                }
-            """))
+                timestamp {{
+                    seconds: {time.as_seconds(2017, 10, 10)}
+                }}"""))
 
     def test_ema_20_initial_calculation(self):
         # INTC 2019-12-03 to 2019-12-31
@@ -62,15 +61,14 @@ class EmaCalculationTest(absltest.TestCase):
         # which is 58.46, because EMA accounts for *all* past data
         assert_that(
             ema.make_ema_20d_producer().calculate(close_prices),
-            equals_proto("""
+            equals_proto(f"""
                 symbol: "TEST"
                 data_space: STOCK_DATA
                 data_type: EMA_20D
                 value: 58.255796513052346
-                timestamp {
-                    seconds: 1577750400
-                }
-            """))
+                timestamp {{
+                    seconds: {time.as_seconds(2019, 12, 31)}
+                }}"""))
 
     def test_ema20_recursive_calculation(self):
         date = time.FromCivil(time.CivilTime(2020, 1, 1))
@@ -86,15 +84,14 @@ class EmaCalculationTest(absltest.TestCase):
 
         assert_that(
             ema.make_ema_20d_producer().calculate((ema_last, close_now)),
-            equals_proto("""
+            equals_proto(f"""
                 symbol: "TEST"
                 data_space: STOCK_DATA
                 data_type: EMA_20D
                 value: 58.68666666666667
-                timestamp {
-                    seconds: 1577836800
-                }
-            """))
+                timestamp {{
+                    seconds: {time.as_seconds(2020, 1, 1)}
+                }}"""))
 
     def test_raise_when_inputs_do_not_meet_accpeted_input_shapes(self):
         date = time.CivilTime(2017, 10, 10)

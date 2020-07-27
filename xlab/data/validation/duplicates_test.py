@@ -11,10 +11,6 @@ from xlab.data.validation import duplicates
 _DataEntry = data_entry_pb2.DataEntry
 
 
-def _as_seconds(ct: time.CivilTime) -> int:
-    return time.ToUnixSeconds(time.FromCivil(ct))
-
-
 def get_data_entry_one():
     return text_format.Parse(
         f"""
@@ -24,7 +20,7 @@ def get_data_entry_one():
         data_type: CLOSE_PRICE
         value: 290.87
         timestamp {{
-            seconds: {_as_seconds(time.CivilTime(2017, 11, 20))}
+            seconds: {time.as_seconds(2017, 11, 20)}
         }}
         updated_at {{
             seconds: 5555555
@@ -41,7 +37,7 @@ def get_data_entry_one_duplicate(duplicate_id):
         data_type: CLOSE_PRICE
         value: 290.87
         timestamp {{
-            seconds: {_as_seconds(time.CivilTime(2017, 11, 20))}
+            seconds: {time.as_seconds(2017, 11, 20)}
         }}
         updated_at {{
             seconds: 5555666
@@ -58,7 +54,7 @@ def get_data_entry_two():
         data_type: CLOSE_PRICE
         value: 300.01
         timestamp {{
-            seconds: {_as_seconds(time.CivilTime(2017, 11, 21))}
+            seconds: {time.as_seconds(2017, 11, 21)}
         }}
         updated_at {{
             seconds: 5555555

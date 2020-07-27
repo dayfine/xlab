@@ -152,6 +152,11 @@ def ParseCivilTime(isoformat: str) -> CivilTime:
     return _make_datetime_with_preferred_dst(ct, UTC).naive()
 
 
+# Util to represent in  as seconds, useful in tests.
+def as_seconds(*args) -> int:
+    return ToUnixSeconds(FromCivil(CivilTime(*args)))
+
+
 def _to_datetime(t: Time, tz: Timezone = None) -> pendulum.DateTime:
     if not tz:
         tz = UTC

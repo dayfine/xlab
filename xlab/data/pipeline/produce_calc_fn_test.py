@@ -62,26 +62,26 @@ def get_recursive_inputs_for_ema20(t: time.Time,
 
 def expected_ema20d_test() -> DataEntry:
     return text_format.Parse(
-        """
+        f"""
         symbol: "TEST"
         data_space: STOCK_DATA
         data_type: EMA_20D
         value: 58.255796513052346
-        timestamp {
-            seconds: 1577750400
-        }""", DataEntry())
+        timestamp {{
+            seconds: {time.as_seconds(2019, 12, 31)}
+        }}""", DataEntry())
 
 
 def expected_recursive_ema20d_test() -> DataEntry:
     return text_format.Parse(
-        """
+        f"""
         symbol: "TEST"
         data_space: STOCK_DATA
         data_type: EMA_20D
         value: 58.45666666666667
-        timestamp {
-            seconds: 1577750400
-        }""", DataEntry())
+        timestamp {{
+            seconds: {time.as_seconds(2019, 12, 31)}
+        }}""", DataEntry())
 
 
 class ProduceCalcFnTest(absltest.TestCase):
@@ -143,14 +143,14 @@ class ProduceCalcFnTest(absltest.TestCase):
                 equal_to([
                     expected_ema20d_test(),
                     text_format.Parse(
-                        """
+                        f"""
                         symbol: "IBM"
                         data_space: STOCK_DATA
                         data_type: EMA_20D
                         value: 58.255796513052346
-                        timestamp {
-                            seconds: 1577750400
-                        }""", DataEntry())
+                        timestamp {{
+                            seconds: {time.as_seconds(2019, 12, 31)}
+                        }}""", DataEntry())
                 ]))
 
     def test_produce_recursive_calc_fn(self):
