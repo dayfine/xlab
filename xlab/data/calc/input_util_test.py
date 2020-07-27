@@ -13,24 +13,19 @@ from xlab.util.status import errors
 _DataEntry = data_entry_pb2.DataEntry
 _DataType = data_type_pb2.DataType
 
-SECS_2020_01_02 = 1577923200
-SECS_2020_01_03 = 1578009600
-SECS_2017_12_22 = 1513900800
-SECS_2017_12_26 = 1514246400
-
 
 def get_input_shapes():
     return (text_format.Parse(
         f"""
         data_type: CLOSE_PRICE
         timestamp {{
-          seconds: {SECS_2020_01_02}
+          seconds: {time.as_seconds(2020, 1, 2)}
         }}""", _DataEntry()),
             text_format.Parse(
                 f"""
         data_type: CLOSE_PRICE
         timestamp {{
-          seconds: {SECS_2020_01_03}
+          seconds: {time.as_seconds(2020, 1, 3)}
         }}""", _DataEntry()))
 
 
@@ -42,7 +37,7 @@ def get_valid_inputs():
         data_type: CLOSE_PRICE
         value: 123.45
         timestamp {{
-          seconds: {SECS_2020_01_02}
+          seconds: {time.as_seconds(2020, 1, 2)}
         }}""", _DataEntry()),
             text_format.Parse(
                 f"""
@@ -51,7 +46,7 @@ def get_valid_inputs():
         data_type: CLOSE_PRICE
         value: 111.11
         timestamp {{
-          seconds: {SECS_2020_01_03}
+          seconds: {time.as_seconds(2020, 1, 3)}
         }}""", _DataEntry()))
 
 
@@ -79,12 +74,12 @@ class CalcInputUtilTest(absltest.TestCase):
                 equals_proto(f"""
             data_type: CLOSE_PRICE
             timestamp {{
-                seconds: {SECS_2017_12_22}
+                seconds: {time.as_seconds(2017, 12, 22)}
             }}"""),
                 equals_proto(f"""
             data_type: CLOSE_PRICE
             timestamp {{
-                seconds: {SECS_2017_12_26}
+                seconds: {time.as_seconds(2017, 12, 26)}
             }}""")))
 
     def test_making_recursive_input_shape(self):
@@ -100,12 +95,12 @@ class CalcInputUtilTest(absltest.TestCase):
                 equals_proto(f"""
             data_type: EMA_20D
             timestamp {{
-                seconds: {SECS_2020_01_02}
+                seconds: {time.as_seconds(2020, 1, 2)}
             }}"""),
                 equals_proto(f"""
             data_type: CLOSE_PRICE
             timestamp {{
-                seconds: {SECS_2020_01_03}
+                seconds: {time.as_seconds(2020, 1, 3)}
             }}""")))
 
     def test_making_recursive_input_shape_account_for_trading_days(self):
@@ -121,12 +116,12 @@ class CalcInputUtilTest(absltest.TestCase):
                 equals_proto(f"""
             data_type: EMA_20D
             timestamp {{
-                seconds: {SECS_2017_12_22}
+                seconds: {time.as_seconds(2017, 12, 22)}
             }}"""),
                 equals_proto(f"""
             data_type: CLOSE_PRICE
             timestamp {{
-                seconds: {SECS_2017_12_26}
+                seconds: {time.as_seconds(2017, 12, 26)}
             }}""")))
 
     def test_sort_to_inputs_shape(self):
