@@ -30,6 +30,7 @@ py_library(
     srcs_version = "PY3",
     deps = [
         ":base",
+        ":util",
         "//xlab/base:time",
     ],
 )
@@ -60,5 +61,6 @@ py_library(
     srcs_version = "PY3",
     deps = [
         "//xlab/base:time",
+        "//xlab/util/status:errors",
     ],
 )

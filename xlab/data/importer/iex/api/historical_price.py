@@ -1,5 +1,6 @@
 from xlab.base import time
 from xlab.data.importer.iex.api import base
+from xlab.data.importer.iex.api import util
 
 
 class IexHistoricalPriceApi:
@@ -14,7 +15,7 @@ class IexHistoricalPriceApi:
 
 
 def _get_endpoint_url(symbol: str, date: time.CivilTime) -> str:
-    return f'/stock/{symbol}/chart/date/{_to_iex_api_date(date)}'
+    return f'/stock/{symbol}/chart/date/{util._to_iex_api_date(date)}'
 
 
 def _get_params(symbol: str, date: time.CivilTime) -> base.RequestParams:
