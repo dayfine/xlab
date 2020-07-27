@@ -21,6 +21,7 @@ py_binary(
     srcs = ["iex_fetch_all.py"],
     srcs_version = "PY3",
     deps = [
+        "//xlab/base:time",
         "//xlab/data/importer/iex",
         "//xlab/data/importer/iex/api:symbols",
         "//xlab/data/store/mongo",
