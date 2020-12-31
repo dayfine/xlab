@@ -52,7 +52,7 @@ commands:
             export PATH="${HOME}/.cargo/bin:${PATH}"
             rustc -V
 
-            cargo install cargo-raze
+            OPENSSL_INCLUDE_DIR=/opt/local/include/ OPENSSL_DIR=/opt/local/bin/ cargo install cargo-raze
             make raze
 
   # Initializes the CI environment by setting up common environment variables.
