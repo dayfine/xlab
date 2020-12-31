@@ -8,20 +8,20 @@ path = "fake_lib.rs"
 
 [dependencies]
 approx = "=0.3.2"
-protobuf =  { version = "=2.15.1", features = ["with-bytes"] }
-protobuf-codegen = "=2.15.1"
+protobuf =  { version = "=2.18.1", features = ["with-bytes"] }
+protobuf-codegen = "=2.18.1"
 
 [raze]
 genmode = "Remote"
 workspace_path = "//third_party/cargo"
 output_buildfile_suffix = "BUILD"
 
-[raze.crates.protobuf.'2.15.1']
+[raze.crates.protobuf.'2.18.1']
 gen_buildrs = true
 
-    [raze.crates.protobuf.'2.15.1'.buildrs_additional_environment_variables]
-    CARGO_PKG_VERSION = "2.15.1"
+    [raze.crates.protobuf.'2.18.1'.buildrs_additional_environment_variables]
+    CARGO_PKG_VERSION = "2.18.1"
 
-[raze.crates.protobuf-codegen.'2.15.1']
+[raze.crates.protobuf-codegen.'2.18.1']
 gen_buildrs = true
 extra_aliased_targets = ["cargo_bin_protoc_gen_rust"]

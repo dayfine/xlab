@@ -46,10 +46,11 @@ http_archive(
 
 http_archive(
     name = "io_bazel_rules_rust",
-    sha256 = "173e522d81354ab6d2757e7ef1b6d32ac5a86bf70b93af44864f5ccece509e75",
-    strip_prefix = "rules_rust-149400c0fb94f872ff6095e544ad879fa201757f",
+    sha256 = "0e2e633bf0f7f25392ffb477d677c88eb34fe70ffae05e3ad92fdd9f8d6579db",
+    strip_prefix = "rules_rust-bc0578798f50d018ca4278ad5610598c400992c9",
     urls = [
-        "https://github.com/bazelbuild/rules_rust/archive/149400c0fb94f872ff6095e544ad879fa201757f.tar.gz",
+        # Master branch as of 2020-12-05
+        "https://github.com/bazelbuild/rules_rust/archive/bc0578798f50d018ca4278ad5610598c400992c9.tar.gz",
     ],
 )
 
@@ -108,10 +109,6 @@ pip_install(
 load("@io_bazel_rules_rust//rust:repositories.bzl", "rust_repositories")
 
 rust_repositories()
-
-load("@io_bazel_rules_rust//:workspace.bzl", "bazel_version")
-
-bazel_version(name = "bazel_version")
 
 load("@io_bazel_rules_rust//proto:repositories.bzl", "rust_proto_repositories")
 
