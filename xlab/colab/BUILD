@@ -15,6 +15,7 @@ py_binary(
         # Other 3rd party libraries
         requirement("altair"),
         requirement("apache-beam"),
+        requirement("ibapi"),
         requirement("ipywidgets"),
         requirement("pandas"),
     ],
