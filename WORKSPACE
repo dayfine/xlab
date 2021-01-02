@@ -4,16 +4,16 @@ load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 
 http_archive(
     name = "com_google_protobuf",
-    sha256 = "832c476bb442ca98a59c2291b8a504648d1c139b74acc15ef667a0e8f5e984e7",
-    strip_prefix = "protobuf-3.11.3",
-    urls = ["https://github.com/google/protobuf/archive/v3.11.3.zip"],
+    sha256 = "bf0e5070b4b99240183b29df78155eee335885e53a8af8683964579c214ad301",
+    strip_prefix = "protobuf-3.14.0",
+    urls = ["https://github.com/protocolbuffers/protobuf/archive/v3.14.0.zip"],
 )
 
 http_archive(
     name = "com_github_grpc_grpc",
-    sha256 = "b0d3b876d85e4e4375aa211a52a33b7e8ca9f9d6d97a60c3c844070a700f0ea3",
-    strip_prefix = "grpc-1.28.1",
-    urls = ["https://github.com/grpc/grpc/archive/v1.28.1.zip"],
+    sha256 = "aec9faf1e957caa9a28001a606f9b08ef5a165de6900b04615a304f0d6e139ca",
+    strip_prefix = "grpc-1.34.0",
+    urls = ["https://github.com/grpc/grpc/archive/v1.34.0.zip"],
 )
 
 http_archive(
@@ -28,20 +28,11 @@ http_archive(
 
 http_archive(
     name = "rules_python",
-    sha256 = "d3e40ca3b7e00b72d2b1585e0b3396bcce50f0fc692e2b7c91d8b0dc471e3eaf",
-    strip_prefix = "rules_python-748aa53d7701e71101dfd15d800e100f6ff8e5d1",
+    sha256 = "140630a11671b4a5b5e3f1031ff6a8e63c0740dded9c38af9fad49cf6fad00c1",
+    strip_prefix = "rules_python-a16432752ef33b98530f05ca86375b42059b23c0",
     urls = [
-        "https://github.com/bazelbuild/rules_python/archive/748aa53d7701e71101dfd15d800e100f6ff8e5d1.zip",
+        "https://github.com/bazelbuild/rules_python/archive/a16432752ef33b98530f05ca86375b42059b23c0.zip",
     ],
-)
-
-rules_python_external_version = "0.1.5"
-
-http_archive(
-    name = "rules_python_external",
-    sha256 = "bc655e6d402915944e014c3b2cad23d0a97b83a66cc22f20db09c9f8da2e2789",
-    strip_prefix = "rules_python_external-{version}".format(version = rules_python_external_version),
-    url = "https://github.com/dillon-giacoppo/rules_python_external/archive/v{version}.zip".format(version = rules_python_external_version),
 )
 
 http_archive(
@@ -65,13 +56,20 @@ register_toolchains("//:py_toolchain")
 # ================================================================
 # Proto extensions
 # ================================================================
-load("@com_google_protobuf//:protobuf_deps.bzl", "protobuf_deps")
-
-protobuf_deps()
-
 load("@com_github_grpc_grpc//bazel:grpc_deps.bzl", "grpc_deps")
 
 grpc_deps()
+
+load("@com_github_grpc_grpc//bazel:grpc_extra_deps.bzl", "grpc_extra_deps")
+
+grpc_extra_deps()
+
+# ================================================================
+# Proto extensions
+# ================================================================
+load("@com_google_protobuf//:protobuf_deps.bzl", "protobuf_deps")
+
+protobuf_deps()
 
 load(
     "@rules_proto//proto:repositories.bzl",
@@ -86,16 +84,7 @@ rules_proto_toolchains()
 # ================================================================
 # Python extensions
 # ================================================================
-load("@rules_python//python:repositories.bzl", "py_repositories")
-
-py_repositories()
-
-# Only needed if using the packaging rules.
-load("@rules_python_external//:repositories.bzl", "rules_python_external_dependencies")
-
-rules_python_external_dependencies()
-
-load("@rules_python_external//:defs.bzl", "pip_install")
+load("@rules_python//python:pip.bzl", "pip_install")
 
 pip_install(
     name = "py_deps",

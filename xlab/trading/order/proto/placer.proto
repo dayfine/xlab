@@ -1,0 +1,44 @@
+syntax = "proto3";
+
+package xlab;
+
+service TradeOrderPlacer {
+  rpc PlaceOrder(PlaceOrderRequest) returns (PlaceOrderResponse) {}
+
+  rpc UpdateOrder(UpdateOrderRequest) returns (UpdateOrderResponse) {}
+
+  rpc ListOpenOrders(ListOpenOrdersRequest) returns (ListOpenOrdersResponse) {}
+
+  rpc CancelOrder(CancelOrderRequest) returns (CancelOrderResponse) {}
+}
+
+message PlaceOrderRequest {
+  // TODO: add details.
+}
+
+message PlaceOrderResponse {
+  // TODO: add details.
+}
+
+message UpdateOrderRequest {
+  // TODO: add details.
+}
+
+message UpdateOrderResponse {
+  // TODO: add details.
+}
+
+message ListOpenOrdersRequest {
+  // TODO: add details.
+}
+message ListOpenOrdersResponse {
+  // TODO: add details.
+}
+
+message CancelOrderRequest {
+  // TODO: add details.
+}
+
+message CancelOrderResponse {
+  // TODO: add details.
+}
