@@ -4,16 +4,16 @@ load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 
 http_archive(
     name = "com_google_protobuf",
-    sha256 = "832c476bb442ca98a59c2291b8a504648d1c139b74acc15ef667a0e8f5e984e7",
-    strip_prefix = "protobuf-3.11.3",
-    urls = ["https://github.com/google/protobuf/archive/v3.11.3.zip"],
+    sha256 = "bf0e5070b4b99240183b29df78155eee335885e53a8af8683964579c214ad301",
+    strip_prefix = "protobuf-3.14.0",
+    urls = ["https://github.com/protocolbuffers/protobuf/archive/v3.14.0.zip"],
 )
 
 http_archive(
     name = "com_github_grpc_grpc",
-    sha256 = "b0d3b876d85e4e4375aa211a52a33b7e8ca9f9d6d97a60c3c844070a700f0ea3",
-    strip_prefix = "grpc-1.28.1",
-    urls = ["https://github.com/grpc/grpc/archive/v1.28.1.zip"],
+    sha256 = "aec9faf1e957caa9a28001a606f9b08ef5a165de6900b04615a304f0d6e139ca",
+    strip_prefix = "grpc-1.34.0",
+    urls = ["https://github.com/grpc/grpc/archive/v1.34.0.zip"],
 )
 
 http_archive(
@@ -65,13 +65,20 @@ register_toolchains("//:py_toolchain")
 # ================================================================
 # Proto extensions
 # ================================================================
-load("@com_google_protobuf//:protobuf_deps.bzl", "protobuf_deps")
-
-protobuf_deps()
-
 load("@com_github_grpc_grpc//bazel:grpc_deps.bzl", "grpc_deps")
 
 grpc_deps()
+
+load("@com_github_grpc_grpc//bazel:grpc_extra_deps.bzl", "grpc_extra_deps")
+
+grpc_extra_deps()
+
+# ================================================================
+# Proto extensions
+# ================================================================
+load("@com_google_protobuf//:protobuf_deps.bzl", "protobuf_deps")
+
+protobuf_deps()
 
 load(
     "@rules_proto//proto:repositories.bzl",

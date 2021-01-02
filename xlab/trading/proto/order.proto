@@ -1,5 +1,17 @@
 syntax = "proto3";
 
+package xlab;
+
+message Order {
+  string symbol = 1;
+  TradeSide.Enum side = 2;
+  OrderType.Enum type = 3;
+  TimeInForce.Enum time_in_force = 4;
+  double size = 5;
+  double limit_price = 6;
+  repeated Order child_orders = 7;
+}
+
 message TradeSide {
   enum Enum {
     TRADE_SIDE_UNSPECIFIED = 0;
@@ -8,7 +20,7 @@ message TradeSide {
   }
 }
 
-message TradeType {
+message OrderType {
   enum Enum {
     TRADE_TYPE_UNSPECIFIED = 0;
     MARKET = 1;
@@ -29,14 +41,4 @@ message TimeInForce {
     FOK = 3; // fill-or-kill
     IOC = 4; // immediate-or-cancel
   }
-}
-
-message Order {
-  string symbol = 1;
-  TradeSide.Enum side = 2;
-  TradeType.Enum type = 3;
-  TimeInForce.Enum time_in_force = 4;
-  double size = 5;
-  double limit_price = 6;
-  repeated Order child_orders = 7;
 }
