@@ -4,96 +4,273 @@
 #
 #    pip-compile
 #
-absl-py==0.11.0           # via -r requirements.in
-altair==4.1.0             # via -r requirements.in
-apache-beam==2.26.0       # via -r requirements.in
-appnope==0.1.2            # via ipykernel, ipython
-argon2-cffi==20.1.0       # via notebook
-async-generator==1.10     # via nbclient
-attrs==20.3.0             # via jsonschema
-avro-python3==1.9.2.1     # via apache-beam
-backcall==0.2.0           # via ipython
-bleach==3.2.1             # via nbconvert
-certifi==2020.12.5        # via requests
-cffi==1.14.4              # via argon2-cffi
-chardet==4.0.0            # via requests
-crcmod==1.7               # via apache-beam
-decorator==4.4.2          # via ipython
-defusedxml==0.6.0         # via nbconvert
-dill==0.3.1.1             # via apache-beam
-docopt==0.6.2             # via hdfs
-entrypoints==0.3          # via altair, nbconvert
-fastavro==1.2.3           # via apache-beam
-future==0.18.2            # via apache-beam
-grpcio==1.34.0            # via -r requirements.in, apache-beam
-hdfs==2.5.8               # via apache-beam
-httplib2==0.17.4          # via apache-beam, oauth2client
-idna==2.10                # via requests
-ipykernel==5.4.2          # via ipywidgets, notebook
-ipython-genutils==0.2.0   # via nbformat, notebook, traitlets
-ipython==7.19.0           # via ipykernel, ipywidgets
-ipywidgets==7.6.2         # via -r requirements.in
-jedi==0.18.0              # via ipython
-jinja2==2.11.2            # via altair, nbconvert, notebook
-jsonschema==3.2.0         # via altair, nbformat
-jupyter-client==6.1.7     # via ipykernel, nbclient, notebook
-jupyter-core==4.7.0       # via jupyter-client, nbconvert, nbformat, notebook
-jupyter-http-over-ws==0.0.8  # via -r requirements.in
-jupyterlab-pygments==0.1.2  # via nbconvert
-jupyterlab-widgets==1.0.0  # via ipywidgets
-markupsafe==1.1.1         # via jinja2
-mistune==0.8.4            # via nbconvert
-mock==2.0.0               # via apache-beam
-mongomock==3.22.0         # via -r requirements.in
-nbclient==0.5.1           # via nbconvert
-nbconvert==6.0.7          # via notebook
-nbformat==5.0.8           # via ipywidgets, nbclient, nbconvert, notebook
-nest-asyncio==1.4.3       # via nbclient
-notebook==6.1.6           # via -r requirements.in, jupyter-http-over-ws, widgetsnbextension
-numpy==1.19.4             # via altair, apache-beam, pandas, pyarrow
-oauth2client==4.1.3       # via apache-beam
-packaging==20.8           # via bleach
-pandas==1.2.0             # via -r requirements.in, altair
-pandocfilters==1.4.3      # via nbconvert
-parso==0.8.1              # via jedi
-pbr==5.5.1                # via mock
-pendulum==2.1.2           # via -r requirements.in
-pexpect==4.8.0            # via ipython
-pickleshare==0.7.5        # via ipython
-prometheus-client==0.9.0  # via notebook
-prompt-toolkit==3.0.8     # via ipython
-proto-matcher==0.0.3      # via -r requirements.in
-protobuf==3.14.0          # via -r requirements.in, apache-beam
-ptyprocess==0.7.0         # via pexpect, terminado
-pyarrow==0.17.1           # via apache-beam
-pyasn1-modules==0.2.8     # via oauth2client
-pyasn1==0.4.8             # via oauth2client, pyasn1-modules, rsa
-pycparser==2.20           # via cffi
-pydot==1.4.1              # via apache-beam
-pygments==2.7.3           # via ipython, jupyterlab-pygments, nbconvert
-pyhamcrest==2.0.2         # via -r requirements.in
-pymongo==3.11.2           # via -r requirements.in, apache-beam
-pyparsing==2.4.7          # via packaging, pydot
-pyrsistent==0.17.3        # via jsonschema
-python-dateutil==2.8.1    # via apache-beam, jupyter-client, pandas, pendulum
-pytz==2020.5              # via apache-beam, pandas
-pytzdata==2020.1          # via pendulum
-pyzmq==20.0.0             # via jupyter-client, notebook
-requests==2.25.1          # via -r requirements.in, apache-beam, hdfs
-rsa==4.6                  # via oauth2client
-send2trash==1.5.0         # via notebook
-sentinels==1.0.0          # via mongomock
-six==1.15.0               # via absl-py, argon2-cffi, bleach, grpcio, hdfs, jsonschema, jupyter-http-over-ws, mock, mongomock, oauth2client, protobuf, python-dateutil
-terminado==0.9.1          # via notebook
-testpath==0.4.4           # via nbconvert
-toolz==0.11.1             # via altair
-tornado==6.1              # via ipykernel, jupyter-client, jupyter-http-over-ws, notebook, terminado
-traitlets==5.0.5          # via ipykernel, ipython, ipywidgets, jupyter-client, jupyter-core, nbclient, nbconvert, nbformat, notebook
-typing-extensions==3.7.4.3  # via apache-beam
-urllib3==1.26.2           # via requests
-wcwidth==0.2.5            # via prompt-toolkit
-webencodings==0.5.1       # via bleach
-widgetsnbextension==3.5.1  # via ipywidgets
+absl-py==0.11.0
+    # via -r requirements.in
+altair==4.1.0
+    # via -r requirements.in
+apache-beam==2.26.0
+    # via -r requirements.in
+argon2-cffi==20.1.0
+    # via notebook
+async-generator==1.10
+    # via nbclient
+attrs==20.3.0
+    # via jsonschema
+avro-python3==1.9.2.1
+    # via apache-beam
+backcall==0.2.0
+    # via ipython
+bleach==3.2.1
+    # via nbconvert
+certifi==2020.12.5
+    # via requests
+cffi==1.14.4
+    # via argon2-cffi
+chardet==4.0.0
+    # via requests
+crcmod==1.7
+    # via apache-beam
+decorator==4.4.2
+    # via ipython
+defusedxml==0.6.0
+    # via nbconvert
+dill==0.3.1.1
+    # via apache-beam
+docopt==0.6.2
+    # via hdfs
+entrypoints==0.3
+    # via
+    #   altair
+    #   nbconvert
+fastavro==1.2.3
+    # via apache-beam
+future==0.18.2
+    # via apache-beam
+grpcio==1.34.0
+    # via
+    #   -r requirements.in
+    #   apache-beam
+hdfs==2.5.8
+    # via apache-beam
+httplib2==0.17.4
+    # via
+    #   apache-beam
+    #   oauth2client
+idna==2.10
+    # via requests
+ipykernel==5.4.2
+    # via
+    #   ipywidgets
+    #   notebook
+ipython-genutils==0.2.0
+    # via
+    #   nbformat
+    #   notebook
+    #   traitlets
+ipython==7.19.0
+    # via
+    #   ipykernel
+    #   ipywidgets
+ipywidgets==7.6.2
+    # via -r requirements.in
+jedi==0.18.0
+    # via ipython
+jinja2==2.11.2
+    # via
+    #   altair
+    #   nbconvert
+    #   notebook
+jsonschema==3.2.0
+    # via
+    #   altair
+    #   nbformat
+jupyter-client==6.1.7
+    # via
+    #   ipykernel
+    #   nbclient
+    #   notebook
+jupyter-core==4.7.0
+    # via
+    #   jupyter-client
+    #   nbconvert
+    #   nbformat
+    #   notebook
+jupyter-http-over-ws==0.0.8
+    # via -r requirements.in
+jupyterlab-pygments==0.1.2
+    # via nbconvert
+jupyterlab-widgets==1.0.0
+    # via ipywidgets
+markupsafe==1.1.1
+    # via jinja2
+mistune==0.8.4
+    # via nbconvert
+mock==2.0.0
+    # via apache-beam
+mongomock==3.22.0
+    # via -r requirements.in
+nbclient==0.5.1
+    # via nbconvert
+nbconvert==6.0.7
+    # via notebook
+nbformat==5.0.8
+    # via
+    #   ipywidgets
+    #   nbclient
+    #   nbconvert
+    #   notebook
+nest-asyncio==1.4.3
+    # via nbclient
+notebook==6.1.6
+    # via
+    #   -r requirements.in
+    #   jupyter-http-over-ws
+    #   widgetsnbextension
+numpy==1.19.4
+    # via
+    #   altair
+    #   apache-beam
+    #   pandas
+    #   pyarrow
+oauth2client==4.1.3
+    # via apache-beam
+packaging==20.8
+    # via bleach
+pandas==1.2.0
+    # via
+    #   -r requirements.in
+    #   altair
+pandocfilters==1.4.3
+    # via nbconvert
+parso==0.8.1
+    # via jedi
+pbr==5.5.1
+    # via mock
+pendulum==2.1.2
+    # via -r requirements.in
+pexpect==4.8.0
+    # via ipython
+pickleshare==0.7.5
+    # via ipython
+prometheus-client==0.9.0
+    # via notebook
+prompt-toolkit==3.0.8
+    # via ipython
+proto-matcher==0.0.3
+    # via -r requirements.in
+protobuf==3.14.0
+    # via
+    #   -r requirements.in
+    #   apache-beam
+ptyprocess==0.7.0
+    # via
+    #   pexpect
+    #   terminado
+pyarrow==0.17.1
+    # via apache-beam
+pyasn1-modules==0.2.8
+    # via oauth2client
+pyasn1==0.4.8
+    # via
+    #   oauth2client
+    #   pyasn1-modules
+    #   rsa
+pycparser==2.20
+    # via cffi
+pydot==1.4.1
+    # via apache-beam
+pygments==2.7.3
+    # via
+    #   ipython
+    #   jupyterlab-pygments
+    #   nbconvert
+pyhamcrest==2.0.2
+    # via -r requirements.in
+pymongo==3.11.2
+    # via
+    #   -r requirements.in
+    #   apache-beam
+pyparsing==2.4.7
+    # via
+    #   packaging
+    #   pydot
+pyrsistent==0.17.3
+    # via jsonschema
+python-dateutil==2.8.1
+    # via
+    #   apache-beam
+    #   jupyter-client
+    #   pandas
+    #   pendulum
+pytz==2020.5
+    # via
+    #   apache-beam
+    #   pandas
+pytzdata==2020.1
+    # via pendulum
+pyzmq==20.0.0
+    # via
+    #   jupyter-client
+    #   notebook
+requests==2.25.1
+    # via
+    #   -r requirements.in
+    #   apache-beam
+    #   hdfs
+rsa==4.6
+    # via oauth2client
+send2trash==1.5.0
+    # via notebook
+sentinels==1.0.0
+    # via mongomock
+six==1.15.0
+    # via
+    #   absl-py
+    #   argon2-cffi
+    #   bleach
+    #   grpcio
+    #   hdfs
+    #   jsonschema
+    #   jupyter-http-over-ws
+    #   mock
+    #   mongomock
+    #   oauth2client
+    #   protobuf
+    #   python-dateutil
+terminado==0.9.1
+    # via notebook
+testpath==0.4.4
+    # via nbconvert
+toolz==0.11.1
+    # via altair
+tornado==6.1
+    # via
+    #   ipykernel
+    #   jupyter-client
+    #   jupyter-http-over-ws
+    #   notebook
+    #   terminado
+traitlets==5.0.5
+    # via
+    #   ipykernel
+    #   ipython
+    #   ipywidgets
+    #   jupyter-client
+    #   jupyter-core
+    #   nbclient
+    #   nbconvert
+    #   nbformat
+    #   notebook
+typing-extensions==3.7.4.3
+    # via apache-beam
+urllib3==1.26.5
+    # via requests
+wcwidth==0.2.5
+    # via prompt-toolkit
+webencodings==0.5.1
+    # via bleach
+widgetsnbextension==3.5.1
+    # via ipywidgets
 
 # The following packages are considered to be unsafe in a requirements file:
 # setuptools
