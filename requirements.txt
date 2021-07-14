@@ -20,7 +20,7 @@ avro-python3==1.9.2.1
     # via apache-beam
 backcall==0.2.0
     # via ipython
-bleach==3.2.1
+bleach==3.3.0
     # via nbconvert
 certifi==2020.12.5
     # via requests
@@ -62,15 +62,15 @@ ipykernel==5.4.2
     # via
     #   ipywidgets
     #   notebook
+ipython==7.19.0
+    # via
+    #   ipykernel
+    #   ipywidgets
 ipython-genutils==0.2.0
     # via
     #   nbformat
     #   notebook
     #   traitlets
-ipython==7.19.0
-    # via
-    #   ipykernel
-    #   ipywidgets
 ipywidgets==7.6.2
     # via -r requirements.in
 jedi==0.18.0
@@ -168,13 +168,13 @@ ptyprocess==0.7.0
     #   terminado
 pyarrow==0.17.1
     # via apache-beam
-pyasn1-modules==0.2.8
-    # via oauth2client
 pyasn1==0.4.8
     # via
     #   oauth2client
     #   pyasn1-modules
     #   rsa
+pyasn1-modules==0.2.8
+    # via oauth2client
 pycparser==2.20
     # via cffi
 pydot==1.4.1
