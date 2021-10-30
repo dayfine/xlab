@@ -45,6 +45,8 @@ commands:
             apt-get install --yes build-essential
             apt-get install --yes cmake
             apt-get install --yes pkg-config
+            # For open-ssl
+            apt-get install --yes libssl-dev
 
             curl https://sh.rustup.rs -sSf -o install_rust.sh
             chmod +x install_rust.sh
