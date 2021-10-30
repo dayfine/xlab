@@ -28,11 +28,8 @@ http_archive(
 
 http_archive(
     name = "rules_python",
-    sha256 = "140630a11671b4a5b5e3f1031ff6a8e63c0740dded9c38af9fad49cf6fad00c1",
-    strip_prefix = "rules_python-a16432752ef33b98530f05ca86375b42059b23c0",
-    urls = [
-        "https://github.com/bazelbuild/rules_python/archive/a16432752ef33b98530f05ca86375b42059b23c0.zip",
-    ],
+    url = "https://github.com/bazelbuild/rules_python/releases/download/0.4.0/rules_python-0.4.0.tar.gz",
+    sha256 = "954aa89b491be4a083304a2cb838019c8b8c3720a7abb9c4cb81ac7a24230cea",
 )
 
 http_archive(
