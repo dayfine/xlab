@@ -15,6 +15,7 @@ protobuf-codegen = "=2.25.2"
 genmode = "Remote"
 workspace_path = "//third_party/cargo"
 package_aliases_dir = "."
+rust_rules_workspace_name = "rules_rust"
 
 [package.metadata.raze.crates.protobuf.'2.25.2']
 gen_buildrs = true
