@@ -32,8 +32,11 @@ commands:
             apt-get update
             apt-get install --yes python3.8
             apt-get install --yes python3.8-venv
+            apt-get install --yes python3.8-dev
+            # beam etc. needs pkg_resources module.
+            apt-get install --yes python3-pkg-resources python3-setuptools
 
-            python3.8 -m venv .venv --without-pip
+            python3.8 -m venv .venv
 
   # Install rust tools.
   install_rust:
@@ -44,6 +47,9 @@ commands:
           command: |
             apt-get install --yes build-essential
             apt-get install --yes cmake
+            apt-get install --yes pkg-config
+            # For open-ssl
+            apt-get install --yes libssl-dev
 
             curl https://sh.rustup.rs -sSf -o install_rust.sh
             chmod +x install_rust.sh
@@ -112,6 +118,7 @@ jobs:
           command: |
             # Virtual env can only take effect if activated here.
             source .venv/bin/activate
+
             bazel build xlab/...
             bazel test xlab/...
 

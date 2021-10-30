@@ -4,43 +4,41 @@ load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 
 http_archive(
     name = "com_google_protobuf",
-    sha256 = "bf0e5070b4b99240183b29df78155eee335885e53a8af8683964579c214ad301",
-    strip_prefix = "protobuf-3.14.0",
-    urls = ["https://github.com/protocolbuffers/protobuf/archive/v3.14.0.zip"],
+    sha256 = "25f1292d4ea6666f460a2a30038eef121e6c3937ae0f61d610611dfb14b0bd32",
+    strip_prefix = "protobuf-3.19.1",
+    urls = ["https://github.com/protocolbuffers/protobuf/archive/v3.19.1.zip"],
 )
 
 http_archive(
     name = "com_github_grpc_grpc",
-    sha256 = "aec9faf1e957caa9a28001a606f9b08ef5a165de6900b04615a304f0d6e139ca",
-    strip_prefix = "grpc-1.34.0",
-    urls = ["https://github.com/grpc/grpc/archive/v1.34.0.zip"],
+    sha256 = "eee5f6cef7ccc3f3783beac662cc64a6a56608646f0045fad295b2359cce4721",
+    strip_prefix = "grpc-1.41.1",
+    urls = ["https://github.com/grpc/grpc/archive/v1.41.1.zip"],
 )
 
 http_archive(
     name = "rules_proto",
-    sha256 = "602e7161d9195e50246177e7c55b2f39950a9cf7366f74ed5f22fd45750cd208",
-    strip_prefix = "rules_proto-97d8af4dc474595af3900dd85cb3a29ad28cc313",
+    sha256 = "66bfdf8782796239d3875d37e7de19b1d94301e8972b3cbd2446b332429b4df1",
+    strip_prefix = "rules_proto-4.0.0",
     urls = [
-        "https://mirror.bazel.build/github.com/bazelbuild/rules_proto/archive/97d8af4dc474595af3900dd85cb3a29ad28cc313.tar.gz",
-        "https://github.com/bazelbuild/rules_proto/archive/97d8af4dc474595af3900dd85cb3a29ad28cc313.tar.gz",
+        "https://mirror.bazel.build/github.com/bazelbuild/rules_proto/archive/refs/tags/4.0.0.tar.gz",
+        "https://github.com/bazelbuild/rules_proto/archive/refs/tags/4.0.0.tar.gz",
     ],
 )
 
 http_archive(
     name = "rules_python",
-    sha256 = "140630a11671b4a5b5e3f1031ff6a8e63c0740dded9c38af9fad49cf6fad00c1",
-    strip_prefix = "rules_python-a16432752ef33b98530f05ca86375b42059b23c0",
-    urls = [
-        "https://github.com/bazelbuild/rules_python/archive/a16432752ef33b98530f05ca86375b42059b23c0.zip",
-    ],
+    url = "https://github.com/bazelbuild/rules_python/releases/download/0.4.0/rules_python-0.4.0.tar.gz",
+    sha256 = "954aa89b491be4a083304a2cb838019c8b8c3720a7abb9c4cb81ac7a24230cea",
 )
 
 http_archive(
-    name = "io_bazel_rules_rust",
-    sha256 = "173e522d81354ab6d2757e7ef1b6d32ac5a86bf70b93af44864f5ccece509e75",
-    strip_prefix = "rules_rust-149400c0fb94f872ff6095e544ad879fa201757f",
+    name = "rules_rust",
+    sha256 = "531bdd470728b61ce41cf7604dc4f9a115983e455d46ac1d0c1632f613ab9fc3",
+    strip_prefix = "rules_rust-d8238877c0e552639d3e057aadd6bfcf37592408",
     urls = [
-        "https://github.com/bazelbuild/rules_rust/archive/149400c0fb94f872ff6095e544ad879fa201757f.tar.gz",
+        # `main` branch as of 2021-08-23
+        "https://github.com/bazelbuild/rules_rust/archive/d8238877c0e552639d3e057aadd6bfcf37592408.tar.gz",
     ],
 )
 
@@ -94,15 +92,11 @@ pip_install(
 # ================================================================
 # Rust extensions
 # ================================================================
-load("@io_bazel_rules_rust//rust:repositories.bzl", "rust_repositories")
+load("@rules_rust//rust:repositories.bzl", "rust_repositories")
 
 rust_repositories()
 
-load("@io_bazel_rules_rust//:workspace.bzl", "bazel_version")
-
-bazel_version(name = "bazel_version")
-
-load("@io_bazel_rules_rust//proto:repositories.bzl", "rust_proto_repositories")
+load("@rules_rust//proto:repositories.bzl", "rust_proto_repositories")
 
 rust_proto_repositories()
 
