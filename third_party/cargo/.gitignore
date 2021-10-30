@@ -1,5 +1,6 @@
 # cargo-raze related files
 BUILD
+BUILD.bazel
 crates.bzl
 
 remote
