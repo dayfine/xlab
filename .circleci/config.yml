@@ -44,6 +44,7 @@ commands:
           command: |
             apt-get install --yes build-essential
             apt-get install --yes cmake
+            apt-get install --yes pkg-config
 
             curl https://sh.rustup.rs -sSf -o install_rust.sh
             chmod +x install_rust.sh
