@@ -84,7 +84,10 @@ executors:
 
 jobs:
   setup:
-    executor: default-executor
+    machine:
+      image: ubuntu-2004:current
+    resource_class: medium
+  
     steps:
       - checkout
       - init_environment
@@ -105,9 +108,10 @@ jobs:
             - ./bazel_repository_cache
 
   bazel_build_and_test:
-    executor:
-      name: default-executor
-      # resource_class: xlarge
+    machine:
+      image: ubuntu-2004:current
+    resource_class: medium
+
     steps:
       - custom_attach_workspace
       - install_python
