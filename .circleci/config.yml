@@ -78,15 +78,13 @@ executors:
         type: string
         default: medium
     docker:
-      - image: l.gcr.io/google/bazel:latest
+      - image: gcr.io/bazel-public/bazel:latest
     resource_class: << parameters.resource_class >>
     working_directory: ~/xlab
 
 jobs:
   setup:
-    machine:
-      image: ubuntu-2004:current
-    resource_class: medium
+    executor: default-executor
   
     steps:
       - checkout
@@ -108,9 +106,7 @@ jobs:
             - ./bazel_repository_cache
 
   bazel_build_and_test:
-    machine:
-      image: ubuntu-2004:current
-    resource_class: medium
+    executor: default-executor
 
     steps:
       - custom_attach_workspace
