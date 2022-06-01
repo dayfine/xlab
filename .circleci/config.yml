@@ -26,6 +26,7 @@ commands:
           name: install Python 3.8
           command: |
             python3 --version
+            sudo -s
 
             apt-get install software-properties-common
             add-apt-repository --yes ppa:deadsnakes/ppa
