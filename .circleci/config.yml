@@ -18,7 +18,21 @@ commands:
       - attach_workspace:
           at: *workspace_location
 
-  # Install python as the bazel image is used instead of python image.
+  install_bazel:
+    description: Install https://bazel.build/
+    steps:
+      - run:
+          name: install latest bazel
+          # https://bazel.build/install/ubuntu
+          command: |
+            apt-get install apt-transport-https curl gnupg
+            curl -fsSL https://bazel.build/bazel-release.pub.gpg | gpg --dearmor >bazel-archive-keyring.gpg
+            mv bazel-archive-keyring.gpg /usr/share/keyrings
+            echo "deb [arch=amd64 signed-by=/usr/share/keyrings/bazel-archive-keyring.gpg] https://storage.googleapis.com/bazel-apt stable jdk1.8" | tee /etc/apt/sources.list.d/bazel.list
+
+            apt-get update && apt-get install bazel
+            apt-get full-upgrade
+
   install_python:
     description: Install Python
     steps:
@@ -38,7 +52,6 @@ commands:
 
             python3.8 -m venv .venv
 
-  # Install rust tools.
   install_rust:
     description: Install Rust
     steps:
@@ -77,16 +90,15 @@ executors:
       resource_class:
         type: string
         default: medium
+    # Use docker so there is no need to sudo every command
     docker:
-      - image: l.gcr.io/google/bazel:latest
-    resource_class: << parameters.resource_class >>
+      - image: ubuntu:18.04
+    resource_class: medium
     working_directory: ~/xlab
 
 jobs:
   setup:
-    machine:
-      image: ubuntu-2004:current
-    resource_class: medium
+    executor: default-executor
   
     steps:
       - checkout
@@ -108,12 +120,11 @@ jobs:
             - ./bazel_repository_cache
 
   bazel_build_and_test:
-    machine:
-      image: ubuntu-2004:current
-    resource_class: medium
+    executor: default-executor
 
     steps:
       - custom_attach_workspace
+      - install_bazel
       - install_python
       - install_rust
       - init_environment
