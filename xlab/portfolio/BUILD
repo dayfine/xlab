@@ -10,7 +10,7 @@ rust_library(
         "//third_party/cargo:protobuf",
         "//xlab/proto:portfolio_rust_proto",
     ],
-    edition = "2018",
+    edition = "2021",
 )
 
 rust_test(

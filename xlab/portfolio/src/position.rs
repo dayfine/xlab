@@ -133,7 +133,7 @@ fn get_lot_pnl(lot: &PositionLot, txn_price: f64, multiplier: f64) -> f64 {
 }
 
 #[cfg(test)]
-mod test {
+mod tests {
     use super::*;
 
     const ALLOWED_ERR: f64 = 1e-8;
