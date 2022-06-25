@@ -34,11 +34,10 @@ http_archive(
 
 http_archive(
     name = "rules_rust",
-    sha256 = "531bdd470728b61ce41cf7604dc4f9a115983e455d46ac1d0c1632f613ab9fc3",
-    strip_prefix = "rules_rust-d8238877c0e552639d3e057aadd6bfcf37592408",
+    sha256 = "872b04538ca20dad94791c348623f079ba93daf274c1d57ae6bfe0930ec77f0d",
     urls = [
-        # `main` branch as of 2021-08-23
-        "https://github.com/bazelbuild/rules_rust/archive/d8238877c0e552639d3e057aadd6bfcf37592408.tar.gz",
+        "https://mirror.bazel.build/github.com/bazelbuild/rules_rust/releases/download/0.6.0/rules_rust-v0.6.0.tar.gz",
+        "https://github.com/bazelbuild/rules_rust/releases/download/0.6.0/rules_rust-v0.6.0.tar.gz",
     ],
 )
 
@@ -47,6 +46,12 @@ http_archive(
     sha256 = "9a737999532daca978a158f94e77e9af6a6a169709c0cee274f0a4c3359519bd",
     strip_prefix = "bazel-skylib-1.0.0",
     url = "https://github.com/bazelbuild/bazel-skylib/archive/1.0.0.tar.gz",
+)
+
+http_archive(
+    name = "build_bazel_apple_support",
+    sha256 = "df317473b5894dd8eb432240d209271ebc83c76bb30c55481374b36ddf1e4fd1",
+    url = "https://github.com/bazelbuild/apple_support/releases/download/1.0.0/apple_support.1.0.0.tar.gz",
 )
 
 register_toolchains("//:py_toolchain")
@@ -103,3 +108,11 @@ rust_proto_repositories()
 load("//third_party/cargo:crates.bzl", "raze_fetch_remote_crates")
 
 raze_fetch_remote_crates()
+
+
+load(
+    "@build_bazel_apple_support//lib:repositories.bzl",
+    "apple_support_dependencies",
+)
+
+apple_support_dependencies()
