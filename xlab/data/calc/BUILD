@@ -1,4 +1,5 @@
 load("@rules_python//python:defs.bzl", "py_library", "py_test")
+load("@rules_rust//rust:defs.bzl", "rust_library", "rust_test")
 load("@py_deps//:requirements.bzl", "requirement")
 
 package(default_visibility = ["//xlab:internal"])
@@ -11,6 +12,23 @@ py_library(
         ":interface",
     ],
 )
+
+rust_library(
+    name = "ema",
+    srcs = [
+        "src/ema.rs",
+    ],
+    deps = [
+        "//third_party/cargo:approx",
+    ],
+    edition = "2021",
+)
+
+rust_test(
+    name = "ema_test",
+    crate = ":ema",
+)
+
 
 py_library(
     name = "input_util",

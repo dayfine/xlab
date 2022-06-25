@@ -1,3 +1,6 @@
+#[macro_use]
+extern crate approx;
+
 const SMOOTHING_FACTOR: f64 = 2.0;
 
 // https://www.investopedia.com/terms/e/ema.asp
@@ -6,10 +9,7 @@ pub fn compute_ema(last_ema: f64, price: f64, num_periods: i32) -> f64 {
     return alpha * price + last_ema * (1.0 - alpha);
 }
 
-pub fn compute_ema_initial<I>(prices: I, num_periods: i32) -> f64 
-where
-    I: IntoIterator<Item = f64>,
-{
+pub fn compute_ema_initial(prices: impl IntoIterator<Item = f64>, num_periods: i32) -> f64 {
     let mut price_iter = prices.into_iter();
     let mut ema: f64 = price_iter.nth(0).unwrap_or(0.0);
     for price in price_iter {
