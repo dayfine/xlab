@@ -5,12 +5,12 @@ rust_library(
     srcs = [
         "src/position.rs",
     ],
+    edition = "2021",
     deps = [
         "//third_party/cargo:approx",
         "//third_party/cargo:protobuf",
         "//xlab/proto:portfolio_rust_proto",
     ],
-    edition = "2021",
 )
 
 rust_test(
