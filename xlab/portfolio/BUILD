@@ -1,4 +1,4 @@
-load("@rules_rust//rust:rust.bzl", "rust_library", "rust_test")
+load("@rules_rust//rust:defs.bzl", "rust_library", "rust_test")
 
 rust_library(
     name = "position",
@@ -10,6 +10,7 @@ rust_library(
         "//third_party/cargo:protobuf",
         "//xlab/proto:portfolio_rust_proto",
     ],
+    edition = "2018",
 )
 
 rust_test(

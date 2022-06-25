@@ -14,6 +14,8 @@
    try: "which python" and then "python --version";
         "ls -a" (list all the dir including hidden file) then "cat .envrc"
 
+   NOTE: if python 3.8 is missing, install it using the link on https://www.python.org/downloads/release/python-380/
+
 
 5. Try build and test the codebase:
 
@@ -21,13 +23,6 @@
 $ bazel build //xlab/...
 $ bazel test //xlab/...
 ```
-  if you have error like " Xcode version must be specified to use an Apple CROSSTOOL.", try ->
-'''
-bazel clean --expunge
-sudo xcode-select -s /Applications/Xcode.app/Contents/Developer
-sudo xcodebuild -license
-bazel clean --expunge
-'''
 
 If you have error like " Xcode version must be specified to use an Apple CROSSTOOL.", try:
 ```sh
