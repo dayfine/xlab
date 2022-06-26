@@ -175,3 +175,9 @@ bazel-*
 
 # Rust generated codes
 target
+
+
+# Added by cargo
+
+/target
+/Cargo.lock
