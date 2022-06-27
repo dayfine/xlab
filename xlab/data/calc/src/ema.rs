@@ -1,5 +1,4 @@
-#[macro_use]
-extern crate approx;
+use approx::assert_abs_diff_eq;
 
 const SMOOTHING_FACTOR: f64 = 2.0;
 
