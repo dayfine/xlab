@@ -1,9 +1,5 @@
-extern crate portfolio_rust_proto;
-
-#[macro_use]
-extern crate approx;
-
-use self::portfolio_rust_proto::{Position, PositionLot, SettlementType_Enum};
+use approx::assert_abs_diff_eq;
+use portfolio_rust_proto::{Position, PositionLot, SettlementType_Enum};
 
 // Updates a position for a position change, e.g. shares / contracts in
 // this position being bought / sold, and returns the P&L of the transaction.

@@ -1,6 +1,3 @@
-extern crate chrono;
-extern crate security_id_lib;
-
 pub struct HistoricalPrice {
     open: f64,
     close: f64,
