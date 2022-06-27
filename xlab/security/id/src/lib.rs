@@ -1,3 +1,3 @@
 pub struct SecurityId {
-  pub symbol: String,
+    pub symbol: String,
 }

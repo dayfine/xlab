@@ -6,5 +6,9 @@ pub struct HistoricalPrice {
 }
 
 pub trait HistoricalPriceProvider {
-    fn get_price(id: &security_id_lib::SecurityId, date: chrono::NaiveDate) -> HistoricalPrice;
+    fn get_price(
+        &self,
+        security_id: &security_id_lib::SecurityId,
+        date: chrono::NaiveDate,
+    ) -> HistoricalPrice;
 }
