@@ -8,9 +8,7 @@ rust_library(
         "src/lib.rs",
         "src/price_provider.rs",
     ],
-    aliases = {
-        "//xlab/security/id:security_id": "security_id_lib",
-    },
+    crate_name = "price_provider_lib",
     edition = "2021",
     deps = [
         "//third_party/cargo:chrono",

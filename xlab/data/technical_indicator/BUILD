@@ -7,9 +7,6 @@ rust_library(
     srcs = glob([
         "src/**/*.rs",
     ]),
-    aliases = {
-        "//xlab/security/id:security_id": "security_id_lib",
-    },
     edition = "2021",
     deps = [
         "//third_party/cargo:chrono",
