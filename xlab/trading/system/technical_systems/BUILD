@@ -1,4 +1,4 @@
-load("@rules_rust//rust:defs.bzl", "rust_library")
+load("@rules_rust//rust:defs.bzl", "rust_library", "rust_test")
 
 package(default_visibility = ["//xlab:internal"])
 
@@ -16,4 +16,12 @@ rust_library(
         "//xlab/trading/order",
         "//xlab/trading/system/types",
     ],
+)
+
+rust_test(
+    name = "technical_systems_test",
+    crate = ":technical_systems",
+    deps = [
+      "//third_party/cargo:mockall",
+    ]
 )

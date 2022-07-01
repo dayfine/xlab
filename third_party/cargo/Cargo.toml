@@ -1,7 +1,7 @@
 [package]
 name = "compile_with_bazel"
 version = "0.0.0"
-edition = "2018"
+edition = "2021"
 
 [lib]
 path = "fake_lib.rs"
@@ -12,6 +12,9 @@ chrono = "0.4"
 protobuf =  { version = "=2.25.2", features = ["with-bytes"] }
 protobuf-codegen = "=2.25.2"
 
+[dev-dependencies]
+mockall = "0.11.1"
+
 [package.metadata.raze]
 genmode = "Remote"
 workspace_path = "//third_party/cargo"
@@ -21,8 +24,8 @@ rust_rules_workspace_name = "rules_rust"
 [package.metadata.raze.crates.protobuf.'2.25.2']
 gen_buildrs = true
 
-    [package.metadata.raze.crates.protobuf.'2.25.2'.buildrs_additional_environment_variables]
-    CARGO_PKG_VERSION = "2.25.2"
+[package.metadata.raze.crates.protobuf.'2.25.2'.buildrs_additional_environment_variables]
+CARGO_PKG_VERSION = "2.25.2"
 
 [package.metadata.raze.crates.protobuf-codegen.'2.25.2']
 gen_buildrs = true

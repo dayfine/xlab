@@ -1,5 +1,8 @@
 use super::types::TechnicalIndicatorType;
 
+#[cfg(test)]
+use mockall::{automock, mock, predicate::*};
+#[cfg_attr(test, automock)]
 pub trait HistoricalTechnicalIndicatorProvider {
     fn get_technical_indicator(
         &self,
