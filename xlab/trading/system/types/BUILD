@@ -11,6 +11,7 @@ rust_library(
     edition = "2021",
     deps = [
         "//third_party/cargo:chrono",
+        "//xlab/base/status",
         "//xlab/security/id:security_id",
         "//xlab/trading/order",
     ],

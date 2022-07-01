@@ -6,5 +6,5 @@ pub trait HistoricalTechnicalIndicatorProvider {
         id: &security_id_lib::SecurityId,
         date: chrono::NaiveDate,
         indicator_type: TechnicalIndicatorType,
-    ) -> Result<f64>;
+    ) -> Result<f64, status::Status>;
 }

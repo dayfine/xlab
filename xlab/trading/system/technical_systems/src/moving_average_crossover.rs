@@ -1,5 +1,4 @@
 use technical_indicator::{HistoricalTechnicalIndicatorProvider, TechnicalIndicatorType};
-use time::Duration;
 use trading_system::{TechnicalTradingSystem, TradingSignal};
 
 pub struct MovingAverageCrossoverTradingSystem<'a> {
@@ -8,12 +7,12 @@ pub struct MovingAverageCrossoverTradingSystem<'a> {
     ti_provider: &'a dyn HistoricalTechnicalIndicatorProvider,
 }
 
-fn ma_type(num_periods: i32) -> Result<TechnicalIndicatorType> {
+fn ma_type(num_periods: i32) -> Result<TechnicalIndicatorType, status::Status> {
     match num_periods {
-        5 => TechnicalIndicatorType::ExponentialMovingAverage5d,
-        20 => TechnicalIndicatorType::ExponentialMovingAverage20d,
-        _ => None,
-    };
+        5 => Ok(TechnicalIndicatorType::ExponentialMovingAverage5d),
+        20 => Ok(TechnicalIndicatorType::ExponentialMovingAverage20d),
+        _ => Err(status::not_found_error(&format!("No indicator available for {}d", num_periods))),
+    }
 }
 
 impl<'a> TechnicalTradingSystem for MovingAverageCrossoverTradingSystem<'a> {
@@ -21,7 +20,7 @@ impl<'a> TechnicalTradingSystem for MovingAverageCrossoverTradingSystem<'a> {
         &self,
         security_id: &security_id_lib::SecurityId,
         date: chrono::NaiveDate,
-    ) -> Result<Option<TradingSignal>> {
+    ) -> Result<Option<TradingSignal>, status::Status> {
         let faster_ma_type = ma_type(self.faster_num_periods)?;
         let slower_ma_type = ma_type(self.slower_num_periods)?;
 
@@ -32,7 +31,7 @@ impl<'a> TechnicalTradingSystem for MovingAverageCrossoverTradingSystem<'a> {
             self.ti_provider
                 .get_technical_indicator(security_id, date, slower_ma_type)?;
 
-        let previous_date = date.checked_sub_signed(Duration::days(1)).unwrap();
+        let previous_date = date.checked_sub_signed(chrono::Duration::days(1)).unwrap();
         let previous_faster_ma: f64 =
             self.ti_provider
                 .get_technical_indicator(security_id, previous_date, faster_ma_type)?;
@@ -40,19 +39,19 @@ impl<'a> TechnicalTradingSystem for MovingAverageCrossoverTradingSystem<'a> {
             self.ti_provider
                 .get_technical_indicator(security_id, previous_date, slower_ma_type)?;
 
-        if ((current_faster_ma > current_slower_ma) && (previous_faster_ma < previous_slower_ma)) {
-            return Some(TradingSignal {
+        if (current_faster_ma > current_slower_ma) && (previous_faster_ma < previous_slower_ma) {
+            return Ok(Some(TradingSignal {
                 side: order::TradeSide::Long,
-            });
+            }));
         }
 
-        if ((current_faster_ma < current_slower_ma) && (previous_faster_ma > previous_slower_ma)) {
-            return Some(TradingSignal {
+        if (current_faster_ma < current_slower_ma) && (previous_faster_ma > previous_slower_ma) {
+            return Ok(Some(TradingSignal {
                 side: order::TradeSide::Short,
-            });
+            }));
         }
 
-        return None;
+        return Ok(None);
     }
 }
 
