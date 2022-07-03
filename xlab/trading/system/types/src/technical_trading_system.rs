@@ -5,5 +5,5 @@ pub trait TechnicalTradingSystem {
         &self,
         security_id: &security_id_lib::SecurityId,
         date: chrono::NaiveDate,
-    ) -> Option<TradingSignal>;
+    ) -> Result<Option<TradingSignal>, status::Status>;
 }

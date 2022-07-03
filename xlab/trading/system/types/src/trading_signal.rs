@@ -1,3 +1,4 @@
+#[derive(PartialEq, Debug)]
 pub struct TradingSignal {
-    side: order::TradeSide,
+    pub side: order::TradeSide,
 }

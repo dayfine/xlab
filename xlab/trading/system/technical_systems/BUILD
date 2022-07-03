@@ -1,4 +1,4 @@
-load("@rules_rust//rust:defs.bzl", "rust_library")
+load("@rules_rust//rust:defs.bzl", "rust_library", "rust_test")
 
 package(default_visibility = ["//xlab:internal"])
 
@@ -7,17 +7,21 @@ rust_library(
     srcs = glob([
         "src/**/*.rs",
     ]),
-    aliases = {
-        "//xlab/data/market_data:price_provider": "price_provider_lib",
-        "//xlab/security/id:security_id": "security_id_lib",
-        "//xlab/trading/system/types": "trading_system",
-    },
     edition = "2021",
     deps = [
         "//third_party/cargo:chrono",
-        "//xlab/data/market_data:price_provider",
-        "//xlab/data/technical_indicator",
+        "//xlab/base/status",
+        "//xlab/data/technical_indicator/types",
         "//xlab/security/id:security_id",
+        "//xlab/trading/order",
         "//xlab/trading/system/types",
+    ],
+)
+
+rust_test(
+    name = "technical_systems_test",
+    crate = ":technical_systems",
+    deps = [
+      "//xlab/data/technical_indicator/mem_provider:mem_provider",
     ],
 )

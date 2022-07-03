@@ -29,7 +29,6 @@ rust_test(
     crate = ":ema",
 )
 
-
 py_library(
     name = "input_util",
     srcs = ["input_util.py"],

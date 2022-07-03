@@ -7,5 +7,6 @@ rust_library(
     srcs = [
         "src/lib.rs",
     ],
+    crate_name = "security_id_lib",
     edition = "2021",
 )

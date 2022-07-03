@@ -1,4 +1,4 @@
-load("@rules_rust//rust:defs.bzl", "rust_library", "rust_test")
+load("@rules_rust//rust:defs.bzl", "rust_library")
 
 package(default_visibility = ["//xlab:internal"])
 
@@ -7,12 +7,11 @@ rust_library(
     srcs = glob([
         "src/**/*.rs",
     ]),
-    crate_name = "trading_system",
+    crate_name = "technical_indicator",
     edition = "2021",
     deps = [
         "//third_party/cargo:chrono",
         "//xlab/base/status",
         "//xlab/security/id:security_id",
-        "//xlab/trading/order",
     ],
 )
