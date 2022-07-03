@@ -3,17 +3,15 @@ load("@rules_rust//rust:defs.bzl", "rust_library")
 package(default_visibility = ["//xlab:internal"])
 
 rust_library(
-    name = "technical_systems",
+    name = "types",
     srcs = glob([
         "src/**/*.rs",
     ]),
+    crate_name = "technical_indicator",
     edition = "2021",
     deps = [
         "//third_party/cargo:chrono",
         "//xlab/base/status",
-        "//xlab/data/technical_indicator/types",
         "//xlab/security/id:security_id",
-        "//xlab/trading/order",
-        "//xlab/trading/system/types",
     ],
 )

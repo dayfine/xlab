@@ -21,7 +21,7 @@ pub enum StatusCode {
     DataLoss = 15,
 }
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 pub struct Status {
     pub status_code: StatusCode,
     pub message: String,
