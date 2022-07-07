@@ -28,8 +28,8 @@ http_archive(
 
 http_archive(
     name = "rules_python",
-    url = "https://github.com/bazelbuild/rules_python/releases/download/0.4.0/rules_python-0.4.0.tar.gz",
     sha256 = "954aa89b491be4a083304a2cb838019c8b8c3720a7abb9c4cb81ac7a24230cea",
+    url = "https://github.com/bazelbuild/rules_python/releases/download/0.4.0/rules_python-0.4.0.tar.gz",
 )
 
 http_archive(
@@ -97,9 +97,16 @@ pip_install(
 # ================================================================
 # Rust extensions
 # ================================================================
-load("@rules_rust//rust:repositories.bzl", "rust_repositories")
 
-rust_repositories()
+load("@rules_rust//rust:repositories.bzl", "rules_rust_dependencies", "rust_register_toolchains")
+
+rules_rust_dependencies()
+
+rust_register_toolchains(
+    edition = "2021",
+    iso_date = "2022-07-06",
+    version = "nightly",
+)
 
 load("@rules_rust//proto:repositories.bzl", "rust_proto_repositories")
 
@@ -108,7 +115,6 @@ rust_proto_repositories()
 load("//third_party/cargo:crates.bzl", "raze_fetch_remote_crates")
 
 raze_fetch_remote_crates()
-
 
 load(
     "@build_bazel_apple_support//lib:repositories.bzl",
